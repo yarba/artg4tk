@@ -1,0 +1,109 @@
+process_name:processA
+source: {
+  module_type: EmptyEvent
+  maxEvents:  5
+}
+services: {
+  message : {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : {
+       LogToConsole : {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+  TFileService :
+  {
+    fileName      : "CheckPhotonHits.root"
+  }
+    DetectorHolder: {}
+    ActionHolder: {}
+    RandomNumberGenerator: {}
+    PhysicsListHolder: {} 
+    PhysicsList: { 
+	PhysicsListName: "FTFP_BERT"
+	DumpList: false	
+  	enableCerenkov: true
+  	enableScintillation: false
+  	enableAbsorption: true   
+  	enableRayleigh: false     
+  	enableMieHG: false       
+  	enableBoundary: true    
+  	enableWLS: false
+}
+
+    // Detector(s) for the simulation
+    GDMLDetector : 
+    {
+    category: "world"
+    gdmlFileName_ : "./gdml/singlecrystal_color__PbF2.gdml"
+    }   
+
+
+
+//    writeGdml: {
+//      name: "writeGdml"
+//      gdmlFileName:"output.gdml"	
+//    }
+
+
+    ExampleGeneralAction: {
+      name: "exampleGeneral"
+    }
+
+}
+
+outputs: {
+out1: {
+  module_type: RootOutput   
+  fileName: "exampleTestingout.root"
+  }
+}
+
+physics: {
+  producers: {
+     PrimaryGenerator:
+     {
+        module_type: EventGenerator
+	nparticles : 1
+	momentum: [ 0., 0., 5. ] // in GeV 
+     }
+
+     G4Default:
+     {
+        module_type: ModelParamStudyProducer
+	//
+	// NOTE: NOT every (G4) event will results in a HAD inelatsic interaction,
+	//       thus the ArtG4Vtx product is NOT always available;
+	//       this key below tells Art NOT to throw if the product is not put
+	//       in the art::Event 
+	//
+	errorOnFailureToPut: false
+	//
+        RNDMSeed: 12345
+	//	
+	Verbosity: 0
+	//
+	HadronicModelParameters:
+	{
+	   DefaultPhysics: true
+	}
+     }
+  }
+  analyzers: {
+   CheckPhotonHits: {   module_type: CheckPhotonHits
+		  DumpGDML: true}	
+
+}
+
+  path1: [ PrimaryGenerator,G4Default ]
+  stream1:  [ out1, CheckPhotonHits ]
+
+  trigger_paths: [ path1 ]
+  end_paths: [ stream1 ]
+}
