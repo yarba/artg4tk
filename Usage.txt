@@ -1,0 +1,779 @@
+Technical notes and instructions for the phase-3 package development
+
+Disclaimer
+This document describes the software that is fairly new and is being actively developed.
+For this reason various pieces and bits may be somewhat incomplete and/or change frequently.
+We are making every effort to streamline and improve the documentation as we make progress with the software itself.
+
+General information
+This document describes the development status, as of December 2017, of the software that allows to vary selected Geant4 model parameters and to study the effect on the physics outcome.
+
+Although the software is still in development, it is operational and is ready for alpha-testing.
+
+Geant4 version 10.4 is required.
+
+At present, the Geant4 collaboration offers a possibility to vary parameters of the following hadronic models
+PreCompound model - documentation of the configuration interface is work-in-progress; as a temporary measure, we will try to provide reasonable instructions in this document.
+Bertini cascade model - "native" Geant4-Bartini configuration interface is described in the documentation at the following link: https://cdcvs.fnal.gov/redmine/documents/982
+Fritiof string model (FTF) - documentation of the configuration interface can be found at the following URL:
+http://geant4.web.cern.ch/geant4/UserDocumentation/UsersGuides/ForToolkitDeveloper/html/GuideToExtendFunctionality/HadronicPhysics/hadronics.html#changing-internal-parameters-of-an-existing-hadronic-model
+In the reasonably near future we aim at expanding configuration interfaces for there models and including other Geant4 key physics models.
+
+Please bear in mind that the electromagnetic models of Geant4 are also reasonably configurable, both through a C++ interface (Set/Get methods) or G4UI-based job configuration tools.
+However, at present we focus mainly on the Geant4 hadronic models; including studies of the electromagnetic physics is in the future plans.
+
+High level overview of the Geant4 models configurability is available here
+
+Because currently offered Geant4 native model configuration features are minimalistic, we have also started extending and standardizing them via the development of a dedicated software toolkit.
+The toolkit aims at the following:
+Broaden Geant4 model configuration interfaces in a standardized way
+Offer software tools to facilitate multiple variants of applications based on desired physics models or physics lists
+Offer software tools for comprehensive analysis of the effect(s) of Geant4 model parameter(s) variations on the physics outcome
+The toolkit is largely based on the Art framework
+
+The software components are implemented as part of the art-based artg4tk package where it can be found under the G4PhysModelParamStudy directory.
+Interested users can browse it directly in the Git Repository
+
+In this document we provide instructions for downloading, building and running the application.
+
+We also provide reasonable description of selected software components (those that we think are of primary interest to end-users), together with the motivations behind certain implementation details.
+
+However, it needs to be stressed that the software is in the process of active development, thus changes are expected to happen quite often.
+
+How to setup packages and to download and build the application
+The procedure to organize and package the software is still in development.
+For this reason, certain pieces need to be downloaded from Git and built.
+In the near future we will refine the procedure which will allow to avoid the building step if case users only want to run the existing modules.
+
+Download and install external tools and build artg4tk on a generic node The following software tools are necessary and are readily available via the scisoft repository
+art v2_10_03 with e15:prof qualifier
+geant4 v4_10_4 with cl23:e15:prof qualifier 
+NOTE: cl23 flag stands for "CLHEP 2.3-series"
+xerces_c v3_2_0 with e15:prof qualifier - will come as part of geant4 installation !!!
+mrb v1_13_02
+cmake v3_10_1 - will come as part of art installation !!!
+larcoreobj v1_22_00 with e15:prof qualifier - as of April 2018
+cd <area-where-you-want-to-install>
+mkdir externals
+export EXTERNALS=$PWD/externals
+mkdir ups_work_area
+export UPS_WORK_AREA=$PWD/ups_work_area
+cd ${UPS_WORK_AREA}
+curl -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts
+chmod +x pullProducts
+./pullProducts   ${EXTERNALS} slf6 art-v2_10_03 e15 prof
+./pullProducts   ${EXTERNALS} slf6 geant4-v4_10_4 e15-cl23 prof
+
+NOTE: Other available flavor(s) can be "debug" 
+
+wget http://scisoft.fnal.gov/scisoft/packages/mrb/v1_13_02/mrb-1.13.02-noarch.tar.bz2
+bunzip2 mrb-1.13.02-noarch.tar.bz2
+
+wget http://scisoft.fnal.gov/scisoft/packages/larcoreobj/v1_22_00/larcoreobj-1.22.00-slf6-x86_64-e15-prof.tar.bz2
+bunzip2  larcoreobj-1.22.00-slf6-x86_64-e15-prof.tar.bz2
+
+cd ${EXTERNALS}
+tar xvf ${UPS_WORK_AREA}/mrb-1.13.02-noarch.tar
+tar xvd ${UPS_WORK_AREA}/larcoreobj-1.22.00-slf6-x86_64-e15-prof.tar.bz2
+
+The pre-packaged software will end up in your ${EXTERNALS} area.
+The procedure takes a bit longer than a few minutes, but not too long.
+
+Once the pre-packaged tools are installed, you can proceed to the "setup" step and following steps.
+
+Also please bear in mind that the build and/or development involves several other software management/build/release tools such as mrb ; setup instructions are included in this writeup.
+
+In the future we aim at making the setup procedure as "lightweight" and convenient for users as possible; updates will be posted as we make progress.
+
+
+source ${EXTERNALS}/setup
+
+setup art v2_10_03 -q e15:prof
+setup geant4 v4_10_4 -q cl23:e15:prof
+
+setup larcoreobj v1_22_00 -q e15:prof
+
+setup mrb v1_13_02
+setup cmake v3_10_1
+
+export MRB_PROJECT=artg4tk
+
+mkdir <dir-name-of-your-choice>
+cd <dir-name-of-your-choice>
+mrb newDev [-v vX_YY_ZZ -q e15:prof ]
+source localProducts_artg4tk_vX_YY_ZZ_e15_prof/setup
+JUST an EXAMPLE: mrb newDev -v v6_00_00a -q e15:prof
+                source localProducts_artg4tk_v6_00_00a_e15_prof/setup
+
+NOTE-1: the `mkdir <dir-name-of-your-choice> and the `mrb newDev' steps are necessary only when one starts a new development.
+If one wants to continue work in the pre-existing <dir-name-of-your-choice>, these step should be skipped.
+
+NOTE-2: However, one must type `source localProducts_artg4tk_vX_YY_ZZ_e15_prof/setup' and `mrbsetenv' every time one logs in.
+
+Download artg4tk package from Git:
+
+
+cd <dir-name-of-you-choice>/srcs
+mrb g artg4tk
+
+NOTE: artg4tk can also be obtained from Git directly:
+git clone ssh://p-artg4tk@cdcvs.fnal.gov/cvs/projects/artg4tk
+However, `mrb g` command modifies the CMakeList.txt to add _artg4tk_ directory to the list - bear this in mind.  
+
+Finalize setting up the environment
+
+mrbsetenv
+
+NOTE: `mrbsetenv' is an alias for
+source $MRB_DIR/bin/mrbSetEnv
+where env.variable MRB_DIR is defined upon `setup mrb vX_Y_Z'
+It sets up environment variables such as MRB_SOURCE and MRB_BUILD
+cd $MRB_BUILDDIR
+mrb b
+
+
+How to run the application
+Running the application is simple as any Art-based application:
+
+art -c <your-job-config>
+
+where `your-job-config' is a FHICL job configuration file.
+We provide several pre-fabricated example job configuration files that can be found in the following subdirectory:
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl
+Vary Parameters of Bertini Cascade
+We suggest the groups of examples listed below.
+
+Both groups of examples illustrate how to configure an application to do the following:
+run a single-particle event generator ("particle gun")
+run full-scale Geant4-based application with a user-specified physics list (QGSP_FTFP_BERT in this case); it will access the output of the particle gun, will run the particle through the specified geometry, and will record 1st hadronic interception and/or subsequent hadronic re-interactions in the volume(s) that are designated as "sensitive detector(s)" (see section ModelParamStudyProducer)
+
+5GeV/c proton incident (lengthwise) on a simplistic  Pb cylindrical target that is 6.3cm in diameter and is 160cm long.
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton5GeV-Pb-QGSP_FTFP_BERT-default.fcl
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton5GeV-Pb-QGSP_FTFP_BERT-bertini-rscratio0.75.fcl
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton5GeV-Pb-QGSP_FTFP_BERT-bertini-rscratio1.25.fcl
+
+In this examples the geometry is specified in the GDML format (see later in this document for additional details on geometry):
+
+"$MRB_SOURCE/artg4tk/gdml/pb_target.gdml" 
+
+The configuration example denoted as "default" will run Geant4 with all the standard settings of all physics models included 
+in the user-selected physics list. 
+Examples denoted as "rscratio0.75" and "rscratio1.25" will show how to modify  the Radius Scale parameter of Bertini cascade model 
+"by ratio", i.e. by a factor 0.75 (75% of the current standard setting) or 1.25 (125% of the current standard setting).
+
+These examples also show how to include in the processing chain the HARP-like analysis of the simulated 1st hadronic interaction (see section AnalyzerHARP) - this step is optional, and is included for illustrative purpose only. 
+Analysis can also be done in a separate job as will be illustrated later.
+
+NOTE: Due to internal technical details of Geant4 package, ONLY ONE VARIANT of a full-scale Geant4 application can run in a given job.
+
+However, it is possible to add variants to the to the same Art Event output file, even as a result of separate jobs.
+For this reason, we provide an example configurations denoted with "add", e.g.
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton5GeV-Pb-QGSP_FTFP_BERT-add-bertini-rscratio0.75.fcl
+
+This example shows how to configure a job that will do the following:
+* configures ModelParamStudyProducer with the Bertini parameter Radius Scale modified by a factor 0.75 (75% of the standard setting)
+* read from the pre-generated Art Event file resulting from proton5GeV-Pb-QGSP_FTFP_BERT-default.fcl; all events will be read
+* for each event, it accesses the "particle gun" record and feeds it to ModelParamStudyProducer
+* no analysis is done in this job
+
+Resulting from this job will be a new Root file that contains the same Art Run and Event products as the input file, plus additional Art Run and Event products that correspond to the current "variant" of ModelParamStudyProducer (modification of Bertini cascade model).
+
+The chain can be extended to as many times as desired.
+However, it is up to a user how to organize the sequence of jobs.
+
+Other examples denoted with "add" utilize the same approach.
+
+
+2GeV/c pi+ incident on the Liquid Argon volume of the full-scale LArIAT setup.
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/piplus2GeV-LArIAT-QGSP_FTFP_BERT-default.fcl
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/piplus2GeV-LArIAT-QGSP_FTFP_BERT-add-bertini-rsc1.fcl
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/piplus2GeV-LArIAT-QGSP_FTFP_BERT-add-bertini-xsc0.1.fcl
+
+In these examples the geometry is a full-scale LArIAT geometry specified in GDML format:
+
+"$MRB_SOURCE/artg4tk/gdml/lariat.gdml" 
+Output of each job will be a Root file that contains results of ModelParamStudyProducer in a form of Art Event products, i.e. recorded 1st and/or subsequent hadronic interactions in designated volumes; in addition Geant4 model(s) configuration(s) will be stored in a form of Art Run Product(s).
+
+If an analysis step is included in the processing chain, one more plain Root file will be produced, and will contain analysis histogram (or other analysis object of user's choice).
+
+Users should also bear in mind that full-scale Geant4 applications are typically quite expensive in terms CPU, so for accumulation substantial statistics one may want to consider parallel runs of smaller jobs, then merging the outputs.
+As as example, we are offering a group of simple shell scripts that allow to parallelize the simulation jobs and execute in PBS; the scripts can be found in the following directory:
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/ProdScripts/PBS/shell
+
+The scripts can be used them as an inspiration; however, please bear in mind that they are merely simple examples - do not consider them as a "solution for all problems".
+In addition, we also offer a configuration example that employs so called "process level" simulation.
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton5GeV-Pb-ProcLev-bertini-default.fcl
+This module implements a "non-traditional" way to run Geant4 to simulated a single projectile-nucleus interaction, by a given single (hadronic) model.
+The outcome is similar to modeling thin target experiments, but the setup is much simpler, and the CPU is typically much smaller than a full-scale Geant4 application would require.
+This approach is often used by Geant4 experts (developers) in multiple tests, although it is not largely advertised to users (for clarity reasons).
+
+The desired model is run-time selected (by its name); in this particular example Bertini cascade model is specified.
+See also section on ProcLevelMPVaryProducer.
+
+NOTE: In principle, one can run multiple instances of the Bertini cascade model in one job (one can see commented out modules in the configuration). However, other Geant4 hadronic models, such as PreCompound or FTF, are implemented somewhat differently and allow only one variant per job. For this reason we suggest "chaining/adding" variants to the output in case a user prefers to have all variants in the same file.
+
+Generation of the "particle gun" is the same as in proton5GeV-Pb-QGSP_FTFP_BERT-default.fcl.
+
+Output format of such job is the same as of test-g4params-producer-default.fcl.
+HARP-like and ITEP771-like analysis is included for illustrative purposes; the output is a separate ROOT file with analysis histograms (organized as subdirectories).
+
+Last but not least, we are also offering an example configuration of a post-simulation analysis job.
+
+
+This jobs will read the an Art Run and Event output file resulted from proton5GeV-Pb-QGSP_FTFP_BERT-add-bertini-rscratio0.75.fcl and 
+will simultaneously analyze default Geant4 predictions and predictions obtained the modified Bertini Radius Scale. 
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/analysis-proton5GeV-Pb-QGSP_FTF_BERT-bertini-variants.fcl
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/analysis-lariat.fcl
+Vary Parameters of PreCompound
+PreCompound model is typically used at the "back end" (low energy end) of other models such as Bertini (optional) or FTF (as it is in all standard physics lists).
+
+We are including examples that show
+how to turn PreCompound in Bertini cascade (to replace Baertini's native de-excitation model)
+how to change parameter(s) of PreCompound as it is used on the back end to Bertini cascade
+We offer examples that show how to do it at the "process level", i.e. with the ProcLevelMPVaryProducer component.
+
+
+This examples show how to run the default configuration of Bertini AND a variant of Bertini where PreCompound replaces 
+Bertini's native de-excitation.
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton3.824GeV-C-ProcLev-bertini-preco.fcl
+
+The subsequent examples show how to add to the output of the previous job results of modeling hadron-nucleus interactions 
+obtained with Bertini that uses PreCompound with one modified parameter.
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton3.824GeV-C-ProcLev-bertini-preco-add-LevDens1.fcl
+
+The later example also includes so called "IAEA-like" analysis of the 3 variants of Bertini and Bertini+PreCompound.
+We will add comparisons with experimental data shortly.
+
+We are currently exploring how the PreCompound re-configuration behaves in full-scale applications based on physics lists; examples will be added shortly.
+
+Vary Parameters of FTF
+We offer examples that show how to do it at the "process level", i.e. with the ProcLevelMPVaryProducer component.
+
+
+This example shows how to run a default configuration of Bertini AND a variant of FTF where one of the parameters is changed 
+from its default value.
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton5GeV-Pb-ProcLev-ftfp.fcl
+
+NOTE: Due to Geant4 technicalities, FTF allows to change parameters from their defaults ONLY ONCE per run.
+For this reason it is impossible to run in the same job more than the default configuration and ONLY ONE variant.
+Other variants will have to be "chained".
+
+Analysis of the simulated results and benchmarking vs HARP and ITEP771 data are also included in the processing chain.
+
+We will soon add example(s) to demonstrate variations of the FTF parameters when running a full-scale application that uses a physics list.
+
+Description of selected software components and features
+ModelConfigMapper
+This component is based only on Geant4 toolkit, and is independent from any Art- or artg4tk-based functionalities.
+It can be extracted as-is and used with any Geant4-based application. It also fits easily with art(g4tk)-based tools.
+
+This component is a wrapper on top of the native Geant4 model configuration interface. 
+It consolidates in one place existing Geant4 functionalities and add several more convenient functionalities, in a form of C++ interface.
+
+Currently it covers configuration interface of the Bertini Cascade model and includes initial provisions towards INCLXX model.
+Our goal is to include all Geant4 key models in the reasonably near future.
+
+Example features are the following:
+Print default settings for a given model
+Print current setting for a given model
+Restore defaults for a given model
+Restore defaults for all models
+Change by value a given parameter of a given model - this is a convenient C++ extension of the native Geant4 machinery
+Change by ratio a given parameter of a given model
+NOTE: If there is an "interplay of parameters", it is always properly taken into account.
+
+ModelConfigMapper can be found in the following subdirectory:
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/G4Components
+ADVISE: The way this component is implemented, a user may have multiple instances of it in a given application.
+However, a user should bear in mind that this component involves Geant4 model parameters holders that are singletons. In practice this means that changes of model parameters happen via multiple instances of ModelConfigMapper, they will all end up in the same place on the Geant4 side, which may cause mistakes down the road.
+We are currently considering if ModelConfigMapper itself should be a singleton by design.
+
+PhysModelConfigService
+This component is a usual Art Service.
+It involves ModelConfigMapper and serves as "single dispatcher" that ensures proper and consistent configuration of one or multiple Geant4 physics (hadronic) models requested by one or multiple modules.
+
+It must be included with the configuration of any job that involves ModelParamStudyProducer or ProcLevelMPVaryProducer (see later).
+
+This service has its own FHICL configuration interface that allows to control the verbosity: 
+
+     PhysModelConfig: 
+     {
+        Verbosity: true
+     }
+NOTE: The verbosity of PhysModelConfigService is different from the verbosity of a given model - the later tends to be too verbose and is useful mainly for debugging purposes.
+
+PhysModelConfigService can be found in the following subdirectory:
+
+artg4tk/artg4tk/G4PhysModelParamStudy/G4Services
+Available configuration cards for Geant4 models
+For PreCompound model we have the following configuration parameters:
+
+
+LevelDensity   <value>
+LevelDensityByRatio   <ratio>
+R0   <value>
+R0ByRatio   <ratio>
+TransitionR0   <value>
+TransitionR0ByRatio   <ratio>
+FermiEnergy   <value>
+FermiEnergyByRatio   <ratio>
+PrecoLowEnergy   <value>
+PrecoLowEnergyByRatio   <ratio>
+PhenoFactor   <value>
+PhenoFactorByRatio   <ratio>
+MinExcitation   <value>
+MinExcitationByRatio   <ratio>
+MaxLifeTime   <value>
+MaxLifeTimeByRatio   <ratio>
+MinExPerNucleonForMF   <value>
+MinExPerNucleonForMFByRatio   <ratio>
+MinZForPreCo   <integer number>
+MinAForPreco   <integer number>
+PrecoModelType   <integer predefined identificator>
+DeexModelType   <integer predefined identificator>
+NeverGoBack    0/1
+UseSoftCutoff    0/1
+UseCEM    0/1
+UseGNASH    0/1
+UseHETC    0/1
+UseAngularGen    0/1
+CorrelatedGamma    0/1
+
+Corresponding C++ methods in the native Geant4/PreCompound code can be seen in the following header:
+
+/geant4/source/processes/hadronic/models/de_excitation/management/include/G4DeexPrecoParameters.hh
+For Bertini cascade model we currently have the following configuration options:
+
+RadiusScaleByRatio <ratio>
+RadiusScale        <value>
+XSecScaleByRatio   <ratio>
+XSecScale          <value>
+FermiScaleByRatio  <ratio>         
+FermiScale         <value>
+TrailingRadiusByRatio <ratio>
+TrailingRadius        <value>
+GammaQDScaleByRatio <ratio>
+GammaQDScale        <value>
+
+UsePreCompound   0/1 
+DoCoalescence 0/1
+For FTF model we currently have the following configurable parameters:
+
+
+BARYON_DELTA_PROB_QEXCHG   <value>
+BARYON_PROB_SAME_QEXCHG   <value>
+BARYON_DIFF_M_PROJ   <value>
+BARYON_NONDIFF_M_PROJ   <value>
+BARYON_DIFF_M_TGT   <value>
+BARYON_NONDIFF_M_TGT   <value>
+BARYON_AVRG_PT2   <value>
+USE_BARYON_DIFF_DISSO_PROJ   0/1
+USE_BARYON_DIFF_DISSO_TGT   0/1
+NUCDESTR_P1_PROJ   <value>
+USE_NUCDESTR_P1_NBRN_PROJ 0/1
+NUCDESTR_P1_TGT   <value>
+USE_NUCDESTR_P1_ADEP_TGT   0/1
+NUCDESTR_P2_TGT   <value>
+NUCDESTR_P3_TGT   <value>
+PT2_NUCDESTR_P1   <value>
+PT2_NUCDESTR_P2   <value>
+PT2_NUCDESTR_P3   <value>
+PT2_NUCDESTR_P4   <value>
+BARYON_NUCDESTR_R2   <value>
+BARYON_EXCI_E_PER_WNDNUCLN   <value>
+BARYON_NUCDESTR_DOF   <value>
+
+Please bear in mind that as of Geant4.10.4 release, FTF configurable parameters are available ONLY for the case of BARYON PROJECTILE (e.g. proton beam). Other configurable parameters of this model will be added in later releases.
+
+Detailed description of the FTF configurable parameters is available in User's Guide for Toolkit Developers
+
+Please note that cards denoted with "Use" are switches that can be set either to 0 (false) or 1 (true).
+Please bear in mind that 0 or 1 should be used while true/false may cause certain misinterpretation at the level of native G4CascadeMessenger.
+
+See later in this document how to use these cards in the configuration of ModelParamStudyProducer and ProcLevelMPVaryProducer.
+
+Configuration options of INCLXX will be added shortly, with other models to follow in the reasonably near future.
+
+Last but not least. 
+Although we use here combinations of capital and lower case letters in the names of the card for illustrative purpose, all cards are in fact case-INsensitive.
+
+ModelParamStudyProducer This is an Art producer-type module (inherits from art::EDProducer base class) that wraps a full-scale Geant4 application.
+In order to setup and configure, it requires several "services" (art::Service-type of components), such as:
+RandomNumberGenerator
+PhysicsListHolder
+PhysicsList - where a user can specify at run time the desired physics list
+DetectorHolder
+GDMLDetector - where the geometry setup of user's choice should be specified, in the GDML format
+PhysModelConfig - essential to be able to change parameters of one or another Geant4 physics model, or multiple models
+Example configuration of the geometry and physics list are as follows:
+
+
+// GDML-based geometry 
+//
+   DetectorHolder: {}
+   GDMLDetector:
+   {
+        category: "world" 
+    gdmlFileName_: "./pb_target.gdml" 
+   }
+
+   PhysicsListHolder: {}
+   PhysicsList: 
+   {
+        PhysicsListName: "QGSP_FTFP_BERT" 
+   }
+
+Example geometry specs in the GDML format are offered as part of the toolkit; for example, you can view the following:
+
+artg4tk/gdml/be_target.gdml
+artg4tk/gdml/c_target.gdml
+artg4tk/gdml/pb_target.gdml
+Example configuration of the ModelParamStudyProducer module itself is as follows:
+
+
+physics:
+{
+  producers:
+  {
+.....
+     G4BertiniRSc075:
+     {
+        module_type: ModelParamStudyProducer
+
+        RNDMSeed: 54321
+
+        Verbosity: 0
+
+    HadronicModelParameters:
+    {
+       DefaultPhysics: false
+       Bertini:
+       {
+//          Verbosity: true
+          RadiusScaleByRatio: 0.75
+       }
+    }
+
+     }
+.................
+  }
+..........
+}
+The configuration block of special interest to most users is the following:
+
+    HadronicModelParameters:
+    {
+       DefaultPhysics: false
+       Bertini:
+       {
+//          Verbosity: true
+          RadiusScaleByRatio: 0.75
+       }
+    }
+
+Other available cards, described in the previous section, can be added in the field of a specific Geant4 model (Bertini, INCLXX in the near future, etc.), following this pattern.
+It is also important to remember that parameters can be configured "by value" (similar to Geant4 "native" approach) or "by ratio".
+The exception to this are switches, such as UsePreCompound, etc., that should be explicitly set as 0 or 1.
+
+NOTE on particle-level event input:
+This module requires pre-generated particle-level event record, such as "particle gun" or similar. In the configuration examples that we have mentioned earlier in this document particle-level generation is done via EventGenerator module. A user may implement similar component(s) to generate a single particle of a desired kinematics, or multiple particles, or even full-blown physics events (such as Pythia events, etc.). However, a user should bear in mind that the label "PrimaryGenerator" is pre-defined as ModelParamStudyProducer will access particle-level record "by label".
+NOTE on geometry definition in the GDML format:
+If a user already has a geometry spec in the GDML format, it can be directly used in this application via GDMLDetector service.
+If there is a hardcoded geometry in an application, or the geometry is specified in any other form, one can dump such geometry in the GDML format as follows:
+
+   G4GDMLParser parser;
+   parser.Write( "<FileNameOfYourChoice>.gdml", 
+               G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking()->GetWorldVolume()->GetLogicalVolume(),
+               false ); // 3rd arg set to "false" means NOT to concatinate each volume name 
+                          // with its logical address in hexadecimal format (D=true, and the Read is set to strip this extention)
+
+ProcLevelMPVaryProducer
+ProcLevelMPVaryProducer is an application that allows to model a single interaction with the use or one or another Geant4 hadronic model, such as Bertini, FTF, etc.
+This approach is similar to modeling results from so called thin target experiments; typically, Monte Carlo results obtained with this module can be directly compared vs experimental data (see also later section on AnalyzerHARP and AnalyzerITEP).
+
+Bear in mind that ONLY ONE Geant4 hadronic model can be used at a time. The exception to this is the PreCompound model that is typically used at the "back end" to other models. We consider PreCompound as an "underlying model".
+
+As already stated earlier in this document, example configurations are provided
+
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton5GeV-Pb-ProcLev-bertini-default.fcl
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton3.824GeV-C-ProcLev-bertini-preco.fcl
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton3.824GeV-C-ProcLev-bertini-preco-add-LevDens1.fcl
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/proton5GeV-Pb-ProcLev-ftfp.fcl
+
+NOTE: the later example demonstrates how to include in the configuration macro a pre-fabricated FHICL fragment:
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/ftf-params-process-level-include.fcl
+
+In order to include this module in the processing chain, one must specify two services, as exemplified below:
+
+     PhysModelConfig: 
+     {
+//        Verbosity: true
+     }
+
+     ProcLevelSimSetup:
+     {
+        HadronicModelName: "Bertini" 
+        TargetNucleus: "Pb" 
+        RNDMSeed: 12345
+     }
+
+The module itself can be configured as "default":
+
+     G4BertiniDefault:
+     {
+        module_type: ProcLevelMPVaryProducer
+        //
+        Verbosity: 0
+        HadronicModel:
+        {
+           DefaultPhysics: true
+           ModelParameters:
+           {
+           }
+        }
+     }
+If custom settings of one or another parameter, or several parameters are desired, example configurations is shown below:
+
+
+// RadiusScale variants
+//
+     G4BertiniRsc1:
+     {
+        module_type: ProcLevelMPVaryProducer
+        Verbosity: 0
+        HadronicModel:
+        {
+           DefaultPhysics: false
+           ModelParameters:
+           {
+              RadiusScaleByRatio: 0.9
+           }
+        }
+     }
+
+// Turn ON PreCompound instead of Bertini native deexcitation
+//
+     G4BertiniPreCo:
+     {
+        module_type: ProcLevelMPVaryProducer
+    //
+    Verbosity: 0
+    HadronicModel:
+    {
+       DefaultPhysics: false
+       ModelParameters:
+       {
+          usePreCompound: 1
+       }
+    }
+     }
+
+
+(parameter setting configuration format is not identical but is fairly similar to those of ModelParamStudyProducer, which is described in the previous section)
+If one is interested in changing PreCompound parameters while using it at the back end to Bertini, example configuration will look as follows:
+
+     G4BertiniPreCoLevDens1:
+     {
+        module_type: ProcLevelMPVaryProducer
+    //
+    Verbosity: 0
+    HadronicModel:
+    {
+       DefaultPhysics: false
+       ModelParameters:
+       {
+          usePreCompound: 1
+              UnderlyingModels:
+              {
+                 PreCompound:
+                 {
+                    LevelDensity: 1. // in MeV
+                 }
+              }
+       }
+    }
+     }
+
+If one is interested in changing parameters of FTF, example configuration may look as shown below:
+
+     G4FTFPVar1:
+     {
+        module_type: ProcLevelMPVaryProducer
+    Verbosity: 1
+    HadronicModel:
+    {
+       DefaultPhysics: false
+       ModelParameters:
+           {
+          NUCDESTR_P1_TGT: 0.2
+          USE_NUCDESTR_P1_ADEP_TGT: 0
+              //
+              // temporarily commented out possible changes of selected parameters
+              //
+          // BARYON_AVRG_PT2: 0.995 // tested stand-alone 0.15 & 1.5 (now max=1.)
+          // BARYON_DIFF_M_PROJ: 3.
+          // BARYON_NONDIFF_M_PROJ: 3.
+          // BARYON_DIFF_M_TGT: 3.
+          // BARYON_NONDIFF_M_TGT: 3.
+       }
+    }
+     }
+
+Please bear in mind that particle-level event product (output of EventGenerator) label with "PrimaryGenerator" must be present in order to operate this module.
+
+NOTE: In principle, multiple instances of this module with different configurations of the model of choice can be executed in one job. But this is a 100% true only for the case Bertini cascade.
+Configurability of FTF or PreCompound is affected by a number of Geant4 internal technicalities that prevent multiple instances of these models in one job. We will see in the future if such limitations on the Grant4 side can be lifted.
+
+Run Product(s) and Event Data Product(s)
+As one runs either ModelParamStudyProducer or ProcLevelMPStudyProducer, model(s) configuration information is stored in the output file in a form of "run product", and a sequence of hadronic interactions that occur in one or another volume can be stored in the output on the event-by-event basis, in a form of "event product" (see Art documentation for more detailed description of the concept).
+
+The class ArtG4tkModelConfig that describes run-specific model configuration information is the following directory:
+
+$MRB_SOURCE/artg4tk/artg4tk/DataProducts/G4ModelConfig
+There maybe multiple "run products" in an output, each run corresponds to a particular variant of one or several Geant4 models employed in the simulation job.
+
+This information can be easily accessed at the later stage, e.g. for analysis.
+Example usage:
+
+
+void YouAnalyzer::beginRun( const art::Run& r )
+{
+   art::Handle<ArtG4tkModelConfig> physcfg;
+   r.getByLabel( "Valid-Label-Of-Your-Choice", physcfg );
+   if ( !physcfg.isValid() )
+   {
+      std::cout << " handle to run product (model/physics config) is NOT valid" << std::endl;
+      return;
+   }   
+
+   std::vector<std::string> cfgmodels = physcfg->GetConfiguredModels();
+
+   // now you can examine the configuration information in the container 
+
+   return;
+}
+
+Information on a hadronic inelastic interaction can be stored on the event-by-event basis in a form of ArtG4tkVtx, which in turns carries information about incoming particle and a collection of out coming particles, together with position, material, and volume name. Information about incoming and/or out coming particles is stored in a form of ArtG4tkParticle. Both classes can be found in the following directory:
+
+$MRB_SOURCE/artg4tk/artg4tk/DataProducts/G4DetectorHits
+NOTE: We have chosen to call it "detector hit" because in a full-scale Geant4 application (e.g. ModelParamStudyProducer) a "sensitive detector" HadInteractionSD can be assigned to one or another volume to record hadronic inelastic interactions. Please bear in mind that at present only the 1st hadronic interaction is recorded in a volume outfitted with HadInteractionSD; however in the near future the concept will be expanded to record all hadronic interactions in the selected volume.
+ProcLevelMPVaryProducer directly uses this "event product" to record information about interactions.
+
+Information can be easily accessed at the analysis stage; example usage may look as follows:
+
+void YouAnalyzer::analyze( const art::event& e )
+{
+   art::Handle<ArtG4tkVtx> firstint;
+   e.getByLabel( "Valid-Label-Of-Your-Choice", firstint );
+   if ( !firstint.isValid() )
+   {
+      std::cout << " handle to 1st hadronic interaction is NOT valid" << std::endl;
+      return;
+   }
+
+   int nsec = firstint->GetNumOutcoming();
+
+   for ( int ip=0; ip<nsec; ++ip )
+   {     
+      const ArtG4tkParticle& sec = firstint->GetOutcoming( ip );     
+      std::string pname = sec.GetName();
+      double pmom = sec.GetMomentum().vect().mag();     
+      pmom /+ CLHEP::GeV;
+      double theta = sec.GetMomentum().vect().theta();
+      // Etc.
+   }
+
+   return;
+}
+For more examples, one may also take a look at AnalyzerHARP and AnalyzerITEP described in the subsequent section.
+
+AnalyzerHARP, AnalyzerITEP, AnalyzerEdepTrk, AnalyzerIAEA, AnalyzerNA49, AnalyzerSASM6E, and their base class ModelParamAnalyzerBase
+Both AnalyzerHARP and AnalyzerITEP extract from an art::Event and analyzes the ArtG4tkVtx event data product that describes a single projectile+nucleus interaction (in case of a full-scale physics list based application, this will be the 1st hadronic interaction in a given volume).
+The event data product is extracted by a user-specific label which is run-time configurable.
+
+AnalyzerHARP is called "HARP" because it looks at secondary charged pions or protons resulting from the interaction, and for each secondary in question it composes momentum spectra in several theta-bin, where theta is the secondary's polar angle with respect to projectile. The spectra are composed in a form of Root histograms (TH1D).
+The spectra can be directly compared vs HARP experimental data from the following publications:
+M. Apollonio et al., Nucl. Phys. A821 118, 2009
+M. Apollonio et al., Phys.Rev.C80 065207, 2009
+M. Apollonio et al., Phys.Rev.C80 035208, 2009
+M.G. Catanesi et al., Phys.Rev.C77 055207, 2008
+AnalyzerITEP is called "ITEP" because it looks for secondary protons or neutrons resulting from the interaction, and for each secondary in question it composes kinetic energy spectra in a given bin of the polar angle theta; the spectra can be directly compared with the experimental data from the following publications:
+Yu.D.Bayukov et al, Preprint ITEP-148-1983
+Yu.D.Bayukov et al, Sov.J.Nucl.Phys. 42, 116
+Both AnalyzerHARP and AnalyzerITEP can be found in the following subdirectory:
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/AnalysisModules
+One can include one or another, or both analyzers in the processing chain; multiple instances of either analyzer can be included.
+
+Example usage:
+
+{
+     G4DefaultHARP: // this is module label - use any of your choice
+     {
+        module_type: AnalyzerHARP
+        ProductLabel: "G4Default"  // this is label of the G4-based module that ran earlier !!!
+                                                   // your analyzer will look for run- and/or event-product(s) "by label" 
+     }
+}
+
+(obviously, AnalyzerITEP can be included in a similar way).
+In order to use one or another analyzer, or both analyzers, a user must also specify the name of a Root output file, via TFileService component of the Art framework to be given in the job configuration.
+
+As already mentioned earlier in this document, example configuration file are provided:
+
+
+AnalyzerHARP and AnalyzerITEP are used in the following application:
+
+artg4tk/artg4tk/G4PhysModelParamStudy/fcl/analysis-proton5GeV-Pb-QGSP_FTF_BERT-bertini-variants.fcl
+
+NOTE: in this case, analysis runs on the output of the full-scale simulation that employs a physics list.
+But it will be exactly the same approach if one want to analyze results from a single-interaction simulation.
+
+AnalyzerEdepTrk is used in the 
+
+$MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl/analysis-lariat.fcl 
+
+application configuration example, together with AnalyzerHARP and AnalyzerITEP.
+At this point, this plays the role of a "proof-of-principle" that illustrates how energy deposition in a LAr sensitive volume of LArIAT is affected by modifying one or another parameter of Bertini cascade model.
+AnalyzerHARP and AnalyzerITEP play support role here as they help to understand what contributes to changes in the energy deposition distributions if Bertini parameters change one or another way.   
+As mentioned above, all these analyzers derive from a base class ModelParamAnalyzerBase which encapsulates several common-use functionalities.
+ModelParamAnalyzerBase in its turn derives from an art::EDAnalyzer which makes it an easy plugin into Art-based job.
+
+Recently added AnalyzerNA49 and AnalyzerSASM6E are meant to compare results of FTF and its variants against the following high energy experimental data:
+https://spshadrons.web.cern.ch/spshadrons (NA49 experiment)
+D. S. Barton et al., Phys.Rev.D27 (1983) , p: 2580 (Single Arm Spectrometer (SAS) at the M6E at FNAL)
+AnalyzerIAEA (name may change in the future) is meant for comparing simulated results with the following experimental data:
+K. Ishibashi et al., J.Nucl.Sci.Tech. Vol.34 N.6, p.529-537 (1997)
+While the infrastructure is still largely under development, it offers a convenient way to implement other similar analysis modules that produce results to compare directly against thin target experimental data.
+
+Click to Show Temporarily Disabled Features
+Mini-exersice and example results
+Once you build the toolkit, feel free to try the following sequence of examples:
+
+
+cd $MRB_SOURCE/artg4tk/artg4tk/G4PhysModelParamStudy/fcl
+
+art -c piplus2GeV-LArIAT-QGSP_FTFP_BERT-default.fcl
+art -c piplus2GeV-LArIAT-QGSP_FTFP_BERT-add-bertini-rsc1.fcl
+art -c piplus2GeV-LArIAT-QGSP_FTFP_BERT-add-bertini-xsc0.1.fcl
+
+art -c analysis-lariat.fcl
+
+cp ../StandAloneApps/User/PlotLArIAT.C  .
+
+ root -q -p -b PlotLArIAT.C\(\"LArIAT.root\"\)
+
+

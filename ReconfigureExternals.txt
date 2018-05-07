@@ -1,0 +1,167 @@
+Reconfigure artg4tk with different external packages
+WORK IN PROGRESS !!!
+SOME PIECES/BITS OF INFORMATION MAYBE MISSING !!!
+UPDATES EXPECTED !!!
+
+In case of questions, please contact Julia Yarba: julia.yarba@yahoo.com
+
+Since artg4tk and its sub package, G4ModelParamStudy, depends on several external packages, it is useful to know how to reconfigure it to use a desired version of one or more such externals.
+
+The following are the key packages:
+art
+We find the following links to be useful:
+art general documentation 
+- make sure also to check the Deprications section as it contains useful tips
+migration to Root6 notes
+geant4
+xerces_c
+The build machinery relies on
+cmake
+mrb
+INCLUDE LINK TO MRB DOC HERE !!!
+cetbuildtools
+In general, all packages and tools are available in the pre-packaged form via scisoft.fnal.gov
+
+However, in a number of cases it may be practical to configure artg4tk (incl. G4ModelParamStudy) with a custom (non-ups) build of geant4.
+
+We describe how to configure and build artg4tk with a central (ups) install of geant4 or with a custom build of it.
+
+It is important to remember that a particular version of geant4 may need a specific version of CLHEP.
+Also, if a build of geant4 is meant to work with art, an external install of CLHEP is required (by default, geant4 builds with an "internal" version of CLHEP). The reason is that art generates (ROOT-like) dictionaries for many CLHEP objects; normally, CLHEP is distributed together with every pre-packages version of art.
+Thus, when choosing versions of art and geant4, one should remember about their "CLHEP-compatibility".
+
+In this note we document how to configure and build artg4tk with the following external packages:
+art v2_06_03 (e10:prof)
+it is distributed with CLHEP v2_3_4_4 which is sufficient for recent releases of geant4
+xerces_c v3_1_4a (e10:prof)
+centrally-installed geant4-10-03-p01 or custom build of geant4-10-03-patch-01 (it is the same geant4 release though, just the naming conventions are slightly different)
+The build tools are:
+cmake v3_7_1 (latests releases of giant require at lease cmake 3.3)
+mrb v1_08_00 (this one or better is recommended with art v2.x.x series)
+cetbuildtools v5_06_07 (one of the latests, recommended with art v2.x.x series)
+The cookbook
+We assume that all necessary packages are already installed and available via UPS. 
+If not, please see HERE on how to install.
+
+General setups
+
+setup art v2_06_03 -q e10:prof
+NOTE: this will also setup a number of additional tools and packages, such Root, CLHEP, etc., as well as the correct version of compiler
+setup xerces_c v3_1_4 -q e10:prof
+setup cmake v3_7_1
+NOTE: as already mentioned earlier, most recent versions of geant4 require cmake of the v3.x.x series
+Choose geant4
+
+Centrally installed (ups) public version of geant4
+setup geant4 v4_10_3_p01 -q e10:prof 
+NOTE: appropriate version of terces_c will be setup automatically
+Build custom geant4-10-03-patch-01
+setup xerces_c v3_1_4a -q e10:prof
+cd <where-you-want-it>
+in this case we install geant4 on tev.fnal.gov in the /g4/yarba_j/geant4-local-builds area
+svn co svn+ssh://<your-cern-username>@svn.cern.ch/reps/geant4/tags/geant4/_symbols/geant4-10-03-patch-01
+this will ask for one's password as on cern.ch (e.g. lxplus.cern.ch) !!!
+mkdir geant4-10-03-patch-01-build
+geant4 uses cmake-based build machinery that requires "out-of-source" build
+cd geant4-10-03-patch-01
+export G4INSTALL=$PWD
+cd ../geant4-10-03-patch-01-build
+cmake -DCMAKE_INSTALL_PREFIX=$G4INSTALL \
+-DGEANT4_USE_GDML=ON \
+-DXERCESC_ROOT_DIR=$XERCESCROOT \
+-DGEANT4_USE_SYSTEM_CLHEP=ON \
+-DCMAKE_CXX_COMPILER=g++ \
+$G4INSTALL
+NOTE: as Geant4 is a developing project, in some cases c++14 will need to be activated: -DGEANT4_BUILD_CXXSTD=14
+NOTE: in principle, OPENGL should also be included to activate artg4tk visualization features but we skip it for now
+NOTE: we install geant4 (libraries, etc.) in the G4INSTALL area (e.g. the "original" geant4-10-03-patch-01, not the "-build" one) but other options are possible)
+make -j8
+make install
+Set build tools
+
+setup mrb v1_08_00
+Prepare your "custom" artg4tk development area
+
+cd <where-you-want-your-artg4tk>
+mkdir <name-of-your-artg4tk-work-area>
+e.g. mkdir artg4tk_month_date_year
+export MRB_PROJECT=artg4tk
+cd <name-of-your-artg4tk-work-area>
+mrb newDev -v <your-version-number> -q <qualifier>
+e.g. mrb newDev -v v0_01_01 -q e10:prof
+NOTE: your qualifier must match art, etc.; we are using art with the e10:prof qualifier, thus we are using the same qualifier here
+NOTE: in principle, it is not mandatory to supply a custom version number, but it is often practical e.g. in order to distinguish from existing (centrally installed) version(s) of artg4tk
+NOTE: executing `mrb newDev' will create a structure of directories in the work area, including srcs subdirectory and a "skeleton" srcs/CMakeLists.txt
+Check out artg4tk and customize it
+
+cd scrs
+alternatively, one can do `cd $MRB_SOURCE'
+In the complete scenario, RooMUHistos has to be checked out from Github and build; however, it needs to updated to work with Root6 (dictionaries), thus we will give instructions a little later !!!
+mrb g artg4tk
+this will check out artg4tk from Git (local repo associated with Fermilab Redmine) AND will also update the srcs/CMakeLists.txt accordingly
+NOTE: one can also check out via a plain `git clone ...' BUT in such case one will have to update srcs/CMakeLists.txt manually, to include artg4tk directory, etc.
+Now one needs to make sure that geant4 environment is setup properly.
+In case one uses a centrally installed public version, this is done via `setup geant4 vx_y_z -q ...' (e.g. `setup geant4 v4_10_3_p01 -q e10:prof', as shown earlier in this document).
+In case a custom build of geant4 is desired, we provide a shell script to setup geant4 environment properly: artg4tk/geant4make-no-ups.sh; 
+in particular, it will setup G4INSTALL environment variable which will later be used by artg4tk/CmakeLists.txt to distinguish between central or custom builds of geant4
+Example usage:
+cd artg4tk
+source geant4make-no-ups.sh geant4-10-03-ref-02 <path-to-where-it-is>
+The second input argument to the script is optional, by default it will look in /g4/yarba_j/geant4-local-builds on tev.fnal.gov
+Now one needs to edit artg4tk/ups/product_deps ($MRB_SOURCES/artg4tk/ups/product_deps)
+the first 2 line do not necessarily matter for a "custom" configuration; it seems to work even for mismatched artg4tk "custom" version and qualifier; 
+although it maybe useful to make these entries match the "custom" version and the qualified one used with `mrb newDev ...'
+the important blocks of specifications are the following:
+product specs:
+   
+product          version
+art                  v2_06_03
+cetbuildtools  v5_06_07       -       only_for_build
+end_product_list
+
+NOTE: in one wants to use centrally installed public version of geant4, the version of your choice must be included in the products list, e.g.
+
+product          version
+art                  v2_06_03
+geant4           v4_10_3_p01
+cetbuildtools  v5_06_07       -       only_for_build
+end_product_list
+
+If you prefer to work with a custom (non-ups) build of geant4, it should be removed from the products list.
+
+NOTE: in principle, one can manually setup cetbuildtools but it is not necessary if it is listed in the product_deps which will be used later on by the `mrbsetenv'
+qualifiers
+qualifier       art                    notes
+e10:debug   e10:debug   
+e10:prof       e10:prof    
+end_qualifier_list
+
+NOTE: If one wishes to use a central install of geant4, it should also be included in the list, e.g.
+qualifier      art              geant4           notes
+e10:debug e10:debug  e10:debug
+e10:prof     e10:prof     e10:prof
+end_qualifier_list
+Now return to the $MRB_SOURCE/artg4tk/CMakeLists.txt; pay attention to the following directives:
+find_ups_product(cetbuildtools v5_06_07)
+find_ups_product(xerces_c v3_1_4a)
+find_ups_product(art v2_06_03)
+find_ups_product(canvas v1_06_04)
+find_ups_product(fhiclcpp v4_04_00)
+find_ups_product(messagefacility v1_18_04)
+
+Versions of art, xerces_c, cetbuildtools must match what one has setup and/or specified in the $MRB_SOURCE/ups/product_deps.
+If one uses central install of geant4, e.g. geant4_10_3_p01
+find_ups_product(geant4 v4_10_3_p01) 
+should also be in the CMakeLists.txt.
+Return to <name-of-your-artg4tk-work-area> ($MRB_SOURCE/..) and setup build/run environment
+cd $MRB_SOURCE/..
+source localProducts_artg4tk_v0_01_01_e10_prof/setup
+mrbsetenv 
+
+NOTE: `localProducts_artg4tk_v0_01_01_e10_prof' reflects the version number v0_01_01 and the e10:prof qualifier, as exemplified earlier.
+NOTE: mrbsetenv is an alias for `source ${MRB_DIR}/bin/mrbSetEnv'
+Build the package
+
+cd $MRB_BUILD
+mrb b
+
