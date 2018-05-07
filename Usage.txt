@@ -5,6 +5,8 @@ This document describes the software that is fairly new and is being actively de
 For this reason various pieces and bits may be somewhat incomplete and/or change frequently.
 We are making every effort to streamline and improve the documentation as we make progress with the software itself.
 
+Contact: julia.yarba@yahoo.com
+
 General information
 This document describes the development status, as of December 2017, of the software that allows to vary selected Geant4 model parameters and to study the effect on the physics outcome.
 
