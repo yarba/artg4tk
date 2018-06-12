@@ -19,16 +19,16 @@
 artg4tk::PhysicsListService::PhysicsListService(fhicl::ParameterSet const & p, art::ActivityRegistry &) :
   PhysicsListName_( p.get<std::string>("PhysicsListName","FTFP_BERT")),
   DumpList_( p.get<bool>("DumpList",true)),
-  enableNeutronLimit_(p.get<bool>("enableNeutronLimit",true)),  
+  enableNeutronLimit_(p.get<bool>("enableNeutronLimit",false)),  // in the "core" artg4tk D=true
   NeutronTimeLimit_(p.get<double>("NeutronTimeLimit",10.*microsecond)),
   NeutronKinELimit_(p.get<double>("NeutronKinELimit",0.0)),
-  enableStepLimit_(p.get<bool>("enableStepLimit",true)),  
-  enableOptical_(p.get<bool>("enableOptical",true)),
+  enableStepLimit_(p.get<bool>("enableStepLimit",false)), // in the "core" artg4tk D=true 
+  enableOptical_(p.get<bool>("enableOptical",false)),  // in the "core" artg4tk D=true
   enableCerenkov_( p.get<bool>("enableCerenkov",false)),  
   CerenkovStackPhotons_( p.get<bool>("CerenkovStackPhotons",false)),
   CerenkovMaxNumPhotons_(p.get<int>(" CerenkovMaxNumPhotons",100)),
   CerenkovMaxBetaChange_(p.get<double>("CerenkovMaxBetaChange",10.0)),
-  CerenkovTrackSecondariesFirst_( p.get<bool>("ScintillationTrackSecondariesFirst",false)),
+  CerenkovTrackSecondariesFirst_( p.get<bool>("CerenkovTrackSecondariesFirst",false)),
   enableScintillation_( p.get<bool>("enableScintillation",true)),
   ScintillationStackPhotons_( p.get<bool>("ScintillationStackPhotons",false)),
   ScintillationByParticleType_( p.get<bool>("ScintillationByParticleType",true)),

@@ -14,6 +14,9 @@
 // HDP (FTFP, etc,)
 #include "Geant4/G4HadronicDeveloperParameters.hh"
 //
+// EM 
+#include "Geant4/G4EmParameters.hh"
+//
 #include "Geant4/G4RunManager.hh"
 #include "Geant4/G4UImanager.hh"
 #include "Geant4/G4StateManager.hh"
@@ -51,25 +54,35 @@
 ModelConfigMapper::ModelConfigMapper()
 {
 
-   // models that have G4UI as of geant4.10.3-series
+   // HAD models that have G4UI as of geant4.10.3-series
    //
    fNameConvention.insert( std::pair<std::string,std::string>("bertini",    "cascade") );
    fNameConvention.insert( std::pair<std::string,std::string>("inclxx",     "inclxx" ) );
    fBaseCommand = "/process/had/";
    //
-   // model(s) that do not have G4UI but a C++ interface instead
+   // HAD model(s) that do not have G4UI but a C++ interface instead
    //
    fNameConvention.insert( std::pair<std::string,std::string>("precompound","PreCo_" ) );
    fNameConvention.insert( std::pair<std::string,std::string>("ftfp","FTF_" ) );
+   //
+   // EM models have both G4UI and C++ interfaces; we;ll go with the C++ one
+   //
+   fNameConvention.insert( std::pair<std::string,std::string>("msc","Msc_") );
    
+   // HAD
    FillBertiniDefaults();
    FillINCLXXDefaults();
    FillPreCompoundDefaults();
    FillFTFPDefaults();
+   // EM
+   FillEmMscDefaults();
 
+   // HAD
    FillConfigParamMapBertini();
    FillConfigParamMapPreCo();
    FillConfigParamMapFTFP();
+   // EM
+   FillConfigParamMapEmMsc();
 
 }
 
@@ -168,21 +181,43 @@ void ModelConfigMapper::SetVerbosity( const std::string& model, const bool& verb
 void ModelConfigMapper::ChangeParameter( const std::string& model, const std::string& param, const double& value, bool verb )
 {
    
-   // First of all, make sure physics list is NOT setup to the RunManager
+   std::string mod = model;
+   mod = ToLower(mod);
+
+   // First of all, check if physics list is or is NOT setup to the RunManager
+   // HAD models will need to get in BEFORE PhysList is instantiated
+   // EM modeels will need to get in AFTER the PhysList but BEFORE Init
    //
    if ( G4RunManager::GetRunManager() ) // check if it exists at all
    {
       if ( G4RunManager::GetRunManager()->GetUserPhysicsList() )
       {
-         // bail out with a warning
-	 // it's USELESS to change anything after a physics list is set to the run manager
-	 // because everything happens at the stage of physics list init (models ctor's)
-	 G4cout << " Physics list is already assigned to Run Manager " << G4endl;
-	 G4cout << " It is useless to change any model parameters since the changes will not propagate " << G4endl;
-	 return;
+         if ( mod == "bertini" || mod == "ftfp" || mod == "precompound" || mod == "inclxx" )
+	 {
+            // bail out with a warning
+	    // it's USELESS to change HAD parameters after a physics list is set to the run manager
+	    // because everything happens at the stage of physics list init (models ctor's)
+	    G4cout << " Physics list is already assigned to Run Manager " << G4endl;
+	    G4cout << " It is useless to change parameters of HADRONIC models since the changes will not propagate " << G4endl;
+	    return;
+         }
       }
-   
+      else
+      {
+         if ( mod.find( "msc" ) != std::string::npos )
+	 {
+	    // bail out with a warning
+	    // it's USELESS to change EM parameters before a physics list is instanciated
+	    // because all EM ctor's will override EM parameters with defailts
+	    G4cout << " Physics list does not seem to exists " << G4endl;
+	    G4cout << " It is useless to change parameters of ELECTROMAGNETIC models " << G4endl;
+	    G4cout << " since changes are always overriden with defaults with EM constructors (modular phys.lists)" << G4endl;
+	 }
+      }
    }
+   
+   std::cout << " Now changing parameter " << param << " to the new value = " << value << std::endl;
+   
    
    // FIXME !!!
    // Technically speaking, one needs to check if a(ny) physics list is already created
@@ -191,9 +226,6 @@ void ModelConfigMapper::ChangeParameter( const std::string& model, const std::st
    // NOT propagate to the guts of the model
    // Although we might want to check if it's the physics list ctor or its init...
    
-
-   std::string mod = model;
-   mod = ToLower(mod);
 
    if ( mod == "bertini" || mod == "inclcxx" )
    {
@@ -206,6 +238,10 @@ void ModelConfigMapper::ChangeParameter( const std::string& model, const std::st
    else if ( mod.find( "ftfp" ) != std::string::npos )
    {
       ChangeParameterFTFP( param, value, verb );
+   }
+   else if ( mod.find( "msc" ) != std::string::npos )
+   {
+      ChangeParameterEmMsc( param, value, verb );
    }
    
    return;
@@ -279,7 +315,6 @@ void ModelConfigMapper::ChangeParameterByRatio( const std::string& model, const 
       G4cout << " Can NOT find defaults for model " << model << "(" << mod <<")" << G4endl;
       return;
    }
-   
    
    std::map<std::string,std::string>::iterator itr3=(itr2->second).find(itr1->first);
    
@@ -1023,6 +1058,83 @@ RELEASE LATER !!! */
 
 }
 
+void ModelConfigMapper::FillEmMscDefaults()
+{
+
+   G4EmParameters* emparams = G4EmParameters::Instance();
+   emparams->SetDefaults();
+
+   fDEFAULTS.insert( std::pair< std::string, std::map<std::string,std::string> >( "msc", 
+                                                                                  std::map<std::string,std::string>() ) );
+
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr2=fDEFAULTS.find("msc");
+   
+   std::ostringstream cmd;
+
+   cmd << emparams->LateralDisplacement(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("uselateraldisplacement",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   cmd << emparams->MuHadLateralDisplacement(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("usemuhadlateraldisplacement",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   cmd << emparams->LatDisplacementBeyondSafety(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("usedisplacementbeyondsafety",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << emparams->UseMottCorrection(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("usemottcorrection",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << emparams->BirksActive(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("usebirkssaturation",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << emparams->FactorForAngleLimit(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("factorforanglelimit",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << emparams->MscThetaLimit(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("thetalimit",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << emparams->MscRangeFactor(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("elerangefactor",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << emparams->MscMuHadRangeFactor(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("muhadrangefactor",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << emparams->MscGeomFactor(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("geomfactor",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << emparams->MscSkin(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("skin",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   cmd << emparams->ScreeningFactor(); 
+   (itr2->second).insert( std::pair<std::string,std::string>("screeningfactor",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   return;
+
+}
+
 void ModelConfigMapper::FillConfigParamMapBertini()
 {
 
@@ -1186,6 +1298,30 @@ RELEASE LATER !!! */
    (itr->second).insert( std::pair<std::string,std::string>("baryon_exci_e_per_wndnucln","BARYON_EXCI_E_PER_WNDNUCLN") );
    (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_dof",       "BARYON_NUCDESTR_DOF") );
 
+   return;
+
+}
+
+void ModelConfigMapper::FillConfigParamMapEmMsc()
+{
+
+   fConfigParameters.insert( std::pair< std::string, std::map<std::string,std::string> >( "msc", std::map<std::string,std::string>() ) );
+   
+   std::map< std::string, std::map<std::string,std::string> >::iterator itr=fConfigParameters.find("msc");
+
+   (itr->second).insert( std::pair<std::string,std::string>("uselateraldisplacement","UseLateralDisplacement") );
+   (itr->second).insert( std::pair<std::string,std::string>("usemuhadlateraldisplacement","UseMuHadLateralDisplacement") );
+   (itr->second).insert( std::pair<std::string,std::string>("usedisplacementbeyondsafety","UseDisplacementBeyondSafety") );
+   (itr->second).insert( std::pair<std::string,std::string>("usemottcorrection","UseMottCorrection") );
+   (itr->second).insert( std::pair<std::string,std::string>("usebirkssaturation","UseBirksSaturation") );
+   (itr->second).insert( std::pair<std::string,std::string>("factorforanglelimit","FactorForAngleLimit") );
+   (itr->second).insert( std::pair<std::string,std::string>("thetalimit","ThetaLimit") );
+   (itr->second).insert( std::pair<std::string,std::string>("elerangefactor","EleRangeFactor") );
+   (itr->second).insert( std::pair<std::string,std::string>("muhadrangefactor","MuHadRangeFactor") );
+   (itr->second).insert( std::pair<std::string,std::string>("geomfactor","GeomFactor") );
+   (itr->second).insert( std::pair<std::string,std::string>("skin","Skin") );
+   (itr->second).insert( std::pair<std::string,std::string>("screeningfactor","ScreeningFactor") );
+   
    return;
 
 }
@@ -1548,3 +1684,70 @@ void ModelConfigMapper::ChangeParameterFTFP( const std::string& pname, const dou
 
 }
 
+void ModelConfigMapper::ChangeParameterEmMsc( const std::string& param, const double& value, bool verb )
+{
+
+   std::string par = param;
+   par = ToLower(par);
+
+   G4EmParameters* emparams = G4EmParameters::Instance();
+
+   bool value_asbool = false;
+   if ( value > 0. ) value_asbool = true;
+
+   if ( par == "uselateraldisplacement" )
+   {
+      std::cout << " current value of " << param << " = " << emparams->LateralDisplacement() << std::endl;
+      emparams->SetLateralDisplacement( value_asbool );
+      std::cout << " new value of " << param << " = " << emparams->LateralDisplacement() << std::endl;
+   }
+   else if ( par == "usemuhadlateraldisplacement" )
+   {
+      std::cout << " current value of " << param << " = " << emparams->MuHadLateralDisplacement() << std::endl;
+      emparams->SetMuHadLateralDisplacement( value_asbool );
+      std::cout << " new value of " << param << " = " << emparams->MuHadLateralDisplacement() << std::endl;
+   }
+   else if ( par == "usedisplacementbeyondsafety" )
+   {
+      emparams->SetLatDisplacementBeyondSafety( value_asbool );
+   }
+   else if ( par == "usemottcorrection" )
+   {
+    emparams->SetUseMottCorrection( value_asbool );
+   }
+   else if ( par == "usebirkssaturation" )
+   {
+      emparams->SetBirksActive( value_asbool );
+   }
+   else if ( par == "factorforanglelimit" )
+   {
+      emparams->SetFactorForAngleLimit( value );
+   }
+   else if ( par == "thetalimit" )
+   {
+      emparams->SetMscThetaLimit( value );
+   }
+   else if ( par == "elerangefactor" )
+   { 
+      emparams->SetMscRangeFactor( value );
+   }
+   else if ( par == "muhadrangefactor" )
+   {
+      emparams->SetMscMuHadRangeFactor( value );
+   }
+   else if ( par == "geomfactor" )
+   {
+      emparams->SetMscGeomFactor( value );
+   }
+   else if ( par == "skin" )
+   {
+      emparams->SetMscSkin( value );
+   }
+   else if ( par == "screeningfactor" )
+   {
+      emparams->SetScreeningFactor( value );
+   }
+
+   return;
+
+}

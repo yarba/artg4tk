@@ -24,7 +24,7 @@ class PhysModelConfigService
    
       // ctor & dtor
       //
-      // NOTE: the ctor MUST have these 2 inpur args; 
+      // NOTE: the ctor MUST have these 2 input args; 
       //       otherwise the system will NOT register it as a "service"
       // 
       PhysModelConfigService( const fhicl::ParameterSet&, art::ActivityRegistry& );

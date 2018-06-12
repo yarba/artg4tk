@@ -94,6 +94,10 @@ physics: {
 	      usePreCompound: 1
 	   }
 	}
+	ElectromagneticModelParameters:
+	{
+	   DefaultPhysics: true
+	}
      }
 
   }

@@ -42,23 +42,37 @@ class ModelConfigMapper
    
       // private member functions
       //
+      // HAD models
+      //
       void FillBertiniDefaults();
       void FillINCLXXDefaults();
       void FillPreCompoundDefaults();
       void FillFTFPDefaults();     
       // etc. in the future...
+      //
+      // EM models
+      //
+      void FillEmMscDefaults();
+      //
+      // HAD models
       void FillConfigParamMapBertini();
       void FillConfigParamMapPreCo();
       void FillConfigParamMapFTFP();
+      //
+      // EM models
+      //
+      void FillConfigParamMapEmMsc();
       //
       void PrintBertiniSettings();
       void PrintINCLXXSettings();
       void PrintPreCompoundSettings();
       void PrintFTFPSettings();
+      void PrintEmMscSettings();
       //
       void ChangeParameterViaG4UI( const std::string&, const std::string&, const double&, bool verb=false );
       void ChangeParameterPreCo( const std::string&, const double&, bool verb=false );
-      void ChangeParameterFTFP( const std::string&, const double&, bool verb=false );    
+      void ChangeParameterFTFP( const std::string&, const double&, bool verb=false );
+      void ChangeParameterEmMsc( const std::string&, const double&, bool verb=false );    
       
       // data members
       //

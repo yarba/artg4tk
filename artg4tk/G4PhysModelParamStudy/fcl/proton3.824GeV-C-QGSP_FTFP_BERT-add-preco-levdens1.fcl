@@ -1,9 +1,11 @@
-process_name:processA
+process_name:processC
 
 source: 
 {
-  module_type: EmptyEvent
-  maxEvents:   250000
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "Evt-proton3.284GeV-C-Bertini-PreCo.root" ]
+
 }
 
 services: 
@@ -29,7 +31,7 @@ services:
 
    TFileService :
    {
-      fileName: "proton3.824GeV-C-G4Default_IAEA.root"
+      fileName: "proton3.824GeV-C-QGSP_FTFP_BERT-Bertini-PreCo-Variants_IAEA.root"
    }
 
    RandomNumberGenerator: {}
@@ -51,17 +53,17 @@ services:
      
    PhysModelConfig: 
    {
-//        Verbosity: true
+        Verbosity: true
    }      
 
 }
 
 outputs: 
 {
-   outA: 
+   outC: 
    {
       module_type: RootOutput   
-      fileName: "Evt-proton3.284GeV-C-G4Default.root"
+      fileName: "Evt-proton3.284GeV-C-Bertini-PreCo-AddLevDens1.root"
    }
 }
 
@@ -69,15 +71,7 @@ physics: {
 
   producers: 
   {
-
-     PrimaryGenerator:
-     {
-        module_type: EventGenerator
-	nparticles : 1
-	momentum: [ 0., 0., 3.824 ] // in GeV (this corresponds to beam ekin=3GeV)
-     }
-
-     G4Default:
+     G4BertiniPreCoLevDens1:
      {
         module_type: ModelParamStudyProducer
 	//
@@ -88,13 +82,28 @@ physics: {
 	//
 	errorOnFailureToPut: false
 	//
-        RNDMSeed: 12345
+        RNDMSeed: 45123
 	//	
 	Verbosity: 0
 	//
 	HadronicModelParameters:
 	{
-	   DefaultPhysics: true
+	   DefaultPhysics: false
+	   Bertini:
+	   {
+	      usePreCompound: 1
+//              UnderlyingModels:
+//              {
+//                 PreCompound:
+//                 {
+//                    LevelDensity: 1. // in the units of (1./MeV)
+//                 }
+//              }
+	   }
+	   PreCompound:
+	   {
+	      LevelDensity: 1. // in the units of (1./MeV)
+	   }
 	}
 	ElectromagneticModelParameters:
 	{
@@ -103,7 +112,7 @@ physics: {
      }
 
   }
-  
+
   analyzers:
   {
   
@@ -112,21 +121,32 @@ physics: {
         module_type: AnalyzerIAEA
 	ProductLabel: "G4Default"
      }
-  
-  }
-  
-  path1:   [ PrimaryGenerator, G4Default ] 
-  path2:   [ G4DefaultIAEA  ]
-  stream1: [ outA ]
 
-  trigger_paths: [ path1 ]
+     G4BertiniPreCoIAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniPreCo"
+     }
+  
+     G4BertiniPreCoLevDens1IAEA:
+     {
+        module_type: AnalyzerIAEA
+	ProductLabel: "G4BertiniPreCoLevDens1"
+     }
+
+  }
+
+  pathC:   [ G4BertiniPreCoLevDens1 ] 
+  pathC2:  [ G4DefaultIAEA, G4BertiniPreCoIAEA, G4BertiniPreCoLevDens1IAEA ]
+  streamC: [ outC ]
+
+  trigger_paths: [ pathC ]
   //
   // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
   //       Otherwise, they will NOT be included in the exec.
   //       If you don't have an end_path, things will magically work though... 
   //        
-  end_paths:     [ path2, stream1 ]
-//  end_paths:     [ stream1 ]
-
+  end_paths:     [ pathC2, streamC ]
 
 }
+

@@ -74,7 +74,11 @@ namespace artg4tk {
     //
     // data members specifically to study parameters modification
     //
-    bool                           fDefaultPhysics;
+    fhicl::ParameterSet            fHADParamsCfg;
+    fhicl::ParameterSet            fEMParamsCfg;
+    // --> for future --> fhicl::ParameterSet            fGeneralParamsCfg;
+    bool                           fHADDefaultPhysics;
+    bool                           fEMDefaultPhysics;
 
     // This one is needed since we'll have to insert 
     // model(s) config info as a RunProduct (in beginRun(...))
@@ -117,6 +121,7 @@ artg4tk::ModelParamStudyProducer::ModelParamStudyProducer( const fhicl::Paramete
    fRM              = new G4RunManager();
 */
    
+/* MOVE IT beginRun()
    // CRITICAL !!!
    // Model(s) (or at least Bertini) config/params should be in BEFORE
    // Physics List is instantiated/initialized !!!
@@ -138,6 +143,13 @@ artg4tk::ModelParamStudyProducer::ModelParamStudyProducer( const fhicl::Paramete
       // if ( !modelcfg.is_empty() ) physcfgservice->ConfigureModel("INCLXX",modelcfg);
       // Etc.
    }
+*/
+
+   // TRACKED PSet(s) - outputs with different settings will NOT mix
+   //
+   fHADParamsCfg = p.get<fhicl::ParameterSet>("HadronicModelParameters");
+   fEMParamsCfg = p.get<fhicl::ParameterSet>("ElectromagneticModelParameters");
+   // --> for future --> fGeneralParamsCfg = p.get<fhicl::ParameterSet>("GeneralParameters");
 
    //
    // NOTE(JVY): This is needed when doing geom via GDML
@@ -166,7 +178,7 @@ artg4tk::ModelParamStudyProducer::ModelParamStudyProducer( const fhicl::Paramete
    //
    produces<ArtG4tkModelConfig,art::InRun>();
    
-   // NOTE(JVY): This is consideted a "hit by sens.det" so 
+   // NOTE(JVY): This is considered a "hit by sens.det" so 
    //            it has moved to GDMLDetectorService  
    //
 // ->   produces<ArtG4tkVtx>();
@@ -203,7 +215,35 @@ void artg4tk::ModelParamStudyProducer::beginJob()
 void artg4tk::ModelParamStudyProducer::beginRun( art::Run& run )
 {  
    
-   // Get the run manager and check if it's been initialized in any way
+   fHADDefaultPhysics = fHADParamsCfg.get<bool>("DefaultPhysics"); // make it TRACKED !!!
+   fEMDefaultPhysics = fEMParamsCfg.get<bool>("DefaultPhysics"); // make it TRACKED !!!
+
+   bool isdefault = ( fHADDefaultPhysics && fEMDefaultPhysics );
+   fModelConfig = new ArtG4tkModelConfig(isdefault);
+   
+   art::ServiceHandle<PhysModelConfigService> physcfgservice;
+
+   // CRITICAL !!!
+   // Model(s) (or at least Bertini) config/params should be in BEFORE
+   // Physics List is instantiated/initialized !!!
+   //
+   if ( !fHADDefaultPhysics )
+   {
+      fModelConfig->Fill( fHADParamsCfg );
+      std::vector<std::string> keys = fHADParamsCfg.get_names();
+      for ( unsigned int i=0; i<keys.size(); ++i )
+      {
+         std::string thekey = keys[i];
+	 if ( thekey == "DefaultPhysics" ) continue;
+         // fhicl::ParameterSet modelcfg = fHADParamsCfg.get<fhicl::ParameterSet>("Bertini");
+         // if ( !modelcfg.is_empty() ) physcfgservice->ConfigureModel("Bertini",modelcfg);
+         fhicl::ParameterSet modelcfg = fHADParamsCfg.get<fhicl::ParameterSet>(thekey);
+         if ( !modelcfg.is_empty() ) physcfgservice->ConfigureModel(thekey,modelcfg);
+      }
+   }
+
+   // Get the run manager; maybe we should check if it's been initialized
+   // (although in this particular scenario that'd absurd...)
    // NOTE-1: attempt to call the ctor more than once will result
    //         in a fatal throw on the G4 side (in the ctor itself)
    // NOTE-2: attempt to call G4RunManager::GetRunManager() BEFORE
@@ -222,6 +262,20 @@ void artg4tk::ModelParamStudyProducer::beginRun( art::Run& run )
    fRM->SetUserInitialization( new ArtG4DetectorConstruction() ); // this GDML-related - will retrieve from detholder, etc.
 
    fRM->GeometryHasBeenModified();
+   
+   // !!!!! --> here will go EM parameters, general parameters, etc. !!!!!
+   if ( !fEMDefaultPhysics )
+   {
+      fModelConfig->Fill( fEMParamsCfg );
+      std::vector<std::string> keys = fEMParamsCfg.get_names();
+      for ( unsigned int i=0; i<keys.size(); ++i )
+      {
+         std::string thekey = keys[i];
+	 if ( thekey == "DefaultPhysics" ) continue;
+         fhicl::ParameterSet modelcfg = fEMParamsCfg.get<fhicl::ParameterSet>(thekey);
+         if ( !modelcfg.is_empty() ) physcfgservice->ConfigureModel(thekey,modelcfg);
+      }
+   }
 
    // inits
    //

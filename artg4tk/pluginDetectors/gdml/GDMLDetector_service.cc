@@ -307,11 +307,11 @@ void artg4tk::GDMLDetectorService::doFillEventWithArtHits(G4HCofThisEvent * myHC
     //            NO BUSINESS with G4HCofThisEvent !!!
     //
     std::vector<std::pair<std::string, std::string> >::const_iterator cii;
-    std::cout<<"****************Detectorlist size:  "<< DetectorList.size()<<std::endl;
+    // --> TOO VERBOSE --> std::cout<<"****************Detectorlist size:  "<< DetectorList.size()<<std::endl;
     for (cii = DetectorList.begin(); cii != DetectorList.end(); cii++) 
     {
        std::string sdname = (*cii).first + "_" + (*cii).second;
-       std::cout<<"****************SDNAME:"<< sdname<<std::endl;
+       // --> TOO VERBOSE --> std::cout<<"****************SDNAME:"<< sdname<<std::endl;
        if ( (*cii).second == "HadInteraction" )
        {
 	  G4SDManager* sdman = G4SDManager::GetSDMpointer();
