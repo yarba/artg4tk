@@ -59,8 +59,6 @@ void artg4tk::PhysModelConfigService::PrintDefaultSettings()
 void artg4tk::PhysModelConfigService::ConfigureModel( const std::string& mname, 
                                                       const fhicl::ParameterSet& mpset )
 {
-
-   std::cout << " Entering PhysModelConfigService::ConfigureModel for " << mname << std::endl;
    
    // NOTE (JVY): This logic assumes that the model's verbosity key with within the model config.
    //             This is the case when using a physics list where multiple models can be configured.

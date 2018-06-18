@@ -90,6 +90,10 @@ physics: {
 	      XSecScaleByRatio: 0.1 
 	   }
 	}
+	ElectromagneticModelParameters:
+	{
+	   DefaultPhysics: true
+	}
      }
 
   }

@@ -89,6 +89,10 @@ physics: {
 	   {
 	      RadiusScaleByRatio: 0.3546 // this brings RScale down to 1.
 	   }
+	   ElectromagneticModelParameters:
+	   {
+	      DefaultPhysics: true
+	   }
 	}
      }
 

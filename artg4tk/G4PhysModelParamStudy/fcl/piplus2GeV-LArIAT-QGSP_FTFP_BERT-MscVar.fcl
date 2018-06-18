@@ -3,7 +3,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:   1
+  maxEvents:   50000
 }
 
 services: 
@@ -101,7 +101,7 @@ physics: {
 	   DefaultPhysics: false
 	   Msc:
 	   {
-	      UseMuHadLateralDisplacement: 0
+	      // UseMuHadLateralDisplacement: 0 // is G4 default 0 or 1 ???
 	      UseLateralDisplacement: 0
 	   }
 	}

@@ -50,6 +50,16 @@
 // FTF Notes: coming shortly...
 //
 
+// General NOTE (JVY) re the infrastructure of this SW component:
+// The original decision of the underlying infrastructure (maps of strings
+// or maps of containers of strings) has been largely driven by the Bertini 
+// configuration interface which is based on G4UI (no C++ interface).
+// It involves a number of conversions of strings to double/int back and forth
+// which, in general, is not an ideal thing to do.
+// As of 10.4-series, other configurable models, such as FTF, PreCompound, 
+// or models in the EM domain, all have C++ configuration interface (EM has both).
+// Potentially, current infrastructure may be revisited and updated. 
+//
 
 ModelConfigMapper::ModelConfigMapper()
 {
@@ -215,8 +225,6 @@ void ModelConfigMapper::ChangeParameter( const std::string& model, const std::st
 	 }
       }
    }
-   
-   std::cout << " Now changing parameter " << param << " to the new value = " << value << std::endl;
    
    
    // FIXME !!!
@@ -1697,15 +1705,11 @@ void ModelConfigMapper::ChangeParameterEmMsc( const std::string& param, const do
 
    if ( par == "uselateraldisplacement" )
    {
-      std::cout << " current value of " << param << " = " << emparams->LateralDisplacement() << std::endl;
       emparams->SetLateralDisplacement( value_asbool );
-      std::cout << " new value of " << param << " = " << emparams->LateralDisplacement() << std::endl;
    }
    else if ( par == "usemuhadlateraldisplacement" )
    {
-      std::cout << " current value of " << param << " = " << emparams->MuHadLateralDisplacement() << std::endl;
       emparams->SetMuHadLateralDisplacement( value_asbool );
-      std::cout << " new value of " << param << " = " << emparams->MuHadLateralDisplacement() << std::endl;
    }
    else if ( par == "usedisplacementbeyondsafety" )
    {

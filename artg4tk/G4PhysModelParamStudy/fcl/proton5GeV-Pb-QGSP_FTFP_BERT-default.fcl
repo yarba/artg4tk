@@ -96,6 +96,10 @@ physics: {
 	{
 	   DefaultPhysics: true
 	}
+	ElectromagneticModelParameters:
+	{
+	   DefaultPhysics: true
+	}
      }
 
   }

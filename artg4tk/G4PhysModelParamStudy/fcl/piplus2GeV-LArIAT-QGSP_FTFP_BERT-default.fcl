@@ -3,7 +3,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:   100000
+  maxEvents:   50000
 }
 
 services: 
@@ -99,6 +99,13 @@ physics: {
 	ElectromagneticModelParameters:
 	{
 	   DefaultPhysics: true
+// below is an example of turning some of the EM parameters
+//	   DefaultPhysics: false
+//	   Msc:
+//	   {
+//	      UseMuHadLateralDisplacement: 1 // D=0
+//	      UseLateralDisplacement: 0  // D=1
+//	   }
 	}
      }
 

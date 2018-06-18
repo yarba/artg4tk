@@ -90,6 +90,10 @@ physics: {
 	      RadiusScaleByRatio: 0.75
 	   }
 	}
+	ElectromagneticModelParameters:
+	{
+	   DefaultPhysics: true
+	}
      }
 
   }

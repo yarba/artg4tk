@@ -92,13 +92,6 @@ physics: {
 	   Bertini:
 	   {
 	      usePreCompound: 1
-//              UnderlyingModels:
-//              {
-//                 PreCompound:
-//                 {
-//                    LevelDensity: 1. // in the units of (1./MeV)
-//                 }
-//              }
 	   }
 	   PreCompound:
 	   {
