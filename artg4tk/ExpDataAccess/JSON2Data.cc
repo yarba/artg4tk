@@ -509,13 +509,22 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
 
    // get "central values"
    //
+   // NOTE: some of the (HARP) data got in with zero's in the rightmost bins
+   //       so break on the 1st zero-point, and update nbins accordingly
+   //
    int cnt = 0;
    BOOST_FOREACH( ptree::value_type &v, pt.get_child("datatable.val") )
    {
       cv[cnt] = atof( v.second.data().c_str() );
+      if ( cv[cnt] < 1.e-10 ) 
+      {
+         nbins = cnt;
+	 break;
+      }
       cnt++;
       if ( cnt >= nbins ) break; 
    }
+   nbins = cnt;
    
    // get binning (x-axis, etc...)
    //
@@ -560,7 +569,7 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
    cnt = 0;
    BOOST_FOREACH( ptree::value_type& v, pt.get_child("datatable.errSysMinus") )
    {
-      esys[cnt] = atof( v.second.data().c_str() );
+      esys[cnt] = atof( v.second.data().c_str() );      
       cnt++;
       if ( cnt >= nbins ) break;
    }
@@ -588,8 +597,14 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
    {
       axtitle.push_back( v.second.data() );
    }
+   
+   double* xx_nonzero = new double[nbins+1];
+   for ( int i=0; i<=nbins; ++i )
+   {
+      xx_nonzero[i] = xx[i] ;
+   }
 
-   fHisto = new TH1D( hname, gtitle.c_str(), nbins, xx );
+   fHisto = new TH1D( hname, gtitle.c_str(), nbins, xx_nonzero );
    fHisto->GetXaxis()->SetTitle( axtitle[0].c_str() );
    fHisto->GetYaxis()->SetTitle( axtitle[1].c_str() );
    
@@ -604,6 +619,7 @@ TH1D* JSON2Data::Convert2Histo( const std::string& jstr, const char* hname )
    delete [] esys;
    delete [] etot;
    delete [] xx;
+   delete [] xx_nonzero;
    
    return fHisto;
 
@@ -764,15 +780,29 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr, const char* grn
       if ( cnt >= 2*nbins ) break;
    }
 
+   // check if there're zero-bins
+   //
+   for ( int i=0; i<nbins; ++i )
+   {
+      if ( cv[i] < 1.e-10 )
+      {
+         nbins = i;
+	 break;
+      }
+   } 
+   
+   double* xx_nonzero = new double[nbins];
+   double* cv_nonzero = new double[nbins];
    double* etot = new double[ nbins ];
    
    for ( int i=0; i<nbins; ++i )
    {
+      xx_nonzero[i] = xx[i];
+      cv_nonzero[i] = cv[i];
       etot[i] = sqrt( estat[i]*estat[i] + esys[i]*esys[i] );
    }
    
-   fGraph = new TGraphErrors( nbins, xx, cv, 0, etot );
-   
+   fGraph = new TGraphErrors( nbins, xx_nonzero, cv_nonzero, 0, etot );
    
    std::string gtitle = pt.get<std::string>( "datatable.title" );
    fGraph->SetTitle( gtitle.c_str() );
@@ -792,6 +822,8 @@ TGraphErrors* JSON2Data::Convert2Graph( const std::string& jstr, const char* grn
    delete [] esys;
    delete [] etot;
    delete [] xx;
+   delete [] xx_nonzero;
+   delete [] cv_nonzero;
 
    return fGraph;   
 

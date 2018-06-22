@@ -179,21 +179,6 @@ void artg4tk::AnalyzerITEP::beginJob()
          
    std::string name = "";
    std::string title = ""; // FIXME LATER !!!
-
-/*   
-   std::cout << " ====== CROSS-CHECKS ====== " << std::endl;
-   std::cout << " fNumProtonKEBins = " << fNumProtonKEBins << std::endl;
-   for ( int i=0; i<=fNumProtonKEBins; ++i )
-   {
-      std::cout << " fProtonKEBins[" << i << "] = " << fProtonKEBins[i] << std::endl; 
-   }
-   std::cout << " fNumNeutronKEBins = " << fNumNeutronKEBins << std::endl;
-   for ( int i=0; i<=fNumNeutronKEBins; ++i )
-   {
-      std::cout << " fNeutronKEBins[" << i << "] = " << fNeutronKEBins[i] << std::endl; 
-   }
-   std::cout << " =========================== " << std::endl;
-*/   
    
    for ( size_t ith=0; ith<fThetaCBin.size(); ++ith )
    {
@@ -206,16 +191,17 @@ void artg4tk::AnalyzerITEP::beginJob()
       title = "theta=" + tmp.str();
       title += " [deg]";
 
-      name = "proton_at_";
+      name = "tmp_proton_at_";
       name += tmp.str();
       name += "deg";
-      fProtonKE.push_back( tfs->make<TH1D>( name.c_str(), title.c_str(), fNumProtonKEBins, fProtonKEBins ) );
+      // fProtonKE.push_back( tfs->make<TH1D>( name.c_str(), title.c_str(), fNumProtonKEBins, fProtonKEBins ) );
+      fProtonKE.push_back( new TH1D( name.c_str(), title.c_str(), 500, 0., 0.5 ) );
       
-      name = "neutron_at_";
+      name = "tmp_neutron_at_";
       name += tmp.str();
-      name += "deg";
-      
-      fNeutronKE.push_back( tfs->make<TH1D>( name.c_str(), title.c_str(), fNumNeutronKEBins, fNeutronKEBins ) ); 
+      name += "deg";      
+      // fNeutronKE.push_back( tfs->make<TH1D>( name.c_str(), title.c_str(), fNumNeutronKEBins, fNeutronKEBins ) ); 
+      fNeutronKE.push_back( new TH1D( name.c_str(), title.c_str(), 500, 0., 0.5 ) ); 
 
    } 
    
@@ -283,19 +269,15 @@ void artg4tk::AnalyzerITEP::endJob()
    scale = 1. / (xbin*norm);
    fNSec->Scale( scale ) ;
    
-   // NOTE: no need to Write each histo as TFileService will do it   
+   // NOTE: no need to Write each histo that's already in TFileService
+   //       since TFileService will do it   
 
-   for ( size_t i=0; i<fProtonKE.size(); ++i )
-   {
-      scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*fDeltaCosTheta[i] );
-      fProtonKE[i]->Scale( scale, "width" );
-   }
-   for ( size_t i=0; i<fNeutronKE.size(); ++i )
-   {
-      scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*fDeltaCosTheta[i] );
-      fNeutronKE[i]->Scale( scale, "width" );
-   }
-
+   // NOTE: in practice we do NOT look into cos(th) distributions 
+   //        in different bins of EKin...
+   //        ... although maybe we should ? 
+   //        need to double check if we have data for those
+   //        all in all, those, we just do through TFileService right away
+   // 
    for ( size_t i=0; i<fProtonCT.size(); ++i )
    {
       scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*(fProtonKEBins[i+1]-fProtonKEBins[i]) );
@@ -307,13 +289,23 @@ void artg4tk::AnalyzerITEP::endJob()
       fNeutronCT[i]->Scale( scale, "width" );
    }
    
+   // OK, now the part taht we surely have data for
+   //
+   
    if ( fIncludeExpData )
    {
       
-      // NOTE: Maybe this fragment can move to the base class.
-      //       We may re-scale MC histograms, etc., but the matching
-      //       operates on pointers, and those don't change...
-      
+      for ( size_t i=0; i<fProtonKE.size(); ++i )
+      {
+         scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*fDeltaCosTheta[i] );
+         fProtonKE[i]->Scale( scale );
+      }
+      for ( size_t i=0; i<fNeutronKE.size(); ++i )
+      {
+         scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*fDeltaCosTheta[i] );
+         fNeutronKE[i]->Scale( scale );
+      }
+            
       bool ok = matchVDBRec2MC( fBTConf.GetBeamPartID(),
                                 fBTConf.GetBeamMomentum(),
 				fBTConf.GetTargetID() );
@@ -323,9 +315,73 @@ void artg4tk::AnalyzerITEP::endJob()
 	 return;
       }
       
+      std::vector< std::pair<int,TH1*> >::iterator itr; 
+
+      // find and mark up unmatched MC histos (if any); 
+      // create copies to be written to the Root output file
+      // 
+      size_t ih = 0;
+      for ( size_t i=0; i<fProtonKE.size(); ++i )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fProtonKE[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) 
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fProtonKE[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }         
+      }
+      ih = 0;
+      for ( size_t i=0; i<fNeutronKE.size(); ++i )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fNeutronKE[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) 
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fNeutronKE[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }         
+      }
+      
+      // now those MC's that are matched to exp.data
+      //
+      rebinMC2Data( "tmp_" );
+      
+      // and finally scale each histo to the momentum bin size
+      // NOTE: scaling to XSec, stat, and theta-bin is done earlier
+      //
+      for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+      {
+         (itr->second)->Scale( 1., "width" );
+      }
+      
       calculateChi2();
       overlayDataMC();
       
+   }
+   else
+   {
+      // no matching vs data
+      //
+       
+      for ( size_t i=0; i<fProtonKE.size(); ++i )
+      {
+         TH1D* h = copyHisto2TFS( fProtonKE[i], "tmp_" );
+	 scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*fDeltaCosTheta[i] );
+         h->Scale( scale, "width" );
+      }
+      for ( size_t i=0; i<fNeutronKE.size(); ++i )
+      {
+         TH1D* h = copyHisto2TFS( fNeutronKE[i], "tmp_" );
+	 scale = fXSecOnTarget / ( norm * 2.*CLHEP::pi*fDeltaCosTheta[i] );
+         h->Scale( scale, "width" );
+      }
    }
 
    return;

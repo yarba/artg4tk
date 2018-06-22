@@ -16,14 +16,11 @@ cmake_minimum_required (VERSION 3.7)
 project(artg4tk)
 
 # cetbuildtools contains our cmake modules
-SET ( CETBUILDTOOLS_VERSION $ENV{CETBUILDTOOLS_VERSION} )
-IF (NOT CETBUILDTOOLS_VERSION)
-MESSAGE (FATAL_ERROR "ERROR: setup cetbuildtools to get the cmake modules")
-ENDIF()
+find_package(cetbuildtools REQUIRED)
 
-set(CMAKE_MODULE_PATH $ENV{CANVAS_DIR}/Modules $ENV{CANVAS_DIR}/Modules
-$ENV{CETBUILDTOOLS_DIR}/Modules
-${CMAKE_MODULE_PATH})
+list(APPEND CMAKE_MODULE_PATH
+  $ENV{CANVAS_ROOT_IO_DIR}/Modules
+  $ENV{ART_DIR}/Modules)
 
 include(CetCMakeEnv)
 cet_cmake_env()
@@ -31,33 +28,33 @@ cet_cmake_env()
 #set_install_root()
 
 
-if ( ${APPLE} )
 cet_set_compiler_flags(DIAGS CAUTIOUS
 WERROR
 EXTRA_FLAGS -pedantic
-
 )
-else()
-cet_set_compiler_flags(DIAGS CAUTIOUS
-WERROR
-EXTRA_FLAGS -pedantic
-
-)
-endif()
 
 cet_report_compiler_flags()
 
 # Locate some UPS areas (the versions are just minimum required) and setup include paths
 # These are needed for Art stuff
 
-find_ups_product(cetbuildtools v7_00_02)
+# We need xerces_c for a geant library
+# find_library( XERCESCLIB  NAMES xerces-c PATHS $ENV{XERCESCROOT}/lib NO_DEFAULT_PATH )
+#
+# OK, now there's a better way to find xerces_c libraries...
+find_ups_product(xerces_c)
+find_ups_product(art)
+find_ups_product(canvas)
+find_ups_product(fhiclcpp)
+find_ups_product(messagefacility)
+find_ups_product(larcoreobj)
 #
 set( G4INSTALL $ENV{G4INSTALL} )
 #
 IF (NOT G4INSTALL) 
 # FIXME: this will need to be updated !!!
 MESSAGE ( STATUS "Looking for UPS product geant4" )
-find_ups_geant4(v4_10_4)
+find_ups_geant4()
 #
 # Enable visualization using OpenGL in x windows
 #
@@ -149,15 +146,6 @@ MESSAGE ( STATUS "OpenGL option disabled" )
 ENDIF()
 
 ENDIF()
-#
-find_ups_product(xerces_c v3_2_0)
-find_ups_product(art v2_10_03)
-find_ups_product(canvas v3_02_02)
-find_ups_product(fhiclcpp v4_06_05)
-find_ups_product(messagefacility v2_01_06)
-find_ups_product(larcoreobj v1_22_00)
-# We need xerces_c for a geant library
-#find_library( XERCESCLIB  NAMES xerces-c PATHS $ENV{XERCESCROOT}/lib NO_DEFAULT_PATH )
 
 # macros for dictionary and simple_plugin
 include(ArtDictionary)

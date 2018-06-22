@@ -93,7 +93,40 @@ artg4tk::AnalyzerHARP::~AnalyzerHARP()
 {
    // do I need any histos delete's here ?!
    // or will TFileService take care of that ?!?!
-   
+   //
+   // if I make histos tmp/local, then I have to delete
+   //
+   for ( size_t i=0; i<fHistoSecPiMinusFW.size(); ++i )
+   {
+      delete fHistoSecPiMinusFW[i];
+   }
+   fHistoSecPiMinusLA.clear();
+   for ( size_t i=0; i<fHistoSecPiMinusLA.size(); ++i )
+   {
+      delete fHistoSecPiMinusLA[i];
+   }
+   fHistoSecPiMinusLA.clear();
+   for ( size_t i=0; i<fHistoSecPiPlusFW.size(); ++i )
+   {
+      delete fHistoSecPiPlusFW[i];
+   }
+   fHistoSecPiPlusLA.clear();
+   for ( size_t i=0; i<fHistoSecPiPlusLA.size(); ++i )
+   {
+      delete fHistoSecPiPlusLA[i];
+   }
+   fHistoSecPiPlusLA.clear();
+   for ( size_t i=0; i<fHistoSecProtonFW.size(); ++i )
+   {
+      delete fHistoSecProtonFW[i];
+   }
+   fHistoSecProtonLA.clear();
+   for ( size_t i=0; i<fHistoSecProtonLA.size(); ++i )
+   {
+      delete fHistoSecProtonLA[i];
+   }
+   fHistoSecProtonLA.clear();
+      
    if ( fChi2Calc ) delete fChi2Calc;
       
 }
@@ -113,8 +146,8 @@ void artg4tk::AnalyzerHARP::beginJob()
 
    std::string hname  = "";
 
-   double parbins_fw[] = { 0.5, 1.0, 1.5, 2., 2.5, 3., 3.5, 4., 5., 6.5, 8. };
-   int    nparbins_fw = sizeof(parbins_fw) / sizeof(double) - 1;
+//   double parbins_fw[] = { 0.5, 1.0, 1.5, 2., 2.5, 3., 3.5, 4., 5., 6.5, 8. };
+//   int    nparbins_fw = sizeof(parbins_fw) / sizeof(double) - 1;
       
    // NOTE: use of std::to_string(double) results in something like this: 0.1 --> "0.100000" (too much...)
    //       for this reason, use ostringstream to convert float/double to std::string
@@ -138,19 +171,22 @@ void artg4tk::AnalyzerHARP::beginJob()
       theta_bin_fw += " [rad]";
 //      theta_bin_fw = std::to_string(thetaMin) + "<theta<" + std::to_string(thetaMax) + "[rad]";
             
-      hname = "piminus_FW_" + std::to_string(i);       
-      fHistoSecPiMinusFW.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_fw.c_str(), nparbins_fw, parbins_fw ) );
+      hname = "tmp_piminus_FW_" + std::to_string(i);       
+      // ---> fHistoSecPiMinusFW.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_fw.c_str(), nparbins_fw, parbins_fw ) );
+      fHistoSecPiMinusFW.push_back( new TH1D( hname.c_str(), theta_bin_fw.c_str(), 100, 0., 10. ) );
 
-      hname = "piplus_FW_" + std::to_string(i);
-      fHistoSecPiPlusFW.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_fw.c_str(), nparbins_fw, parbins_fw ) );
+      hname = "tmp_piplus_FW_" + std::to_string(i);
+      // ---> fHistoSecPiPlusFW.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_fw.c_str(), nparbins_fw, parbins_fw ) );
+      fHistoSecPiPlusFW.push_back( new TH1D( hname.c_str(), theta_bin_fw.c_str(), 100, 0., 10. ) );
 
-      hname = "proton_FW_" + std::to_string(i);
-      fHistoSecProtonFW.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_fw.c_str(),nparbins_fw, parbins_fw ) ); 
+      hname = "tmp_proton_FW_" + std::to_string(i);
+      // ---> fHistoSecProtonFW.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_fw.c_str(), nparbins_fw, parbins_fw ) ); 
+      fHistoSecProtonFW.push_back( new TH1D( hname.c_str(), theta_bin_fw.c_str(), 100, 0., 10. ) ); 
    
    }
 
-   double parbins_la[] = { 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8 };
-   int    nparbins_la = sizeof(parbins_la) / sizeof(double) - 1;
+//   double parbins_la[] = { 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8 };
+//   int    nparbins_la = sizeof(parbins_la) / sizeof(double) - 1;
 
    for ( int i=0; i<fNThetaBinsLA; i++ )
    {
@@ -169,14 +205,17 @@ void artg4tk::AnalyzerHARP::beginJob()
       theta_bin_la += osTitle2.str();
       theta_bin_la += " [rad]";
       
-      hname = "piminus_LA_" + std::to_string(i);         
-      fHistoSecPiMinusLA.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_la.c_str(), nparbins_la, parbins_la ) );
+      hname = "tmp_piminus_LA_" + std::to_string(i);         
+      // ---> fHistoSecPiMinusLA.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_la.c_str(), nparbins_la, parbins_la ) );
+      fHistoSecPiMinusLA.push_back( new TH1D( hname.c_str(), theta_bin_la.c_str(), 100, 0., 1. ) );
 
-      hname = "piplus_LA_" + std::to_string(i);
-      fHistoSecPiPlusLA.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_la.c_str(), nparbins_la, parbins_la ) );
+      hname = "tmp_piplus_LA_" + std::to_string(i);
+      // ---> fHistoSecPiPlusLA.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_la.c_str(), nparbins_la, parbins_la ) );
+      fHistoSecPiPlusLA.push_back( new TH1D( hname.c_str(), theta_bin_la.c_str(), 100, 0., 1. ) );
 
-      hname = "proton_LA_" + std::to_string(i);
-      fHistoSecProtonLA.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_la.c_str(), nparbins_la, parbins_la ) );
+      hname = "tmp_proton_LA_" + std::to_string(i);
+      // ---> fHistoSecProtonLA.push_back( tfs->make<TH1D>( hname.c_str(), theta_bin_la.c_str(), nparbins_la, parbins_la ) );
+      fHistoSecProtonLA.push_back( new TH1D( hname.c_str(), theta_bin_la.c_str(), 100, 0., 1. ) );
 
    }
 
@@ -210,48 +249,45 @@ void artg4tk::AnalyzerHARP::endJob()
    xbin = fNSec->GetBinWidth(1);
    scale = 1. / (xbin*norm);
    fNSec->Scale( scale ) ;
-   
-   // NOTE: no need to Write each histo as TFileService will do it   
-
-   for ( size_t i=0; i<fHistoSecPiMinusFW.size(); ++i )
-   {
-      scale = fXSecOnTarget / (norm*fDeltaThetaFW);
-      fHistoSecPiMinusFW[i]->Scale(scale,"width");
-   }
-   for ( size_t i=0; i<fHistoSecPiMinusLA.size(); ++i )
-   {
-      scale = fXSecOnTarget / (norm*fDeltaThetaLA);
-      fHistoSecPiMinusLA[i]->Scale(scale,"width");
-   }
-
-   // secondary pi+
-   //
-   for ( size_t i=0; i<fHistoSecPiPlusFW.size(); ++i )
-   {
-      scale = fXSecOnTarget / (norm*fDeltaThetaFW);
-      fHistoSecPiPlusFW[i]->Scale(scale,"width");
-   }
-   for ( size_t i=0; i<fHistoSecPiPlusLA.size(); ++i )
-   {
-      scale = fXSecOnTarget / (norm*fDeltaThetaLA);
-      fHistoSecPiPlusLA[i]->Scale(scale,"width");
-   }
-
-   // secondary proton
-   //
-   for ( size_t i=0; i<fHistoSecProtonFW.size(); ++i )
-   {
-      scale = fXSecOnTarget / (norm*fDeltaThetaFW);
-      fHistoSecProtonFW[i]->Scale( scale, "width" );
-   }
-   for ( size_t i=0; i<fHistoSecProtonLA.size(); ++i )
-   {
-      scale = fXSecOnTarget / (norm*fDeltaThetaLA);
-      fHistoSecProtonLA[i]->Scale( scale, "width" );
-   }
-
+      
    if ( fIncludeExpData )
    {
+      
+      // scale with theta-bin, XSec, and # of events but NOT YET with momentum bin width
+      for ( size_t i=0; i<fHistoSecPiMinusFW.size(); ++i )
+      {
+         scale = fXSecOnTarget / (norm*fDeltaThetaFW);
+         fHistoSecPiMinusFW[i]->Scale(scale);
+      }
+      for ( size_t i=0; i<fHistoSecPiMinusLA.size(); ++i )
+      {
+         scale = fXSecOnTarget / (norm*fDeltaThetaLA);
+         fHistoSecPiMinusLA[i]->Scale(scale);
+      }
+      // secondary pi+
+      //
+      for ( size_t i=0; i<fHistoSecPiPlusFW.size(); ++i )
+      {
+         scale = fXSecOnTarget / (norm*fDeltaThetaFW);
+         fHistoSecPiPlusFW[i]->Scale(scale);
+      }
+      for ( size_t i=0; i<fHistoSecPiPlusLA.size(); ++i )
+      {
+         scale = fXSecOnTarget / (norm*fDeltaThetaLA);
+         fHistoSecPiPlusLA[i]->Scale(scale);
+      }
+      // secondary proton
+      //
+      for ( size_t i=0; i<fHistoSecProtonFW.size(); ++i )
+      {
+         scale = fXSecOnTarget / (norm*fDeltaThetaFW);
+         fHistoSecProtonFW[i]->Scale(scale);
+      }
+      for ( size_t i=0; i<fHistoSecProtonLA.size(); ++i )
+      {
+         scale = fXSecOnTarget / (norm*fDeltaThetaLA);
+         fHistoSecProtonLA[i]->Scale(scale);
+      }
       
       // NOTE: Maybe this fragment can move to the base class.
       //       We may re-scale MC histograms, etc., but the matching
@@ -265,7 +301,6 @@ void artg4tk::AnalyzerHARP::endJob()
          fLogInfo << " ExpData do NOT match any of the MC; NO bechmarking; bail out" ;
 	 return;
       }
-
 /*
       else
       {
@@ -285,8 +320,159 @@ void artg4tk::AnalyzerHARP::endJob()
 	 }
       }
 */      
+
+      std::vector< std::pair<int,TH1*> >::iterator itr; 
+
+      // find and mark up unmatched MC histos (if any); 
+      // create copies to be written to the Root output file
+      // 
+      size_t ih = 0;
+      for ( ; ih<fHistoSecPiMinusFW.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiMinusFW[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) 
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fHistoSecPiMinusFW[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }
+      }
+      ih = 0;     
+      for ( ; ih<fHistoSecPiMinusLA.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiMinusLA[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) 
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fHistoSecPiMinusLA[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }
+      }
+      ih = 0;     
+      for ( ; ih<fHistoSecPiPlusFW.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiPlusFW[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) 
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fHistoSecPiPlusFW[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }
+      }
+      ih = 0;     
+      for ( ; ih<fHistoSecPiPlusLA.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiPlusLA[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) 
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fHistoSecPiPlusLA[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }
+      }
+      ih = 0;     
+      for ( ; ih<fHistoSecProtonFW.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecProtonFW[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) 
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fHistoSecProtonFW[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }
+      }
+      ih = 0;     
+      for ( ; ih<fHistoSecProtonLA.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecProtonFW[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) 
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fHistoSecProtonLA[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }
+      }
+
+      // now those MC's that are matched to exp.data
+      //
+      rebinMC2Data( "tmp_" );
+      
+      // and finally scale each histo to the momentum bin size
+      // NOTE: scaling to XSec, stat, and theta-bin is done earlier
+      //
+      for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+      {
+         (itr->second)->Scale( 1., "width" );
+      }
+      
       calculateChi2();
       overlayDataMC();
+   }
+   else
+   {
+      // no matching vs data
+      // 
+      
+      for ( size_t i=0; i<fHistoSecPiMinusFW.size(); ++i )
+      {
+	 TH1D* h = copyHisto2TFS( fHistoSecPiMinusFW[i], "tmp_" );
+	 scale = fXSecOnTarget / (norm*fDeltaThetaFW);
+         h->Scale(scale,"width");
+      }
+      for ( size_t i=0; i<fHistoSecPiMinusLA.size(); ++i )
+      {
+         TH1D* h = copyHisto2TFS( fHistoSecPiMinusLA[i], "tmp_" );
+	 scale = fXSecOnTarget / (norm*fDeltaThetaLA);
+         h->Scale(scale,"width");
+      }
+
+      // secondary pi+
+      //
+      for ( size_t i=0; i<fHistoSecPiPlusFW.size(); ++i )
+      {
+         TH1D* h = copyHisto2TFS( fHistoSecPiPlusFW[i], "tmp_" );
+	 scale = fXSecOnTarget / (norm*fDeltaThetaFW);
+         h->Scale(scale,"width");
+      }
+      for ( size_t i=0; i<fHistoSecPiPlusLA.size(); ++i )
+      {
+         TH1D* h = copyHisto2TFS( fHistoSecPiPlusLA[i], "tmp_" );
+	 scale = fXSecOnTarget / (norm*fDeltaThetaLA);
+         h->Scale(scale,"width");
+      }
+
+      // secondary proton
+      //
+      for ( size_t i=0; i<fHistoSecProtonFW.size(); ++i )
+      {
+         TH1D* h = copyHisto2TFS( fHistoSecProtonFW[i], "tmp_" );
+	 scale = fXSecOnTarget / (norm*fDeltaThetaFW);
+         h->Scale( scale, "width" );
+      }
+      for ( size_t i=0; i<fHistoSecProtonLA.size(); ++i )
+      {
+         TH1D* h = copyHisto2TFS( fHistoSecProtonLA[i], "tmp_" );
+	 scale = fXSecOnTarget / (norm*fDeltaThetaLA);
+         h->Scale( scale, "width" );
+      }
    }
    
    return;

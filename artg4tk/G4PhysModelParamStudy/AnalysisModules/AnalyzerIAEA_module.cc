@@ -109,7 +109,8 @@ artg4tk::AnalyzerIAEA::AnalyzerIAEA( const fhicl::ParameterSet& p )
       //             and whatever the dtaset, the smallest bin size is 0.5MeV
       //             that's why 6000/3000. is fair enough
       //
-      fTmpKENeutron.push_back( new TH1D( hname.c_str(), htitle.c_str(), fNBinsTmpKENeutron, 0., fMaxKENeutron ) );
+      fTmpKENeutron.push_back( new TH1D( hname.c_str(), htitle.c_str(), 
+                                         fNBinsTmpKENeutron, 0., fMaxKENeutron ) );
    }
 
 }
@@ -136,7 +137,8 @@ void artg4tk::AnalyzerIAEA::beginJob()
    TH1::SetDefaultSumw2();
 
    art::ServiceHandle<art::TFileService> tfs;
-   fNSec = tfs->make<TH1D>( "NSec", "Number of secondary per inelastic interaction", 100, 0., 100 );
+   fNSec = tfs->make<TH1D>( "NSec", "Number of secondary per inelastic interaction", 
+                            100, 0., 100 );
 
    return;
 

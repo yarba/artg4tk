@@ -116,11 +116,21 @@ Download artg4tk package from Git:
 
 
 cd <dir-name-of-you-choice>/srcs
-mrb g artg4tk
+mrb g <-b feature/G4PhysModelParamStudy> artg4tk
+
+NOTE: the -b options means checking out from a branch, while -t means tag.
 
 NOTE: artg4tk can also be obtained from Git directly:
 git clone ssh://p-artg4tk@cdcvs.fnal.gov/cvs/projects/artg4tk
-However, `mrb g` command modifies the CMakeList.txt to add _artg4tk_ directory to the list - bear this in mind.  
+However, `mrb g` command modifies the CMakeList.txt to add _artg4tk_ directory to the list - bear this in mind. 
+If one choses to do a plain `git clone`, one must them add to srcs/CMakeLists.txt the following:
+
+# artg4tk package block
+set(artg4tk_not_in_ups true)
+include_directories ( ${CMAKE_CURRENT_SOURCE_DIR}/artg4tk )
+include_directories ( $ENV{MRB_BUILDDIR}/artg4tk )
+ADD_SUBDIRECTORY(artg4tk)
+ 
 
 Finalize setting up the environment
 

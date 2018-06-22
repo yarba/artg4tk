@@ -29,30 +29,9 @@ namespace artg4tk {
       virtual TH1* matchExpSpectrum2MC( const int&, const std::vector<std::string>&, const int& ) { return NULL; }
       
       void rebinMC2Data( const std::string& ); 
+      TH1D* copyHisto2TFS( TH1D*, const std::string& );
       
       void overlayDataMC();
-/*
-      template <class T>
-      bool matchExpData2MC( const int&, const std::vector<T>& ); 
-*/
-/*
-      template<typename ... ARGS>
-      bool matchExpData2MC( const int& secid, ARGS ... args );    
-*/
-/*
-      template<typename T, typename... Args> 
-      bool matchExpData2MC(T t, Args... args);
-*/
-/*
-template <class T>
-void func2( std::initializer_list<T> list )
-{
-    for( auto elem : list )
-    {
-        std::cout << elem << std::endl ;
-    }
-}
-*/
       
       bool                                   fIncludeExpData;
       std::vector<int>                       fVDBRecordID;
