@@ -1,0 +1,62 @@
+
+1. Create param.ranges:
+
+# define param space
+
+# pname pmin pmax
+a       -1   +1
+b       -1   +1
+c       -1   +1
+
+# end-of-file
+
+2. Create template for histogram generator input params.json to accompany params.dat
+
+{{ "params": {{
+      "a": {a},
+      "b": {b},
+      "c": {c}
+  }}
+}}
+
+3. Create scan directory with sub-directories 0000 ... ${NPOINTS}, each with params.dat and params.json
+
+export NPOINTS=100
+export TEMPLATEFILE=params.json
+
+# creates "scan" directory
+prof2-sample param.ranges -n $NPOINTS -t $TEMPLATEFILE
+
+NOTE: see how param.range and params.json are used on input to prof2-scan
+
+4. Make a "fake" data area (dir):
+
+# and one "data" directory
+mkdir data
+cp scan/0000/params.json data/params.json  # just as a template
+
+# adjust the value in data/params.json by hand (semi-randomly) 
+
+Those will be out "model parameters".
+
+5. Create Histograms for the "data" and each scan value
+Using version 1 of the toy data generator histograms were created for "data" and the "scan" subdirectories.
+A single foo histogram with 50 x bins [0:20] was filled from func1 = (400.-c*100.*pow(abs(x-5.0*b)/10.0,2+a)) (a, b, c being the "model" parameters to be fit for).
+
+
+cd data
+../create_toy_data.py
+
+cd scan
+for d in * ; do cd $d ; echo "scan $d" ; ../../create_toy_data.py > $d.log 2>&1 ; cd .. ; done
+cd ..
+
+6. Find Interpolation Parameterization
+
+prof2-ipol scan
+
+OUTPUT: ipol.dat
+
+7. And now the "tuning" step
+
+prof2-tune -d data ipol.dat

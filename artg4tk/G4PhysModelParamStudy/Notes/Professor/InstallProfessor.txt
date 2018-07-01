@@ -1,0 +1,78 @@
+
+1. Needed for matplotlib: numpy
+setup numpy v1_14_1 -q e15:p2714b:prof
+
+2. Make sure matplotlib is installed; otherwise one can use pip -i matplotlib to install it
+
+3. Make sure iMinuit is installed (otherwise one can use pip)
+
+4. Download Professor-2.2.2 (maybe 2.3.0.beta had some hiccups as of May 2018):
+
+wget http://www.hepforge.org/archive/professor/Professor-2.2.2.tar.gzhttp://www.hepforge.org/archive/professor/Professor-2.2.2.tar.gz
+
+5. Download YODA-1.6.7 
+
+wget http://www.hepforge.org/archive/yoda/YODA-1.6.7.tar.gz
+
+NOTE: in the latest YODA1.7.0 "configure" script crashes on tev.fnal.gov on m4_ifblank. It happens with gcc6.4.0 compiler that is set together with art, etc. If trying to build in "native" tev.fnal.gov environment (gcc4-series, etc.), other issues are present.
+
+6. Download Eigen-3.3.4 : http://eigen.tuxfamily.org/index.php?title=Main_Page
+
+wget http://bitbucket.org/eigen/eigen/get/3.3.4.tar.gz
+
+NOTE-1: tarball is called 3.3.4.tar.gz (no less ^_^), and it un-tar's into "eigen-eigen-5a0156e40feb"
+Maybe better to mv eigen-eigen-5a0156e40feb to eigen_3.3.4 ???
+
+NOTE-2: Take a look at the INSTALL notes in the directory - follow those installation instructions (with cmake)
+
+7. Following Documentation (http://professor.hepforge.org/docs.sphinx220/install.html#required-packages), Compile Professor as 
+
+CXXFLAGS="-I/LOCATION_OF_EIGEN_HEADERS -O4" make all
+
+NOTE: Here the -I/LOCATION_OF_EIGEN... pratically means "-I../eigen-3.3.4/include/eigen3"
+
+8. export PATH=/path/to/Professor-2.2.2/bin:$PATH
+
+9. export LD_LIBRARY_PATH=/path/to/professor-2.2.2/lib:$LD_LIBRARY_PATH
+
+10. export PYTHONPATH=/path/to/professor-2.2.2/pyext:$PYTHONPATH
+
+11. OK, we're now ready to run at least "prof2-ncoeffs 3"; output should looks like this:
+
+Polynomial order     Minimum samples
+         0                   1
+         1                   4
+         2                  10
+         3                  20
+         4                  35
+         5                  56
+         6                  84
+         7                 120
+         8                 165
+         9                 220
+        10                 286
+
+12. To build YODA, see INSTALL (ascii) file in the YODA directory.
+
+However, on tev.fnal.gov configure script chocks on PYTHON env.var., thus one should do like this:
+PYTHON=$PYTHONHOME/bin/python ./configure --prefix=$PWD/../YODA-1.6.7-install --enable-root 
+(the latest arg is to build w/Root support)
+
+NOTE: one should remember that YOUDA build machinery does not directly support install into 
+the build (source) area, so one should create the install area for YODA before configuring.
+Going without --prefix will result in the attempt to instal into /usr/... area where permission
+is denied. 
+
+Once configuration is done, it'll give you a message about running make -j2 and make -j2 install.
+QUSETION: What if one runs with -j8 ???
+
+13. I presume, now one needs to extend PATH, LD_LIBRARY_PATH, and PYTHONPATH but that's for tomorrow...
+Although technically speaking NO YODA is needed to run prof2-ncoeffs, prof2-sample, prof2-ipol, or even prof2-tune. However, prof2-tune will kind of complain of not finding YODA, thus not writing YODA nistos, but just "tunes" output.
+Howwever, YODA would be useful since it has yoda2root features, etc. (but fortunately it's not mandatory)
+ 
+
+
+
+
+
+

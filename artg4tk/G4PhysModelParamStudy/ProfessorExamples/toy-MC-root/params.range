@@ -1,0 +1,8 @@
+# define param space
+
+# pname pmin pmax
+a       -1   +1
+b       -1   +1
+c       -1   +1
+
+# end-of-file

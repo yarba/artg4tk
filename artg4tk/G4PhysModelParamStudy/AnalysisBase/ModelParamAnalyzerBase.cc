@@ -295,3 +295,58 @@ void artg4tk::ModelParamAnalyzerBase::prepareG4PTable()
 
 }
 
+void artg4tk::ModelParamAnalyzerBase::Store4Professor( const std::string& label )
+{
+
+   if ( !fIncludeExpData ) return;
+
+   // Do I need to create separate dirs for Data ??? 
+   // Or should I just go with ExpData and use different names for histos ???
+   // I'll definitely need to create a separate dr for MC because not every MC 
+   // will have a matching data entry...
+   // ... but at the same time there maybe more more exp data entries than MC !!!
+   // So OK, I think I do need separate (sub)dirs Data4Professor and MC4Professor... 
+
+   art::ServiceHandle<art::TFileService> tfs;
+   art::TFileDirectory data4prof = tfs->mkdir( "Data4Professor" );  
+   art::TFileDirectory mc4prof = tfs->mkdir( "MC4Professor" );  
+// example usage in selected subdir:   
+//       exdir.make<TH1D>( *(fJSON2Data->Convert2Histo(rjson,hname.c_str())) );
+
+   std::string modlabel = gDirectory->GetName(); // it'll match module label
+   TFile& hfile = tfs->file();
+
+   std::vector< std::pair<int,TH1*> >::iterator itr = fVDBRecID2MC.begin();
+   
+   TH1::SetDefaultSumw2();
+
+   for ( ; itr!=fVDBRecID2MC.end(); ++itr )
+   {
+      if ( !itr->second ) continue;
+      std::string dname = modlabel + "/ExpData/ExpDataR" + std::to_string(itr->first);
+      TH1D* hd = (TH1D*)(hfile.Get(dname.c_str()));
+      if ( !hd ) continue;
+      std::ostringstream os;
+      os << fBTConf.GetBeamMomentum();
+      std::string old_mcname = (itr->second)->GetName();
+      std::string new_name = label + "_beam" + std::to_string(fBTConf.GetBeamPartID())
+                          + "_momentum" + os.str() + "GeV" 
+			  + "_target" + std::to_string(fBTConf.GetTargetID()) + "_"
+			  + old_mcname;
+      // now replace all dots (".") with "p" in the new_name
+      size_t pos = new_name.find(".");
+      while ( pos != std::string::npos )
+      {
+	 new_name.replace( pos, 1, "p" );
+	 pos = new_name.find(".");
+      }
+      TH1D* h1 = data4prof.make<TH1D>( *hd );
+      h1->SetName( new_name.c_str() );
+      std::string classname = (itr->second)->ClassName();
+      TH1D* h2 = mc4prof.make<TH1D>( *((TH1D*)(itr->second)) );
+      h2->SetName( new_name.c_str() );
+   }
+
+   return;
+
+}

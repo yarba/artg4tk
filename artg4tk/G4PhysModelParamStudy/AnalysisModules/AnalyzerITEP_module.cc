@@ -363,6 +363,7 @@ void artg4tk::AnalyzerITEP::endJob()
       
       calculateChi2();
       overlayDataMC();
+      Store4Professor( "ITEP771" );
       
    }
    else

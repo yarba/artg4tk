@@ -425,6 +425,7 @@ void artg4tk::AnalyzerHARP::endJob()
       
       calculateChi2();
       overlayDataMC();
+      Store4Professor( "HARP" );
    }
    else
    {

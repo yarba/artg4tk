@@ -616,6 +616,8 @@ void artg4tk::AnalyzerNA49::endJob()
       
       overlayDataMC();
       
+      Store4Professor( "NA49" );
+      
    }
    else // no exp.data included in the analysis
    {

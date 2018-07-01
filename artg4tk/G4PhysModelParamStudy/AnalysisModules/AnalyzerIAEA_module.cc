@@ -225,6 +225,7 @@ void artg4tk::AnalyzerIAEA::endJob()
       // TO BE ADDED SHORTLY; the chi2 calc business needs to be implemented !
       // calculateChi2();
       overlayDataMC();
+      Store4Professor( "IAEA" );
    
    }
    else

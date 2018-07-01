@@ -33,6 +33,8 @@ namespace artg4tk {
       void initXSecOnTarget( const std::string&, const ArtG4tkParticle& );
       bool ensureBeamTgtConfig( const art::Event& );
       
+      virtual void Store4Professor( const std::string& ); 
+      
       // These two data members below can go into a base class for
       // this group of analysis modules
       //
