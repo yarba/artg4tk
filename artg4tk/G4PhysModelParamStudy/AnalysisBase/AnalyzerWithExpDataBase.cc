@@ -30,14 +30,19 @@ artg4tk::AnalyzerWithExpDataBase::AnalyzerWithExpDataBase( const fhicl::Paramete
       if ( !status )
       {
          fLogInfo << " Exp.data are requested but connection to VDB fails"; // << std::endl;
+	 fLogInfo << " IncludeExpData flag will be reset to FALSE " ;
+	 fIncludeExpData = false;
       }
-      fJSON2Data = new JSON2Data();
-      fJSON2Data->BuildDictionaries( "Particle",   fVDBConnect->GetDictionary("Particle") );
-      fJSON2Data->BuildDictionaries( "Material",   fVDBConnect->GetDictionary("Material") );
-      fJSON2Data->BuildDictionaries( "Beam",       fVDBConnect->GetDictionary("Beam") );
-      fJSON2Data->BuildDictionaries( "Observable", fVDBConnect->GetDictionary("Observable") );
-      fJSON2Data->BuildDictionaries( "Reference",  fVDBConnect->GetDictionary("Reference") );
-      fJSON2Data->BuildDictionaries( "Datatypes",  fVDBConnect->GetDictionary("Datatypes") ); 
+      else
+      {
+         fJSON2Data = new JSON2Data();
+         fJSON2Data->BuildDictionaries( "Particle",   fVDBConnect->GetDictionary("Particle") );
+         fJSON2Data->BuildDictionaries( "Material",   fVDBConnect->GetDictionary("Material") );
+         fJSON2Data->BuildDictionaries( "Beam",       fVDBConnect->GetDictionary("Beam") );
+         fJSON2Data->BuildDictionaries( "Observable", fVDBConnect->GetDictionary("Observable") );
+         fJSON2Data->BuildDictionaries( "Reference",  fVDBConnect->GetDictionary("Reference") );
+         fJSON2Data->BuildDictionaries( "Datatypes",  fVDBConnect->GetDictionary("Datatypes") );
+      } 
    }
    
 }
@@ -258,32 +263,6 @@ void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data( const std::string& tag2rm )
 
 }
 
-TH1D* artg4tk::AnalyzerWithExpDataBase::copyHisto2TFS( TH1D* htmp, const std::string& tag2rm )
-{
-
-   art::ServiceHandle<art::TFileService> tfs;  
-
-   TH1::SetDefaultSumw2();
-
-   std::string classname = htmp->ClassName();
-   TH1D* h1 = 0;
-   if ( !( classname == "TProfile" ) )
-   {
-      h1 = tfs->make<TH1D>( *htmp );
-   }
-   else
-   {
-      h1 = tfs->make<TProfile>( *((TProfile*)htmp) );
-   }
-   std::string hname = htmp->GetName();
-   size_t pos = hname.find(tag2rm);
-   if ( pos != std::string::npos ) hname.erase( pos, std::string(tag2rm).length() );	 
-   h1->SetName( hname.c_str() );
-   h1->SetTitle( htmp->GetTitle() );	
-   return h1;
-
-}
-
 void artg4tk::AnalyzerWithExpDataBase::overlayDataMC()
 {
 
@@ -336,4 +315,3 @@ void artg4tk::AnalyzerWithExpDataBase::overlayDataMC()
    return;
 
 }
-

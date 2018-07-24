@@ -66,10 +66,23 @@ is denied.
 Once configuration is done, it'll give you a message about running make -j2 and make -j2 install.
 QUSETION: What if one runs with -j8 ???
 
-13. I presume, now one needs to extend PATH, LD_LIBRARY_PATH, and PYTHONPATH but that's for tomorrow...
-Although technically speaking NO YODA is needed to run prof2-ncoeffs, prof2-sample, prof2-ipol, or even prof2-tune. However, prof2-tune will kind of complain of not finding YODA, thus not writing YODA nistos, but just "tunes" output.
-Howwever, YODA would be useful since it has yoda2root features, etc. (but fortunately it's not mandatory)
+13. Now one needs to extend PATH, LD_LIBRARY_PATH, and PYTHONPATH.
+
+LD_LIBRARY_PATH=/path/to/Professor-2.2.2/lib:$LD_LIBRARY_PATH
+PATH=/patn/to/Professor-2.2.2/bin:$PATH
+PYTHONPATH=/path/to/Professor-2.2.2/pyext:/path/to/YODA-1.6.7/pyext:$PYTHONPATH
+
+Although technically speaking NO YODA is needed to run prof2-ncoeffs, prof2-sample, prof2-ipol, or even prof2-tune. 
+However, prof2-tune will kind of complain of not finding YODA, thus not writing YODA nistos, but just "tunes" output.
+However, YODA would be useful since it has yoda2root features, etc. (but fortunately it's not mandatory)
  
+14. One may need pyDOE package as well. It's needed when one wants to run prof2-tune with the "--scan-n NPOINTS" feature.
+It can be installed as follows:
+pip install pyDOE
+
+NOTE: Although pyDOE might also be a part of numpy (see bullet-1).
+When I (JVY) bumped into the missing pyDOE issue, I might have forgotted 
+to setup numpy in that particular session.
 
 
 

@@ -60,3 +60,17 @@ OUTPUT: ipol.dat
 7. And now the "tuning" step
 
 prof2-tune -d data ipol.dat
+
+NOTE-1: one can either fix and/or impose limits on a particular parameter.
+This can be done via "--limits <name-of-limits-file>"
+Format of such file is as follows:
+# Fixed:
+<param-to-fix>  value
+# Limits:
+<param-to-limit>  value-min  value-max
+
+NOTE-2: there's a very useful feature "--scan-n NPoints" that perfoms a scan in order to find 
+some good starting points. It greatly improves the fit results. 
+Without such feature at least one parameter may "always" end up at the max limit or min limit.
+
+

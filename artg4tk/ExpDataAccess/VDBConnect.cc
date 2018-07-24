@@ -40,7 +40,17 @@ bool VDBConnect::Init()
 
    fHTTP = "http://g4validation.fnal.gov:8080/DoSSiER/WebAPI";
    // fHTTP = "https://g4devel.fnal.gov:8181/WebAPI"; 
-
+   
+   // now test the connection
+   curl_easy_setopt( fCurl, CURLOPT_URL, fHTTP.c_str() );
+   CURLcode status = curl_easy_perform( fCurl );    
+   if ( status != 0 )
+   {
+      std::cout << " VDBConnect::Init(): BAD CURLcode status = " << status << std::endl;
+      fInitialized = false;
+      return fInitialized;
+   }
+   
    fInitialized = true;
    
    return fInitialized;
