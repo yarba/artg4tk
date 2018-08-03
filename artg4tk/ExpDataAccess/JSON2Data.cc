@@ -99,6 +99,10 @@ int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
       {
          blnk = 12;
       }
+      else if ( fabs(mom-31.) <= 1.e-10 && fRefLink == 69 )
+      {
+         blnk = 36;
+      }
       else if ( fabs(mom-3.) <= 1.e-10 )
       {
          blnk = 37;

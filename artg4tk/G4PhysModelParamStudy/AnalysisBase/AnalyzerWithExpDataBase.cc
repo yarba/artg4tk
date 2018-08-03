@@ -72,7 +72,8 @@ void artg4tk::AnalyzerWithExpDataBase::endJob()
 	 {
 	    // fJSONRecords.push_back( fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] ) );
 	    std::string rjson = fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] );
-	    fJSONRecords.insert( std::pair<int, std::string>( fVDBRecordID[ir], rjson ) );	                                                      
+	    fJSONRecords.insert( std::pair<int, std::string>( fVDBRecordID[ir], rjson ) );
+	    
 	    std::string hname = "ExpDataR" + std::to_string(fVDBRecordID[ir]);
 	    exdir.make<TH1D>( *(fJSON2Data->Convert2Histo(rjson,hname.c_str())) );
 	 }
@@ -114,7 +115,9 @@ bool artg4tk::AnalyzerWithExpDataBase::matchVDBRec2MC( const int& bid,
       std::vector<std::string> cond;
       cond.push_back( fJSON2Data->GetMetaData().fTitle );      
       //
-      TH1* h = matchExpSpectrum2MC( fJSON2Data->GetMetaData().fSecondaryPID, cond, fJSON2Data->GetMetaData().fObservable );
+      TH1* h = matchExpSpectrum2MC( fJSON2Data->GetMetaData().fSecondaryPID, 
+                                    cond, 
+				    fJSON2Data->GetMetaData().fObservable );
       if ( h )
       {
 	 fVDBRecID2MC[i].second = h;
@@ -122,7 +125,8 @@ bool artg4tk::AnalyzerWithExpDataBase::matchVDBRec2MC( const int& bid,
       } 
       else
       {
-         std::cout << " NO match for: " << fJSON2Data->GetMetaData().fTitle << " ---> histo = NULL " << std::endl;
+         std::cout << " NO match for: " << fJSON2Data->GetMetaData().fTitle 
+	                                << " ---> histo = NULL " << std::endl;
       }
    }
    
@@ -179,7 +183,7 @@ void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data( const std::string& tag2rm )
    std::vector< std::pair<int,TH1*> >::iterator itr = fVDBRecID2MC.begin();
    for ( ; itr!=fVDBRecID2MC.end(); ++itr )
    {
-         if ( ! itr->second ) continue; // NULL histo for this exp.data record (some might be skipped)
+         if ( ! itr->second ) continue; // NULL histo for this exp.data record (some might be skipped)	 
 	 std::map<int,std::string>::iterator itrda = fJSONRecords.find( itr->first );
          TH1D* hda = 0;      
          if ( itrda != fJSONRecords.end() ) 
@@ -260,6 +264,32 @@ void artg4tk::AnalyzerWithExpDataBase::rebinMC2Data( const std::string& tag2rm )
    }
 
    return; 
+
+}
+
+TH1D* artg4tk::AnalyzerWithExpDataBase::copyHisto2TFS( TH1D* htmp, const std::string& tag2rm )
+{
+
+   art::ServiceHandle<art::TFileService> tfs;  
+
+   TH1::SetDefaultSumw2();
+
+   std::string classname = htmp->ClassName();
+   TH1D* h1 = 0;
+   if ( !( classname == "TProfile" ) )
+   {
+      h1 = tfs->make<TH1D>( *htmp );
+   }
+   else
+   {
+      h1 = tfs->make<TProfile>( *((TProfile*)htmp) );
+   }
+   std::string hname = htmp->GetName();
+   size_t pos = hname.find(tag2rm);
+   if ( pos != std::string::npos ) hname.erase( pos, std::string(tag2rm).length() );	 
+   h1->SetName( hname.c_str() );
+   h1->SetTitle( htmp->GetTitle() );	
+   return h1;
 
 }
 

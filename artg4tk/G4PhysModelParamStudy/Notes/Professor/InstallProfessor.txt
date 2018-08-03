@@ -14,7 +14,9 @@ wget http://www.hepforge.org/archive/professor/Professor-2.2.2.tar.gzhttp://www.
 
 wget http://www.hepforge.org/archive/yoda/YODA-1.6.7.tar.gz
 
-NOTE: in the latest YODA1.7.0 "configure" script crashes on tev.fnal.gov on m4_ifblank. It happens with gcc6.4.0 compiler that is set together with art, etc. If trying to build in "native" tev.fnal.gov environment (gcc4-series, etc.), other issues are present.
+NOTE: in the latest YODA1.7.0 "configure" script crashes on tev.fnal.gov on m4_ifblank. 
+It happens with gcc6.4.0 compiler that is set together with art, etc. 
+If trying to build in "native" tev.fnal.gov environment (gcc4-series, etc.), other issues are present.
 
 6. Download Eigen-3.3.4 : http://eigen.tuxfamily.org/index.php?title=Main_Page
 
@@ -25,11 +27,14 @@ Maybe better to mv eigen-eigen-5a0156e40feb to eigen_3.3.4 ???
 
 NOTE-2: Take a look at the INSTALL notes in the directory - follow those installation instructions (with cmake)
 
-7. Following Documentation (http://professor.hepforge.org/docs.sphinx220/install.html#required-packages), Compile Professor as 
+7. Following Documentation (http://professor.hepforge.org/docs.sphinx220/install.html#required-packages), 
+compile Professor as 
 
 CXXFLAGS="-I/LOCATION_OF_EIGEN_HEADERS -O4" make all
 
 NOTE: Here the -I/LOCATION_OF_EIGEN... pratically means "-I../eigen-3.3.4/include/eigen3"
+
+NOTE: In principle, there's a README in the Professor's home dir, which may also be useful
 
 8. export PATH=/path/to/Professor-2.2.2/bin:$PATH
 
@@ -58,7 +63,7 @@ However, on tev.fnal.gov configure script chocks on PYTHON env.var., thus one sh
 PYTHON=$PYTHONHOME/bin/python ./configure --prefix=$PWD/../YODA-1.6.7-install --enable-root 
 (the latest arg is to build w/Root support)
 
-NOTE: one should remember that YOUDA build machinery does not directly support install into 
+NOTE: one should remember that YODA build machinery does not directly support install into 
 the build (source) area, so one should create the install area for YODA before configuring.
 Going without --prefix will result in the attempt to instal into /usr/... area where permission
 is denied. 

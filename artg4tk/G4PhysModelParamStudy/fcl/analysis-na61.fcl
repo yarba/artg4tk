@@ -1,0 +1,82 @@
+process_name:processC
+
+source: 
+{
+  module_type: RootInput
+  maxEvents:  -1
+  fileNames: [ "Evt-proton31GeV-C-FTFP-ProcL-Default.root" ]
+}
+
+services: 
+{
+
+  message : 
+  {
+     debugModules : ["*"]
+     suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "NA61-FTFP-ProcL.root"
+  }
+
+     RandomNumberGenerator: {}
+         
+}
+
+physics: {
+  analyzers:
+  {
+  
+     FTFPDefaultNA61:
+     {
+        module_type: AnalyzerNA61
+	ProductLabel: "G4FTFPDefault"
+	IncludeExpData:
+	{
+	      DBRecords: [ 
+                          // secondary K0s
+			  14572, 14573, 14574, 14575, 14576, 14577, 14578,
+			  // secondary K-
+			  14579, 14580, 14581, 14582, 14583, 14584, 14585, 14586,
+			  // secondary K+
+			  14587, 14588, 14589, 14590, 14591, 14592, 14593, 14594,
+			  // secondary Lambda (pid=3122); NOTE: do NOT use record for theta=300-420mrad 
+			  14595, 14596, 14597, 14598, 14599, 14600, 14601,  
+			  // secondary pi-
+			  14603, 14604, 14605, 14606, 14607, 14608, 14609, // corrupted records 14610, 14611, 
+			  14612, 14613,
+			  // secondary pi+
+			  14614, 14615, 14616, 14617, 14618, 14619, 14620, 14621, 14622, 14623, 14624,
+			  // secondary proton
+			  14625, 14626, 14627, 14628, 14629, 14630, 14631, 14632, 14633, 14634 // do NOT use 14635
+			 ]
+	}
+     }
+       
+  }
+  
+  path2:   [ FTFPDefaultNA61 ] 
+
+  //
+  // NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  //       Otherwise, they will NOT be included in the exec.
+  //       If you don't have an end_path, things will magically work though... 
+  //        
+  end_paths:     [ path2 ]
+
+}
+
