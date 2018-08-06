@@ -5,7 +5,8 @@
 #include <string>
 
 #include <curl/curl.h> 
-
+// #include "/usr/local/Anaconda3-5.0.1/include/curl/curl.h"
+ 
 class VDBConnect
 {
 

@@ -33,13 +33,13 @@ bool VDBConnect::Init()
     // available starting curl v7.52.0
     // 
     // Interactive use on tev.fnal.gov: 
-    //     /usr/local/Anaconda3-5.0.1/bin/curl -k "http://g4devel.fnal.gov:8181/WebAPI/get?format=json&record=2" (with quotation marks)
+    //     /usr/local/Anaconda3-5.0.1/bin/curl -k "http://g4devel.fnal.gov:8181/DoSSiER/WebAPI/get?format=json&record=2" (with quotation marks)
     //
     // curl_easy_setopt( fCurl, CURLOPT_SSL_VERIFYPEER, 0L);
     // curl_easy_setopt( fCurl, CURLOPT_SSL_VERIFYHOST, 0L );
 
    fHTTP = "http://g4validation.fnal.gov:8080/DoSSiER/WebAPI";
-   // fHTTP = "https://g4devel.fnal.gov:8181/WebAPI"; 
+   // fHTTP = "https://g4devel.fnal.gov:8181/DoSSiER/WebAPI"; 
    
    // now test the connection
    curl_easy_setopt( fCurl, CURLOPT_URL, fHTTP.c_str() );
