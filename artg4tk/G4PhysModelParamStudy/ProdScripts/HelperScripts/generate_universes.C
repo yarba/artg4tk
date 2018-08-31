@@ -165,7 +165,6 @@ ModelParam  ftfNucDestrP1TgtADEP( "USE_NUCDESTR_P1_ADEP_TGT", "FTFP", 1, 1 );
 ModelParam  ftfNucDestrP2Tgt( "NUCDESTR_P2_TGT", "FTFP", 2., 16. );
 ModelParam  ftfNucDestrP3Tgt( "NUCDESTR_P3_TGT", "FTFP", 0., 4. );
 
-
 ModelParam blah("xyz","no-such-hadron-model", 0.0, 999.9 );
 
 //-----------------------------------------------------------------------

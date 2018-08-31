@@ -55,15 +55,19 @@ namespace artg4tk {
       
       TH1D*              fHistoNSec;
 
+
       int     fNPBinsXF;
       double* fPBinsXF;
-      int     fNPBinsPT;
-      double* fPBinsPT;
+      // int     fNPBinsPT;
+      // double* fPBinsPT;
+      
+      int     fNPbarBinsXF;
+      double* fPbarBinsXF;
 
       int                fNPiBinsXF;
       double*            fPiBinsXF;
-      int                fNPiBinsPT;
-      double*            fPiBinsPT;
+      // int                fNPiBinsPT;
+      // double*            fPiBinsPT;
 
       std::vector<TH1D*> fHistoSecProton;
       std::vector<TH1D*> fHistoSecAntiProton;
@@ -72,6 +76,7 @@ namespace artg4tk {
       std::vector<TH1D*> fHistoSecNeutron;   
 
       std::vector<TH1D*> fHistoPTProton;
+      std::vector<TH1D*> fHistoPTAntiProton;
       std::vector<TH1D*> fHistoPTPiMinus;
       std::vector<TH1D*> fHistoPTPiPlus;
       
@@ -83,9 +88,12 @@ namespace artg4tk {
 
 artg4tk::AnalyzerNA49::AnalyzerNA49( const fhicl::ParameterSet& p )
   : artg4tk::ModelParamAnalyzerBase(p),
-    fNPBinsXF(0), fNPBinsPT(0), fNPiBinsXF(0), fNPiBinsPT(0),
+    fNPBinsXF(0), // fNPBinsPT(0), 
+    fNPbarBinsXF(0),
+    fNPiBinsXF(0), // fNPiBinsPT(0),
     fChi2Calc(0)
 {
+      
    if ( fIncludeExpData ) 
    {
       fChi2Calc = new Chi2Calc();
@@ -97,6 +105,9 @@ artg4tk::AnalyzerNA49::~AnalyzerNA49()
    // do I need any histos delete's here ?!
    // or will TFileService take care of that ?!?!
    
+   delete [] fPBinsXF;
+   delete [] fPbarBinsXF;
+   delete [] fPiBinsXF;
    if ( fChi2Calc ) delete fChi2Calc;
       
 }
@@ -144,6 +155,7 @@ void artg4tk::AnalyzerNA49::beginJob()
   
    bincenter.clear();
      
+/*
    fNPBinsPT = 20; // 19+1 for edges
    for ( int ii=0; ii<10; ++ii )
    {
@@ -170,7 +182,7 @@ void artg4tk::AnalyzerNA49::beginJob()
    fPBinsPT[fNPBinsPT-1] = fPBinsPT[fNPBinsPT-2] + 0.2;
     
    bincenter.clear();
-   
+*/   
    std::vector<std::string> PrXFLabel;
    PrXFLabel.push_back("-0.800");
    PrXFLabel.push_back("-0.750");
@@ -226,17 +238,8 @@ void artg4tk::AnalyzerNA49::beginJob()
                                           // while all other are N+1 !!!
    {
 
-/*
-     double xF = (fPBinsXF[nb]+fPBinsXF[nb+1])/2.;   
-     if ( fabs(xF-0.10625) < 1.e-10 ) xF = 0.1;
-     if ( fabs(xF+0.10625) < 1.e-10 ) xF = -0.1;
-
-     std::ostringstream osXF;
-     osXF << xF;
-*/
      std::ostringstream osBin;
      osBin << nb;
-     // std::string title = "xF=" + osXF.str();
      std::string title = "xF=" + PrXFLabel[nb];
      hname = "tmp_proton_pT_DDIFF_" + osBin.str();
      // ---> fHistoPTProton.push_back( tfs->make<TH1D>( hname.c_str(), title.c_str(), fNPBinsPT-1, fPBinsPT ) );     
@@ -245,17 +248,61 @@ void artg4tk::AnalyzerNA49::beginJob()
    
    // secondary anti-proton
    
+/*
    // we specify bin left edge, to make the bin center match the exp.data
    //
    double pbarbins[] = { -0.55, -0.45, -0.35, -0.25, -0.175, -0.125, -0.0875, -0.0625, -0.0375, 
                          -0.0125,
 			 0.0125, 0.0375, 0.075, 0.125, 0.175, 0.25, 0.35, 0.45, 0.55 };
    int npbarbins = sizeof(pbarbins) / sizeof(double) - 1;
-
+   
    // ---> fHistoSecAntiProton.push_back( tfs->make<TH1D>( "antiproton_dNdxF",  "Integrated", npbarbins, pbarbins ) );	
    // ---> fHistoSecAntiProton.push_back( tfs->make<TProfile>( "antiproton_pT", "Integrated", npbarbins, pbarbins, 0., 10. ) );	
+*/
    fHistoSecAntiProton.push_back( new TH1D( "tmp_antiproton_dNdxF",  "Integrated", 2000, -1., 1. ) );	
    fHistoSecAntiProton.push_back( new TProfile( "tmp_antiproton_pT", "Integrated", 2000, -1., 1., 0., 10. ) );	
+   
+   fNPbarBinsXF = 14; // 13+1
+   fPbarBinsXF = new double[fNPbarBinsXF];
+   fPbarBinsXF[0] = -0.225;
+   fPbarBinsXF[1] = -0.175;
+   fPbarBinsXF[2] = -0.125;
+   fPbarBinsXF[3] = -0.0875;
+   fPbarBinsXF[4] = -0.0625;
+   fPbarBinsXF[5] = -0.0375;
+   fPbarBinsXF[6] = -0.0125;
+   fPbarBinsXF[7] =  0.0125;
+   fPbarBinsXF[8] =  0.0375;
+   fPbarBinsXF[9] =  0.075;
+   fPbarBinsXF[10]=  0.125;
+   fPbarBinsXF[11]=  0.175;
+   fPbarBinsXF[12]=  0.25;
+   fPbarBinsXF[13]=  0.35;
+   
+   std::vector<std::string> PbarXFLabel;
+   PbarXFLabel.push_back("-0.200");
+   PbarXFLabel.push_back("-0.150");
+   PbarXFLabel.push_back("-0.100");
+   PbarXFLabel.push_back("-0.075");
+   PbarXFLabel.push_back("-0.050");
+   PbarXFLabel.push_back("-0.025");
+   PbarXFLabel.push_back("0.000");
+   PbarXFLabel.push_back("0.025");
+   PbarXFLabel.push_back("0.050");
+   PbarXFLabel.push_back("0.100");
+   PbarXFLabel.push_back("0.150");
+   PbarXFLabel.push_back("0.200");
+   PbarXFLabel.push_back("0.300");
+
+   for ( int nb=0; nb<fNPbarBinsXF-1; ++nb ) 
+   {
+
+     std::ostringstream osBin;
+     osBin << nb;
+     std::string title = "xF=" + PbarXFLabel[nb];
+     hname = "tmp_antiproton_pT_DDIFF_" + osBin.str();
+     fHistoPTAntiProton.push_back( new TH1D( hname.c_str(), title.c_str(), 250, 0., 2.5 ) );     
+   }
    
    // secondary pions
 
@@ -327,6 +374,7 @@ void artg4tk::AnalyzerNA49::beginJob()
   PiXFLabel.push_back(  "0.500" );
     
   
+/*
   fNPiBinsPT = 17;
   fPiBinsPT = new double[fNPiBinsPT];
   fPiBinsPT[0] = 0.025;
@@ -346,7 +394,7 @@ void artg4tk::AnalyzerNA49::beginJob()
   fPiBinsPT[14] = 1.3;
   fPiBinsPT[15] = 1.5;
   fPiBinsPT[16] = 1.7;
-
+*/
    // book histos for integrated ** pi- ** spectra
    
    // ---> fHistoSecPiMinus.push_back( tfs->make<TH1D>( "piminus_dNdxF",   "Integrated", fNPiBinsXF-1, fPiBinsXF ) );
@@ -365,15 +413,8 @@ void artg4tk::AnalyzerNA49::beginJob()
 
    for ( int nb=0; nb<fNPiBinsXF-1; ++nb )
    {
-/*
-     double xF = (fPiBinsXF[nb]+fPiBinsXF[nb+1])/2.;
-     std::ostringstream osXF;
-     osXF << xF;
-*/
      std::ostringstream osBin;
      osBin << nb;
-     // std::string title = " xF = " + osXF.str();
-     // std::string title = "xF of secondary particle = " + PiXFLabel[nb];
      std::string title = "xF=" + PiXFLabel[nb];
      hname = "tmp_piminus_pT_DDIFF_" + osBin.str();
      // ---> fHistoPTPiMinus.push_back( tfs->make<TH1D>( hname.c_str(), title.c_str(), fNPiBinsPT-1, fPiBinsPT ) ); 
@@ -403,11 +444,14 @@ void artg4tk::AnalyzerNA49::endJob()
 
    art::ServiceHandle<art::TFileService> tfs;  
 
+   std::cout << " TFileService called" << std::endl;
+
    double stat = fHistoNSec->Integral();   
    fHistoNSec->Scale( (1./stat), "width" );
    
    if ( fIncludeExpData )
    {
+      
       bool ok = matchVDBRec2MC( fBTConf.GetBeamPartID(),
                                 fBTConf.GetBeamMomentum(),
 				fBTConf.GetTargetID() );
@@ -492,6 +536,37 @@ void artg4tk::AnalyzerNA49::endJob()
 	    if ( !( classname == "TProfile" ) ) h->Scale(  1./((double)stat),"width" );  
 	 }
       }
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoPTAntiProton.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoPTAntiProton[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoPTAntiProton[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoPTProton[unmatched[ium]]->GetNbinsX(); ++ix )
+         {
+            double bc = fHistoPTAntiProton[unmatched[ium]]->GetBinCenter(ix);
+	    double bw = fHistoPTAntiProton[unmatched[ium]]->GetBinWidth(ix);
+	    double wei = 2. * bc * bw; 
+	    double y = fHistoPTAntiProton[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoPTAntiProton[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/wei );
+	    h1->SetBinError( ix, ey/wei );
+	 }
+	 h1->Scale( fXSecOnTarget/((double)stat) ); 
+      }      
 
       // pi-
       //
@@ -661,6 +736,27 @@ void artg4tk::AnalyzerNA49::endJob()
 	 std::string classname = fHistoSecAntiProton[i]->ClassName();
 	 TH1D* h = copyHisto2TFS( fHistoSecAntiProton[i], "tmp_" );
 	 if ( !( classname == "TProfile" ) ) h->Scale(1./((double)stat),"width"); 
+      }
+      for ( size_t i=0; i<fHistoPTAntiProton.size(); ++i )
+      {
+	 std::string hname = fHistoPTAntiProton[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoPTAntiProton[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoPTAntiProton[i]->GetTitle() );
+	 for ( int ix=1; ix<fHistoPTAntiProton[i]->GetNbinsX(); ++ix )
+         {
+            double bc = fHistoPTAntiProton[i]->GetBinCenter(ix);
+	    double bw = fHistoPTAntiProton[i]->GetBinWidth(ix);
+	    double wei = 2. * bc * bw;
+	    double y = fHistoPTAntiProton[i]->GetBinContent(ix); 
+	    double ey = fHistoPTAntiProton[i]->GetBinError(ix); 
+	    h->SetBinContent( ix, y/wei );
+	    h->SetBinError( ix, ey/wei );
+	 }
+	 h->Scale( fXSecOnTarget/((double)stat) ); // Note: NO scaling with "width" here 
       }
       //
       // secondary pi-
@@ -869,6 +965,20 @@ void artg4tk::AnalyzerNA49::analyze( const art::Event& e )
       {
 	   fHistoSecAntiProton[0]->Fill( xF );
 	   fHistoSecAntiProton[1]->Fill( xF, pT );
+	   int nb = -1;
+	   for ( int ib=0; ib<fNPbarBinsXF; ++ib ) // # number of proton bins are N and the size is N+1, while for pions # is N+1
+	                                        // need to make it uniform !!!
+	   {
+	         if ( xF > fPbarBinsXF[ib] && xF <= fPbarBinsXF[ib+1] )
+		 {
+		    nb = ib;
+		    break;
+		 }
+	   }
+	   if ( nb == -1 ) continue;
+	   // calculate weight as Epart/dP3 (see NA49 papers on the SPS hadrons site at CERN) 
+	   double wei = calculateBinWeight( labp, pname, ekin, mass, pT, nb, SQRT_S );
+	   fHistoPTAntiProton[nb]->Fill( pT, wei ); 
       }
    
    }   
@@ -980,6 +1090,17 @@ TH1* artg4tk::AnalyzerNA49::matchExpSpectrum2MC( const int& secid,
       {
          return fHistoSecAntiProton[1];
       }
+      else if ( observable == 9 )
+      {
+          for ( size_t i=0; i<fHistoPTAntiProton.size(); ++i )
+	  {
+	     std::string htitle = fHistoPTAntiProton[i]->GetTitle();
+	     if ( htitle == xfbin ) 
+	     {
+		return fHistoPTAntiProton[i];
+	     }
+	  }
+      }
       else
       {
          return NULL;
@@ -1060,6 +1181,11 @@ double artg4tk::AnalyzerNA49::calculateBinWeight( const CLHEP::HepLorentzVector&
       // ---> dpT2 = fPBinsPT[pTbin+1]*fPBinsPT[pTbin+1] - fPBinsPT[pTbin]*fPBinsPT[pTbin];
       pLmin = fPBinsXF[xFbin]*sqrt_s/2.;
       pLmax = fPBinsXF[xFbin+1]*sqrt_s/2.;
+   }
+   else if ( pname == "anti_proton" )
+   {
+      pLmin = fPbarBinsXF[xFbin]*sqrt_s/2.;
+      pLmax = fPbarBinsXF[xFbin+1]*sqrt_s/2.;
    }
    
    double EPCM1 = std::sqrt( (pLmin*pLmin+pT*pT) + mass*mass );

@@ -340,6 +340,27 @@ void artg4tk::ModelParamAnalyzerBase::Store4Professor( const std::string& label 
 	 new_name.replace( pos, 1, "p" );
 	 pos = new_name.find(".");
       }
+      // now replace all "-" with "mn" in the new name
+      pos = new_name.find("-");
+      while ( pos != std::string::npos )
+      {
+	 new_name.replace( pos, 1, "mn" );
+	 pos = new_name.find("-");
+      }      
+      // now replace all "+" with "pl" in the new name
+      pos = new_name.find("+");
+      while ( pos != std::string::npos )
+      {
+	 new_name.replace( pos, 1, "pl" );
+	 pos = new_name.find("+");
+      }      
+      // now replace all "=" with "eq" in the new name
+      pos = new_name.find("=");
+      while ( pos != std::string::npos )
+      {
+	 new_name.replace( pos, 1, "eq" );
+	 pos = new_name.find("=");
+      }      
       TH1D* h1 = data4prof.make<TH1D>( *hd );
       h1->SetName( new_name.c_str() );
       std::string classname = (itr->second)->ClassName();

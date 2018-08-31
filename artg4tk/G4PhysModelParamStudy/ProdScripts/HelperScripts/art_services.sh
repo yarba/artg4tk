@@ -63,3 +63,30 @@ fi
 /usr/bin/printf "} \n" 
 
 }
+
+cfg_services_analysis () {
+
+/usr/bin/printf " \n"
+/usr/bin/printf "services: { \n" 
+
+/usr/bin/printf "   message: { \n"  
+/usr/bin/printf "      debugModules : [\"*\"] \n"  
+/usr/bin/printf "      suppressInfo : [] \n"   
+/usr/bin/printf "      destinations : { \n"   
+/usr/bin/printf "         LogToConsole : { \n"  
+/usr/bin/printf "            type : \"cout\" \n"  
+/usr/bin/printf "            threshold : \"DEBUG\" \n"  
+/usr/bin/printf "            categories : { default : { limit : 50 } } \n"  
+/usr/bin/printf "       } \n" 
+/usr/bin/printf "      } \n"  
+/usr/bin/printf "   } \n" 
+
+if [ ! "x" == "x$ts_filename" ]; then
+/usr/bin/printf "   TFileService: { fileName: \"${ts_filename}.root\" } \n"
+fi
+
+/usr/bin/printf "   RandomNumberGenerator: {} \n"
+
+/usr/bin/printf "} \n" 
+
+}
