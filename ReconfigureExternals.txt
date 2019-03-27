@@ -72,7 +72,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$G4INSTALL \
 -DGEANT4_USE_SYSTEM_CLHEP=ON \
 -DCMAKE_CXX_COMPILER=g++ \
 $G4INSTALL
-NOTE: as Geant4 is a developing project, in some cases c++14 will need to be activated: -DGEANT4_BUILD_CXXSTD=14
+NOTE: as Geant4 is a developing project, in some cases c++14 will need to be activated: -DGEANT4_BUILD_CXXSTD=14 or 17
 NOTE: in principle, OPENGL should also be included to activate artg4tk visualization features but we skip it for now
 NOTE: we install geant4 (libraries, etc.) in the G4INSTALL area (e.g. the "original" geant4-10-03-patch-01, not the "-build" one) but other options are possible)
 make -j8
