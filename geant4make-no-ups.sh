@@ -67,7 +67,7 @@ unset  G4LIB_USE_ZLIB
 # - GDML Options
 unset  G4LIB_BUILD_GDML
 unset  G4LIB_USE_GDML
-unset  XERCESCROOT
+# ---> unset  XERCESCROOT
 
 # - G3ToG4
 unset  G4LIB_BUILD_G3TOG4
@@ -268,7 +268,7 @@ export G4LIB_USE_ZLIB=1
 # GDML Setup
 #
 export G4LIB_USE_GDML=1
-export XERCESCROOT=/g4/yarba_j/scisoft-installs/externals/xerces_c/v3_1_1c/Linux64bit+2.6-2.12-e7-prof
+# ---> export XERCESCROOT=/g4/yarba_j/scisoft-installs/externals/xerces_c/v3_1_1c/Linux64bit+2.6-2.12-e7-prof
 
 #-----------------------------------------------------------------------
 # G3ToG4 Setup

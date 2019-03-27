@@ -66,14 +66,12 @@ void artg4tk::AnalyzerWithExpDataBase::endJob()
       {
 	  
 	 art::ServiceHandle<art::TFileService> tfs;
-	 art::TFileDirectory exdir = tfs->mkdir( "ExpData" );  
-	
+	 art::TFileDirectory exdir = tfs->mkdir( "ExpData" ); 	 
 	 for ( size_t ir=0; ir<fVDBRecordID.size(); ++ir )
 	 {
 	    // fJSONRecords.push_back( fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] ) );
 	    std::string rjson = fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] );
-	    fJSONRecords.insert( std::pair<int, std::string>( fVDBRecordID[ir], rjson ) );
-	    
+	    fJSONRecords.insert( std::pair<int, std::string>( fVDBRecordID[ir], rjson ) );	    
 	    std::string hname = "ExpDataR" + std::to_string(fVDBRecordID[ir]);
 	    exdir.make<TH1D>( *(fJSON2Data->Convert2Histo(rjson,hname.c_str())) );
 	 }
