@@ -47,7 +47,6 @@ find_ups_product(art)
 find_ups_product(canvas)
 find_ups_product(fhiclcpp)
 find_ups_product(messagefacility)
-# ---> find_ups_product(larcoreobj)
 #
 set( G4INSTALL $ENV{G4INSTALL} )
 #
