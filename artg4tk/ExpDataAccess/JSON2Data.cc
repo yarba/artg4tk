@@ -168,11 +168,21 @@ int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
       {
          blnk = 41;
       }
-      // IAEA/Ishibashi (there should also be mom's corresponding 
-      // to Ekin=0.8GeV and EKin=1.5GeV
+      // IAEA/Ishibashi
+      // Ekin=3GeV --> mom=3.824
+      // Ekin=1.5GeV --> mom=2.2505 
+      // Ekin=0.8GeV --> mom=1.4633
       else if ( fabs(mom-3.824) <= 1.e-10 && fRefLink == 68 )
       {
          blnk = 107;
+      }
+      else if ( fabs(mom-2.2505) <= 1.e-10 && fRefLink == 68 )
+      {
+         blnk = 106;
+      }
+      else if ( fabs(mom-1.4633) <= 1.e-10 && fRefLink == 68 )
+      {
+         blnk = 105;
       }
    }
    else if (pid == 211 )
