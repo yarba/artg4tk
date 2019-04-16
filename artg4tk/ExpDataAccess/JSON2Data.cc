@@ -86,47 +86,85 @@ int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
 
    int blnk = -1;
    
-   // HARP-like beam defs 
+   // NA49-like, SASM6E-like, NA61-like, and HARP-like beam defs 
    // (some overlaps with ITEP771, e.g. 5GeV/c pions) 
    //
    if ( pid == 2212 )
    {
-      if ( fabs(mom-158.) <= 1.e-10 )
+      if ( fabs(mom-158.) <= 1.e-10 ) // NA49
       {
          blnk = 7;
       }
-      else if ( fabs(mom-100.) <= 1.e-10  && fRefLink == 56 )
+      else if ( fabs(mom-100.) <= 1.e-10  && fRefLink == 56 ) // SAS M6E
       {
          blnk = 12;
       }
-      else if ( fabs(mom-31.) <= 1.e-10 && fRefLink == 69 )
+      else if ( fabs(mom-31.) <= 1.e-10 && fRefLink == 69 ) // NA61
       {
          blnk = 36;
       }
-      else if ( fabs(mom-3.) <= 1.e-10 )
+      // 
+      // From here on, HARP and/or ITEP771
+      //
+      else if ( fabs(mom-1.) <= 1.e-10 && fRefLink == 17 ) // ITEP771
       {
-         blnk = 37;
+         blnk = 50;
       }
-      else if ( fabs(mom-5.) <= 1.e-10 )
+      else if ( fabs(mom-1.4) <= 1.e-10 && fRefLink == 17 ) // ITEP771
       {
-         if ( fRefLink == 17 )
+         blnk = 51;
+      }
+      else if ( fabs(mom-2.) <= 1.e-10 && fRefLink == 17 ) // ITEP771
+      {
+         blnk = 52;
+      }
+      else if ( fabs(mom-3.) <= 1.e-10 ) 
+      {
+         if ( fRefLink == 17 ) // ITEP771
+	 {
+	    blnk = 69;
+	 }
+	 else                 // HARP
+	 {
+	    blnk = 37;
+	 }
+      }
+      else if ( fabs(mom-5.) <= 1.e-10 ) 
+      {
+         if ( fRefLink == 17 ) // ITEP771
 	 {
 	    blnk = 70;
 	 }
-	 else
+	 else                  // HARP
 	 {
 	    blnk = 38;
 	 }
       }
-      else if ( fabs(mom-8.) <= 1.e-10 )
+      else if ( fabs(mom-6.) <= 1.e-10 && fRefLink == 17 ) // ITEP771
+      {
+         blnk = 53;
+      }
+      else if ( fabs(mom-7.) <= 1.e-10 && fRefLink == 17 ) // ITEP771 
+      {
+         blnk = 56;
+      }
+      else if ( fabs(mom-7.5) <= 1.e-10 && fRefLink == 17 ) // ITEP771
+      {
+         blnk = 57;
+      }
+      else if ( fabs(mom-8.) <= 1.e-10 ) // HARP
       {
          blnk = 39;
       }
-      else if ( fabs(mom-8.9) <= 1.e-10 )
+      else if ( fabs(mom-8.25) <= 1.e-10 && fRefLink == 17 ) // ITEP771
+      {
+         blnk = 58;
+      }
+      else if ( fabs(mom-8.9) <= 1.e-10 ) // HARP
       {
          blnk = 40;
       }
-      else if ( fabs(mom-12.) <= 1.e-10 )
+      else if ( fabs(mom-12.) <= 1.e-10 ) // HARP
       {
          blnk = 41;
       }
@@ -136,74 +174,96 @@ int MetaData::EmulateBeamLink( const int& pid, const double& mom ) const
       {
          blnk = 107;
       }
-      else if ( fabs(mom-2.2505) <= 1.e-10 && fRefLink == 68 )
-      {
-         blnk = 106;
-      }
-      else if ( fabs(mom-1.4633) <= 1.e-10 && fRefLink == 68 )
-      {
-         blnk = 105;
-      }
    }
    else if (pid == 211 )
    {
-      if ( fabs(mom-100.) <= 1.e-10  && fRefLink == 56 )
+      //
+      // SAS M6E
+      //
+      if ( fabs(mom-100.) <= 1.e-10  && fRefLink == 56 ) // SAS M6E
       {
          blnk = 10;
       }
+      // 
+      // From here on, HARP and/or ITEP771
+      //
+      else if ( fabs(mom-1.) <= 1.e-10 && fRefLink == 17 )
+      {
+         blnk = 61;
+      }
+      else if ( fabs(mom-1.4) <= 1.e-10 && fRefLink == 17 )
+      {
+         blnk = 62;
+      }
+      else if ( fabs(mom-2.) <= 1.e-10 && fRefLink == 17 )
+      {
+         blnk = 63;
+      }
       else if ( fabs(mom-3.) <= 1.e-10 )
       {
-         if ( fRefLink == 17 )
+         if ( fRefLink == 17 )  // ITEP771
 	 {
 	    blnk = 71;
 	 }
-	 else
+	 else                   // HARP
 	 {
 	    blnk = 42;
 	 }
       }
+      else if ( fabs(mom-4.) <= 1.e-10 && fRefLink == 17 ) // ITEP771
+      {
+         blnk = 64;
+      }
       else if ( fabs(mom-5.) <= 1.e-10 )
       {
-         if ( fRefLink == 17 )
+         if ( fRefLink == 17 )   // ITEP771
 	 {
 	    blnk = 72;
 	 }
-	 else
+	 else                    // HARP
 	 {
             blnk = 43;
 	 }
       }
-      else if ( fabs(mom-8.) <= 1.e-10 )
+      else if ( fabs(mom-6.) <1.e-10 && fRefLink == 17 )  // ITEP771
+      {
+         blnk = 65;
+      }
+      else if ( fabs(mom-8.) <= 1.e-10 ) // HARP
       {
          blnk = 44;
       }
-      else if ( fabs(mom-12.) <= 1.e-10 )
+      else if ( fabs(mom-12.) <= 1.e-10 )  // HARP
       {
          blnk = 45;
       }
    }
    else if ( pid == -211 )
    {
-      if ( fabs(mom-3.) <= 1.e-10 )
+      if ( fabs(mom-1.4) < 1.e-10 && fRefLink == 17 )  // ITEP771
+      {
+         blnk = 66;
+      }
+      if ( fabs(mom-3.) <= 1.e-10 )  // HARP
       {
          blnk = 46;
       }
       else if ( fabs(mom-5.) <= 1.e-10 )
       {
-         if ( fRefLink == 17 )
+         if ( fRefLink == 17 )  // ITEP771
 	 {
 	    blnk = 73;
 	 }
-	 else
+	 else                  // HARP
 	 {
             blnk = 47;
 	 }
       }
-      else if ( fabs(mom-8.) <= 1.e-10 )
+      else if ( fabs(mom-8.) <= 1.e-10 )  // HARP
       {
          blnk = 48;
       }
-      else if( fabs(mom-12.) <= 1.e-10 )
+      else if( fabs(mom-12.) <= 1.e-10 )  // HARP
       {
          blnk = 49;
       }
