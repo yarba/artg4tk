@@ -96,6 +96,8 @@ physics: {
 	ProductLabel: "G4FTFPDefault"
 	IncludeExpData:
 	{
+	      UseASCIIRecords: true
+	      Path2Records : "/lfstev/g4p/yarba_j/g4studies/dossier-json"
 	      DBRecords: [ 
 ## integrated spectra for all seconadries - the first 5 are dN/dxF and the last 4 are d<pt>/dxF	      
                           14649, 14650, 14651, 14652, 14653, 14654, 14655, 14656, 14657

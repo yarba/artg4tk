@@ -1,5 +1,7 @@
 
 #include "artg4tk/G4PhysModelParamStudy/AnalysisBase/AnalyzerWithExpDataBase.hh"
+#include "artg4tk/ExpDataAccess/DoSSiERConnect.hh"
+#include "artg4tk/ExpDataAccess/ASCIIRecord.hh"
 
 #include "art/Framework/Services/Optional/TFileService.h"
 #include "TFile.h"
@@ -24,8 +26,24 @@ artg4tk::AnalyzerWithExpDataBase::AnalyzerWithExpDataBase( const fhicl::Paramete
    if ( p.has_key("IncludeExpData") )
    {   
       fIncludeExpData = true;
-      fVDBRecordID = (p.get<fhicl::ParameterSet>("IncludeExpData")).get<std::vector<int> >("DBRecords");
-      fVDBConnect = new VDBConnect();
+      fhicl::ParameterSet pp = p.get<fhicl::ParameterSet>("IncludeExpData");
+      // fVDBRecordID = (p.get<fhicl::ParameterSet>("IncludeExpData")).get<std::vector<int> >("DBRecords");
+      fVDBRecordID = pp.get<std::vector<int> >("DBRecords");
+      fUseJSONASCII = pp.get<bool>("UseASCIIRecords",false);
+      if ( fUseJSONASCII )
+      {
+         fVDBConnect = new ASCIIRecord();
+	 std::string path = pp.get<std::string>("Path2Records",".");
+	 // check if records exist in the specified dir !!!
+	 fVDBConnect->SetPath( path );
+      }
+      else
+      {
+         fVDBConnect = new DoSSiERConnect();
+	 fVDBConnect->SetPath( "http://g4validation.fnal.gov:8080/DoSSiER/WebAPI" );
+      }
+
+// ---> Replace by ASCII or DoSSiER --->      fVDBConnect = new VDBConnect();
       bool status = fVDBConnect->Init();
       if ( !status )
       {
@@ -42,7 +60,8 @@ artg4tk::AnalyzerWithExpDataBase::AnalyzerWithExpDataBase( const fhicl::Paramete
          fJSON2Data->BuildDictionaries( "Observable", fVDBConnect->GetDictionary("Observable") );
          fJSON2Data->BuildDictionaries( "Reference",  fVDBConnect->GetDictionary("Reference") );
          fJSON2Data->BuildDictionaries( "Datatypes",  fVDBConnect->GetDictionary("Datatypes") );
-      } 
+      }
+
    }
    
 }
@@ -69,8 +88,9 @@ void artg4tk::AnalyzerWithExpDataBase::endJob()
 	 art::TFileDirectory exdir = tfs->mkdir( "ExpData" ); 	 
 	 for ( size_t ir=0; ir<fVDBRecordID.size(); ++ir )
 	 {
-	    // fJSONRecords.push_back( fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] ) );
-	    std::string rjson = fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] );
+	    // ??? fJSONRecords.push_back( fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] ) );
+	    // ---> Replace "generic" GetReposnce ---> std::string rjson = fVDBConnect->GetHTTPResponse( fVDBRecordID[ir] );
+	    std::string rjson = fVDBConnect->GetResponse( fVDBRecordID[ir] );
 	    fJSONRecords.insert( std::pair<int, std::string>( fVDBRecordID[ir], rjson ) );	    
 	    std::string hname = "ExpDataR" + std::to_string(fVDBRecordID[ir]);
 	    exdir.make<TH1D>( *(fJSON2Data->Convert2Histo(rjson,hname.c_str())) );

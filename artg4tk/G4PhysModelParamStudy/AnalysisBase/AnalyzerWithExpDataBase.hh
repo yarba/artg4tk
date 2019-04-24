@@ -8,7 +8,8 @@
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "messagefacility/MessageLogger/MessageLogger.h" 
 
-#include "artg4tk/ExpDataAccess/VDBConnect.hh"
+// ---> #include "artg4tk/ExpDataAccess/VDBConnect.hh"
+#include "artg4tk/ExpDataAccess/ExpDataAccess.hh"
 #include "artg4tk/ExpDataAccess/JSON2Data.hh"
 
 namespace artg4tk {
@@ -35,8 +36,11 @@ namespace artg4tk {
       void overlayDataMC();
       
       bool                                   fIncludeExpData;
+      bool                                   fUseJSONASCII;
+      
       std::vector<int>                       fVDBRecordID;
-      VDBConnect*                            fVDBConnect;
+      // --> VDBConnect*                            fVDBConnect;
+      ExpDataAccess*                         fVDBConnect;
       JSON2Data*                             fJSON2Data;
 //
       std::map< int, std::string >           fJSONRecords;
