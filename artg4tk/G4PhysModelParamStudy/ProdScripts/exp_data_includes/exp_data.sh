@@ -24,7 +24,7 @@ exp_data_proton3.824GeV_Fe_IAEA() {
 
 }
 
-exp_data_proton3.284GeV_Pb_IAEA() {
+exp_data_proton3.824GeV_Pb_IAEA() {
 
 /usr/bin/printf "            DBRecords: [ 189636, 189637, 189638, 189639, 189640, 189641 ]"
 
@@ -33,6 +33,27 @@ exp_data_proton3.284GeV_Pb_IAEA() {
 # HARP
 #
 # bid=37-41 (HARP/PC 3,5,8,8.9,12 GeV/c proton)
+
+exp_data_proton3.0GeV_C_HARP() {
+
+/usr/bin/printf "            DBRecords: [ 10538, 10539, 10540, 10541, 10542, 10543, 10544, 10545, 10546, 10547, 10548, 10549, 10550,\n"
+/usr/bin/printf "                         10590, 10591, 10592, 10593, 10594, 10595, 10596, 10597, 10598, 10599, 10600, 10601, 10602 ]"
+
+}
+
+exp_data_proton3.0GeV_Cu_HARP() {
+
+/usr/bin/printf "            DBRecords: [ 10642, 10643, 10644, 10645, 10646, 10647, 10648, 10649, 10650, 10651, 10652, 10653, 10654,\n"
+/usr/bin/printf "                         10694, 10695, 10696, 10697, 10698, 10699, 10700, 10701, 10702, 10703, 10704, 10705, 10706 ]"
+
+}
+
+exp_data_proton3.0GeV_Pb_HARP() {
+
+/usr/bin/printf "            DBRecords: [ 10746, 10747, 10748, 10749, 10750, 10751, 10752, 10753, 10754, 10755, 10756, 10757, 10758,\n"
+/usr/bin/printf "                         10798, 10799, 10800, 10801, 10802, 10803, 10804, 10805, 10806, 10807, 10808, 10809, 10810 ]"
+
+}
 
 exp_data_proton5.0GeV_C_HARP() {
 
@@ -80,6 +101,28 @@ exp_data_proton8.0GeV_Pb_HARP() {
 
 }
 
+exp_data_proton12.0GeV_C_HARP() {
+
+/usr/bin/printf "            DBRecords: [ 10577, 10578, 10579, 10580, 10581, 10582, 10583, 10584, 10585, 10586, 10587, 10588, 10589, \n"
+/usr/bin/printf "                         10629, 10630, 10631, 10632, 10633, 10634, 10635, 10636, 10637, 10638, 10639, 10640, 10641 ]"
+
+}
+
+exp_data_proton12.0GeV_Cu_HARP() {
+
+/usr/bin/printf "            DBRecords: [ 10681, 10682, 10683, 10684, 10685, 10686, 10687, 10688, 10689, 10690, 10691, 10692, 10693, \n"
+/usr/bin/printf "                         10733, 10734, 10735, 10736, 10737, 10738, 10739, 10740, 10741, 10742, 10743, 10744, 10745 ]"
+
+}
+
+exp_data_proton12.0GeV_Pb_HARP() {
+
+/usr/bin/printf "            DBRecords: [ 10785, 10786, 10787, 10788, 10789, 10790, 10791, 10792, 10793, 10794, 10795, 10796, 10797, \n"
+/usr/bin/printf "                         10837, 10838, 10839, 10840, 10841, 10842, 10843, 10844, 10845, 10946, 10847, 10848, 10849 ]"
+
+}
+
+
 # ITEP
 #
 # bid=57 (7.5GeV/c proton), bid=70 (5GeV/c proton) 
@@ -112,15 +155,16 @@ exp_data_proton7.5GeV_C_ITEP() {
 /usr/bin/printf "            DBRecords: [ 2371, 2372, 2373, 2374, 2375, 2376, 2377, 2378, 2379, 2380, \n"
 /usr/bin/printf "                         2381, 2382, 2383, 2384, 2385, 2386, 2387, 2388, 2389, 2390, \n"
 /usr/bin/printf "                         2391, 2392, 2393, 2394, 2395, 2396, 2397, 2398, 2399, \n"
-/usr/bin/printf "                         2402, 2303, 2404, 2405 ]"
+/usr/bin/printf "                         2402, 2403, 2404, 2405 ]"
 
 }
 
+// NOTE: only 28 records here as id=2475 seems to be missing
 exp_data_proton7.5GeV_Cu_ITEP() {
 
 /usr/bin/printf "            DBRecords: [ 2454, 2455, 2456, 2457, 2458, 2459, 2460, 2461, 2462, 2463, \n"
 /usr/bin/printf "                         2464, 2465, 2466, 2467, 2468, 2469, 2470, 2471, 2472, 2473, \n"
-/usr/bin/printf "                         2474, 2475, 2476, 2766, 2478, 2479, 2480, 2481, 2482, \n"
+/usr/bin/printf "                         2474, 2476, 2477, 2478, 2479, 2480, 2481, 2482, \n"
 /usr/bin/printf "                         2487, 2488, 2489, 2490 ]"
 
 }
@@ -160,9 +204,71 @@ exp_data_proton31.0GeV_C_NA61() {
 
 }
 
+# SAS M6E
+#
+# bid=12 (11 for K+, 10 for pi+)
+
+exp_data_proton100.0GeV_C_SASM6E() {
+
+/usr/bin/printf "            DBRecords: [ \n"
+/usr/bin/printf "                         // secondary pi+ \n"
+/usr/bin/printf "                         9009, 9010, \n"
+/usr/bin/printf "                         // secondary pi- \n"
+/usr/bin/printf "                         9011, 9012, 9013, \n"
+/usr/bin/printf "                         // secondary K+ \n"
+/usr/bin/printf "                         9014, 9015, \n"
+/usr/bin/printf "                         // secondary K- \n"
+/usr/bin/printf "                         9016, 9017, 9018, \n"
+/usr/bin/printf "                         // secondary proton \n"
+/usr/bin/printf "                         9019, 9020, \n"
+/usr/bin/printf "                         // secondary antiproton \n"
+/usr/bin/printf "                         9021, 9022, 9023 \n"
+/usr/bin/printf "                       ] \n"
+ 
+}
+
+exp_data_proton100.0GeV_Cu_SASM6E() {
+
+/usr/bin/printf "            DBRecords: [ \n"
+/usr/bin/printf "                         // secondary pi+ \n"
+/usr/bin/printf "                         9024, 9025, \n"
+/usr/bin/printf "                         // secondary pi- \n"
+/usr/bin/printf "                         9026, 9027, 9028, \n"
+/usr/bin/printf "                         // secondary K+ \n"
+/usr/bin/printf "                         9029, 9030, \n"
+/usr/bin/printf "                         // secondary K- \n"
+/usr/bin/printf "                         9031, 9032, 9033, \n"
+/usr/bin/printf "                         // secondary proton \n"
+/usr/bin/printf "                         9034, 9035, \n"
+/usr/bin/printf "                         // secondary antiproton \n"
+/usr/bin/printf "                         9036, 9037, 9038 \n"
+/usr/bin/printf "                       ] \n"
+
+}
+
+exp_data_proton100.0GeV_Pb_SASM6E() {
+
+/usr/bin/printf "            DBRecords: [ \n"
+/usr/bin/printf "                         // secondary pi+ \n"
+/usr/bin/printf "                         9039, 9040, \n"
+/usr/bin/printf "                         // secondary pi- \n"
+/usr/bin/printf "                         9041, 9042, 9043, \n"
+/usr/bin/printf "                         // secondary K+ \n"
+/usr/bin/printf "                         9044, 9045, \n"
+/usr/bin/printf "                         // secondary K- \n"
+/usr/bin/printf "                         9046, 9047, 9048, \n"
+/usr/bin/printf "                         // secondary proton \n"
+/usr/bin/printf "                         9049, 9050, \n"
+/usr/bin/printf "                         // secondary antiproton \n"
+/usr/bin/printf "                         9051, 9052, 9053 \n"
+/usr/bin/printf "                       ] \n"
+
+}
+
+
 # NA49
 #
-# bid=
+# bid=7
 
 exp_data_proton158.0GeV_C_NA49() {
 
@@ -435,10 +541,64 @@ exp_data_piplus5.0GeV_Pb_ITEP() {
 
 }
 
+# SAS M6E
+#
+# bid=10 (11 for K+, 12 for proton)
 
+exp_data_piplus100.0GeV_C_SASM6E() {
 
+/usr/bin/printf "            DBRecords: [ \n"
+/usr/bin/printf "                         // secondary pi+ \n"
+/usr/bin/printf "                         8964, 8965, \n"
+/usr/bin/printf "                         // secondary pi- \n"
+/usr/bin/printf "                         8966, 8967, 8968, \n"
+/usr/bin/printf "                         // secondary K+ \n"
+/usr/bin/printf "                         8969, 8970, \n"
+/usr/bin/printf "                         // secondary K- \n"
+/usr/bin/printf "                         8971, 8972, 8973, \n"
+/usr/bin/printf "                         // secondary proton \n"
+/usr/bin/printf "                         8974, 8975, \n"
+/usr/bin/printf "                         // secondary antiproton \n"
+/usr/bin/printf "                         8976, 8977, 8978 \n"
+/usr/bin/printf "                       ] \n"
+ 
+}
 
+exp_data_piplus100.0GeV_Cu_SASM6E() {
 
+/usr/bin/printf "            DBRecords: [ \n"
+/usr/bin/printf "                         // secondary pi+ \n"
+/usr/bin/printf "                         8979, 8980, \n"
+/usr/bin/printf "                         // secondary pi- \n"
+/usr/bin/printf "                         8981, 8982, 8983, \n"
+/usr/bin/printf "                         // secondary K+ \n"
+/usr/bin/printf "                         8984, 8985, \n"
+/usr/bin/printf "                         // secondary K- \n"
+/usr/bin/printf "                         8986, 8987, 8988, \n"
+/usr/bin/printf "                         // secondary proton \n"
+/usr/bin/printf "                         8989, 8990, \n"
+/usr/bin/printf "                         // secondary antiproton \n"
+/usr/bin/printf "                         8991, 8992, 8993 \n"
+/usr/bin/printf "                       ] \n"
+ 
+}
 
+exp_data_piplus100.0GeV_Pb_SASM6E() {
 
+/usr/bin/printf "            DBRecords: [ \n"
+/usr/bin/printf "                         // secondary pi+ \n"
+/usr/bin/printf "                         8994, 8995, \n"
+/usr/bin/printf "                         // secondary pi- \n"
+/usr/bin/printf "                         8996, 8997, 8998, \n"
+/usr/bin/printf "                         // secondary K+ \n"
+/usr/bin/printf "                         8999, 9000, \n"
+/usr/bin/printf "                         // secondary K- \n"
+/usr/bin/printf "                         9001, 9002, 9003, \n"
+/usr/bin/printf "                         // secondary proton \n"
+/usr/bin/printf "                         9004, 9005, \n"
+/usr/bin/printf "                         // secondary antiproton \n"
+/usr/bin/printf "                         9006, 9007, 9008 \n"
+/usr/bin/printf "                       ] \n"
+ 
+}
 

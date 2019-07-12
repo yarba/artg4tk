@@ -43,11 +43,14 @@ namespace artg4tk {
    private:
 
       std::string extractPTBinFromTitle( const std::string& );
+      double      computeDPZ( double, double, int );
       
       void calculateChi2();
 
       int     fNBins;
       double* fBins;
+      int     fNBinsPt;
+      double* fBinsPt;
       double  fDeltaPt;
    
       TH1D*              fHistoNSec;
@@ -67,7 +70,7 @@ namespace artg4tk {
 
 artg4tk::AnalyzerSASM6E::AnalyzerSASM6E( const fhicl::ParameterSet& p )
   : artg4tk::ModelParamAnalyzerBase(p),
-    fNBins(7), fBins(0), fDeltaPt(0.1),
+    fNBins(7), fBins(0), fNBinsPt(3), fBinsPt(0), fDeltaPt(0.1),
     fChi2Calc(0)
 {
    if ( fIncludeExpData ) 
@@ -78,10 +81,21 @@ artg4tk::AnalyzerSASM6E::AnalyzerSASM6E( const fhicl::ParameterSet& p )
 
 artg4tk::AnalyzerSASM6E::~AnalyzerSASM6E()
 {
-   // do I need any histos delete's here ?!
-   // or will TFileService take care of that ?!?!
+   // delete tmp histos here
    
+/*
+   for ( size_t i=0; i<fHistoSecPiPlus.size(); ++i )
+   {
+      delete fHistoSecPiPlus[i];
+   }
+
+   for ( size_t i=0; i<fHistoSecPiMinus.size(); ++i )
+   {
+      delete fHistoSecPiMinus[i];
+   }
+*/
    if ( fBins ) delete [] fBins;
+   if ( fBinsPt ) delete [] fBinsPt;
    if ( fChi2Calc ) delete fChi2Calc;
       
 }
@@ -104,29 +118,35 @@ void artg4tk::AnalyzerSASM6E::beginJob()
    }
    fBins[7] = 91.; // (this will make center of bin at 88, i.e. 85-91) 
    
-   fHistoSecPiPlus.push_back( tfs->make<TH1D>( "piplus_pt180", "pt=0.18 [GeV/c]", fNBins, fBins  ) );
-   fHistoSecPiPlus.push_back( tfs->make<TH1D>( "piplus_pt300", "pt=0.3 [GeV/c]",  fNBins, fBins  ) );
-   fHistoSecPiPlus.push_back( tfs->make<TH1D>( "piplus_pt500", "pt=0.5 [GeV/c]",  fNBins, fBins  ) );
+   
+   fBinsPt = new double[fNBinsPt];
+   fBinsPt[0] = 0.18;
+   fBinsPt[1] = 0.3;
+   fBinsPt[2] = 0.5;
+   
+   fHistoSecPiPlus.push_back( new TH1D( "tmp_piplus_pt180", "pt=0.18 [GeV/c]", 1000, 0., 100.   ) );
+   fHistoSecPiPlus.push_back( new TH1D( "tmp_piplus_pt300", "pt=0.3 [GeV/c]",  1000, 0., 100.  ) );
+   fHistoSecPiPlus.push_back( new TH1D( "tmp_piplus_pt500", "pt=0.5 [GeV/c]",  1000, 0., 100.  ) );
 
-   fHistoSecPiMinus.push_back( tfs->make<TH1D>( "piminus_pt180", "pt=0.18 [GeV/c]", fNBins, fBins  ) );
-   fHistoSecPiMinus.push_back( tfs->make<TH1D>( "piminus_pt300", "pt=0.3 [GeV/c]",  fNBins, fBins  ) );
-   fHistoSecPiMinus.push_back( tfs->make<TH1D>( "piminus_pt500", "pt=0.5 [GeV/c]",  fNBins, fBins  ) );
+   fHistoSecPiMinus.push_back( new TH1D( "tmp_piminus_pt180", "pt=0.18 [GeV/c]", 1000, 0., 100.  ) );
+   fHistoSecPiMinus.push_back( new TH1D( "tmp_piminus_pt300", "pt=0.3 [GeV/c]",  1000, 0., 100.  ) );
+   fHistoSecPiMinus.push_back( new TH1D( "tmp_piminus_pt500", "pt=0.5 [GeV/c]",  1000, 0., 100.  ) );
 
-   fHistoSecKPlus.push_back( tfs->make<TH1D>( "kplus_pt180", "pt=0.18 [GeV/c]", fNBins, fBins  ) );
-   fHistoSecKPlus.push_back( tfs->make<TH1D>( "kplus_pt300", "pt=0.3 [GeV/c]",  fNBins, fBins  ) );
-   fHistoSecKPlus.push_back( tfs->make<TH1D>( "kplus_pt500", "pt=0.5 [GeV/c]",  fNBins, fBins  ) );
+   fHistoSecKPlus.push_back( new TH1D( "tmp_kplus_pt180", "pt=0.18 [GeV/c]", 1000, 0., 100.  ) );
+   fHistoSecKPlus.push_back( new TH1D( "tmp_kplus_pt300", "pt=0.3 [GeV/c]",  1000, 0., 100.  ) );
+   fHistoSecKPlus.push_back( new TH1D( "tmp_kplus_pt500", "pt=0.5 [GeV/c]",  1000, 0., 100.  ) );
 
-   fHistoSecKMinus.push_back( tfs->make<TH1D>( "kminus_pt180", "pt=0.18 [GeV/c]", fNBins, fBins  ) );
-   fHistoSecKMinus.push_back( tfs->make<TH1D>( "kminus_pt300", "pt=0.3 [GeV/c]",  fNBins, fBins  ) );
-   fHistoSecKMinus.push_back( tfs->make<TH1D>( "kminus_pt500", "pt=0.5 [GeV/c]",  fNBins, fBins  ) );
+   fHistoSecKMinus.push_back( new TH1D( "tmp_kminus_pt180", "pt=0.18 [GeV/c]", 1000, 0., 100.  ) );
+   fHistoSecKMinus.push_back( new TH1D( "tmp_kminus_pt300", "pt=0.3 [GeV/c]",  1000, 0., 100.  ) );
+   fHistoSecKMinus.push_back( new TH1D( "tmp_kminus_pt500", "pt=0.5 [GeV/c]",  1000, 0., 100.  ) );
 
-   fHistoSecProton.push_back( tfs->make<TH1D>( "proton_pt180", "pt=0.18 [GeV/c]", fNBins, fBins  ) );
-   fHistoSecProton.push_back( tfs->make<TH1D>( "proton_pt300", "pt=0.3 [GeV/c]",  fNBins, fBins  ) );
-   fHistoSecProton.push_back( tfs->make<TH1D>( "proton_pt500", "pt=0.5 [GeV/c]",  fNBins, fBins  ) );
+   fHistoSecProton.push_back( new TH1D( "tmp_proton_pt180", "pt=0.18 [GeV/c]", 1000, 0., 100.  ) );
+   fHistoSecProton.push_back( new TH1D( "tmp_proton_pt300", "pt=0.3 [GeV/c]",  1000, 0., 100.  ) );
+   fHistoSecProton.push_back( new TH1D( "tmp_proton_pt500", "pt=0.5 [GeV/c]",  1000, 0., 100.  ) );
 
-   fHistoSecAntiProton.push_back( tfs->make<TH1D>( "antiproton_pt180", "pt=0.18 [GeV/c]", fNBins, fBins  ) );
-   fHistoSecAntiProton.push_back( tfs->make<TH1D>( "antiproton_pt300", "pt=0.3 [GeV/c]",  fNBins, fBins  ) );
-   fHistoSecAntiProton.push_back( tfs->make<TH1D>( "antiproton_pt500", "pt=0.5 [GeV/c]",  fNBins, fBins  ) );
+   fHistoSecAntiProton.push_back( new TH1D( "tmp_antiproton_pt180", "pt=0.18 [GeV/c]", 1000, 0., 100.  ) );
+   fHistoSecAntiProton.push_back( new TH1D( "tmp_antiproton_pt300", "pt=0.3 [GeV/c]",  1000, 0., 100.  ) );
+   fHistoSecAntiProton.push_back( new TH1D( "tmp_antiproton_pt500", "pt=0.5 [GeV/c]",  1000, 0., 100.  ) );
 
    return;
 
@@ -139,43 +159,14 @@ void artg4tk::AnalyzerSASM6E::endJob()
    
    if ( !fXSecInit ) return;
    
-   if ( fHistoNSec->GetEntries() <= 0 ) return;
+   double stat = fHistoNSec->GetEntries();
+   // double stat  = fHistoNSec->Integral();
+   
+   if ( stat <= 0 ) return;
 
-   double stat  = fHistoNSec->Integral();
    double scale = fXSecOnTarget / ( (double)stat ) ;
 
-   // NOTE: no need to scale with the width because 
-   //       it's already taken into account by the dp3 ("cell size")
-      
-   for ( size_t i=0; i<fHistoSecPiPlus.size(); ++i )
-   {
-      fHistoSecPiPlus[i]->Scale(scale);
-   }
-
-   for ( size_t i=0; i<fHistoSecPiMinus.size(); ++i )
-   {
-      fHistoSecPiMinus[i]->Scale(scale);
-   }
-
-   for ( size_t i=0; i<fHistoSecKPlus.size(); ++i )
-   {
-      fHistoSecKPlus[i]->Scale(scale);
-   }
-
-   for ( size_t i=0; i<fHistoSecKMinus.size(); ++i )
-   {
-      fHistoSecKMinus[i]->Scale(scale);
-   }
-
-   for ( size_t i=0; i<fHistoSecProton.size(); ++i )
-   {
-      fHistoSecProton[i]->Scale(scale);
-   }
-
-   for ( size_t i=0; i<fHistoSecAntiProton.size(); ++i )
-   {
-      fHistoSecAntiProton[i]->Scale(scale);
-   }
+   art::ServiceHandle<art::TFileService> tfs;  
 
    if ( fIncludeExpData )
    {
@@ -188,9 +179,453 @@ void artg4tk::AnalyzerSASM6E::endJob()
 	 return;
       }
       
+      std::vector< std::pair<int,TH1*> >::iterator itr; 
+
+      // find and mark unmatched MC histos
+      // create copies to be written to the Root output file
+      // 
+      std::vector<int> unmatched;
+
+      // pi+
+      //
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoSecPiPlus.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiPlus[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecPiPlus[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoSecPiPlus[unmatched[ium]]->GetNbinsX(); ++ix )
+         {	    
+	    double dpz = computeDPZ( fHistoSecPiPlus[unmatched[ium]]->GetBinCenter(ix),
+	                             fHistoSecPiPlus[unmatched[ium]]->GetBinWidth(ix),
+				     unmatched[ium] );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecPiPlus[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoSecPiPlus[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/dpz );
+	    h1->SetBinError( ix, ey/dpz );
+         }
+	 h1->Scale( scale ); // Note: NO scaling with "width" here 
+	                                            // because it had to be E/dp3 - the dpt2 part of it 
+						    // is already taken into account as weight (analysis)
+		                                    // and the dpz contribution is done just above
+      }
+
+      // pi-
+      //
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoSecPiMinus.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiMinus[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecPiMinus[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoSecPiMinus[unmatched[ium]]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecPiMinus[unmatched[ium]]->GetBinCenter(ix),
+	                             fHistoSecPiMinus[unmatched[ium]]->GetBinWidth(ix),
+				     unmatched[ium] );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecPiMinus[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoSecPiMinus[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/dpz );
+	    h1->SetBinError( ix, ey/dpz );
+         }
+	 h1->Scale( scale ); // Note: NO scaling with "width" here 
+	                                            // because it had to be E/dp3 - the dpt2 part of it 
+						    // is already taken into account as weight (analysis)
+		                                    // and the dpz contribution is done just above
+      }
+
+      // K+
+      //
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoSecKPlus.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecKPlus[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecKPlus[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoSecKPlus[unmatched[ium]]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecKPlus[unmatched[ium]]->GetBinCenter(ix),
+	                             fHistoSecKPlus[unmatched[ium]]->GetBinWidth(ix),
+				     unmatched[ium] );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecKPlus[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoSecKPlus[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/dpz );
+	    h1->SetBinError( ix, ey/dpz );
+         }
+	 h1->Scale( scale ); // Note: NO scaling with "width" here 
+	                                            // because it had to be E/dp3 - the dpt2 part of it 
+						    // is already taken into account as weight (analysis)
+		                                    // and the dpz contribution is done just above
+      }
+
+      // K-
+      //
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoSecKMinus.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecKMinus[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecKMinus[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoSecPiMinus[unmatched[ium]]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecKMinus[unmatched[ium]]->GetBinCenter(ix),
+	                             fHistoSecKMinus[unmatched[ium]]->GetBinWidth(ix),
+				     unmatched[ium] );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecKMinus[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoSecKMinus[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/dpz );
+	    h1->SetBinError( ix, ey/dpz );
+         }
+	 h1->Scale( scale ); // Note: NO scaling with "width" here 
+	                                            // because it had to be E/dp3 - the dpt2 part of it 
+						    // is already taken into account as weight (analysis)
+		                                    // and the dpz contribution is done just above
+      }
+
+      // proton
+      //
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoSecProton.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecProton[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecProton[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoSecProton[unmatched[ium]]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecProton[unmatched[ium]]->GetBinCenter(ix),
+	                             fHistoSecProton[unmatched[ium]]->GetBinWidth(ix),
+				     unmatched[ium] );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecProton[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoSecProton[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/dpz );
+	    h1->SetBinError( ix, ey/dpz );
+         }
+	 h1->Scale( scale ); // Note: NO scaling with "width" here 
+	                                            // because it had to be E/dp3 - the dpt2 part of it 
+						    // is already taken into account as weight (analysis)
+		                                    // and the dpz contribution is done just above
+      }
+
+      // antiproton
+      //
+      unmatched.clear();
+      for ( size_t ih=0; ih<fHistoSecAntiProton.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecAntiProton[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() ) unmatched.push_back(ih);         
+      }
+      for ( size_t ium=0; ium<unmatched.size(); ++ium )
+      {
+	 TH1D* h = fHistoSecAntiProton[unmatched[ium]];
+	 TH1D* h1 = tfs->make<TH1D>( *h );
+	 h1->Reset();
+	 std::string hname = h->GetName();
+	 size_t pos = hname.find("tmp_");
+	 if ( pos != std::string::npos ) hname.erase( pos, std::string("tmp_").length() );	 
+	 h1->SetName( hname.c_str() );
+	 h1->SetTitle( h->GetTitle() );	
+	 for ( int ix=1; ix<=fHistoSecAntiProton[unmatched[ium]]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecAntiProton[unmatched[ium]]->GetBinCenter(ix),
+	                             fHistoSecAntiProton[unmatched[ium]]->GetBinWidth(ix),
+				     unmatched[ium] );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecAntiProton[unmatched[ium]]->GetBinContent(ix); 
+	    double ey = fHistoSecAntiProton[unmatched[ium]]->GetBinError(ix); 
+	    h1->SetBinContent( ix, y/dpz );
+	    h1->SetBinError( ix, ey/dpz );
+         }
+	 h1->Scale( scale ); // Note: NO scaling with "width" here 
+	                                            // because it had to be E/dp3 - the dpt2 part of it 
+						    // is already taken into account as weight (analysis)
+		                                    // and the dpz contribution is done just above
+      }
+      
+      rebinMC2Data( "tmp_" );
+
+      std::map<int,std::string>::iterator itr1;
+      
+      for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+      {
+	 if ( ! itr->second ) continue; // // NULL histo for this exp.data record (some might be skipped)
+	 for ( int ix=1; ix<=(itr->second)->GetNbinsX(); ++ix )
+	 {
+	       double bc = (itr->second)->GetBinCenter(ix);
+	       double bw = (itr->second)->GetBinWidth(ix);
+	       double pmin = bc - bw/2.;
+	       double pmax = bc + bw/2.;
+	       //
+	       // GET PT FROM JSON RECORD 
+	       //
+	       itr1 = fJSONRecords.find( itr->first );
+               assert( itr != fJSONRecords.end() );
+               fJSON2Data->ParseMetaData( itr1->second );
+	       std::vector<std::string> parval = fJSON2Data->GetMetaData().fParValues;
+	       assert( parval.size() == 1 );
+	       double pt = std::stod( parval[0] );
+	       double ptmin = pt - fDeltaPt/2.;
+	       double ptmax = pt + fDeltaPt/2.;
+	       //
+	       double pzmin = std::sqrt( pmin*pmin - ptmax*ptmax );
+	       double pzmax = std::sqrt( pmax*pmax - ptmin*ptmin );
+	       double dpz = std::fabs( pzmax - pzmin );
+	       double y = (itr->second)->GetBinContent(ix);
+	       double ey = (itr->second)->GetBinError(ix);
+	       (itr->second)->SetBinContent( ix, y/dpz );
+	       (itr->second)->SetBinError( ix, ey/dpz );
+	 }
+	 (itr->second)->Scale( scale );
+      }
+
       calculateChi2();
       overlayDataMC();
+      Store4Professor("SASM6E");
       
+   }
+   else // no exp.data included in the analysis 
+   {
+
+      // pi+
+      //
+      for ( size_t i=0; i<fHistoSecPiPlus.size(); ++i )
+      {
+	 std::string hname = fHistoSecPiPlus[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoSecPiPlus[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecPiPlus[i]->GetTitle() );
+	 for ( int ix=1; ix<fHistoSecPiPlus[i]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecPiPlus[i]->GetBinCenter(ix),
+	                             fHistoSecPiPlus[i]->GetBinWidth(ix),
+				     i );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecPiPlus[i]->GetBinContent(ix); 
+	    double ey = fHistoSecPiPlus[i]->GetBinError(ix); 
+	    h->SetBinContent( ix, y/dpz );
+	    h->SetBinError( ix, ey/dpz );
+         }
+	 h->Scale( scale ); // Note: NO scaling with "width" here 
+	                                           // because it had to be E/dP3 - part of it is already 
+						   // taken into account as weight
+		                                   // and the dpz contribution is done above
+      }
+
+      // pi-
+      //
+      for ( size_t i=0; i<fHistoSecPiMinus.size(); ++i )
+      {
+	 std::string hname = fHistoSecPiMinus[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoSecPiMinus[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecPiMinus[i]->GetTitle() );
+	 for ( int ix=1; ix<fHistoSecPiMinus[i]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecPiMinus[i]->GetBinCenter(ix),
+	                             fHistoSecPiMinus[i]->GetBinWidth(ix),
+				     i );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecPiMinus[i]->GetBinContent(ix); 
+	    double ey = fHistoSecPiMinus[i]->GetBinError(ix); 
+	    h->SetBinContent( ix, y/dpz );
+	    h->SetBinError( ix, ey/dpz );
+         }
+	 h->Scale( scale ); // Note: NO scaling with "width" here 
+	                                           // because it had to be E/dP3 - part of it is already 
+						   // taken into account as weight
+		                                   // and the dpz contribution is done above
+      }
+  
+      // K+
+      //
+      for ( size_t i=0; i<fHistoSecKPlus.size(); ++i )
+      {
+	 std::string hname = fHistoSecKPlus[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoSecKPlus[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecPiPlus[i]->GetTitle() );
+	 for ( int ix=1; ix<fHistoSecKPlus[i]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecKPlus[i]->GetBinCenter(ix),
+	                             fHistoSecKPlus[i]->GetBinWidth(ix),
+				     i );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecKPlus[i]->GetBinContent(ix); 
+	    double ey = fHistoSecKPlus[i]->GetBinError(ix); 
+	    h->SetBinContent( ix, y/dpz );
+	    h->SetBinError( ix, ey/dpz );
+         }
+	 h->Scale( scale ); // Note: NO scaling with "width" here 
+	                                           // because it had to be E/dP3 - part of it is already 
+						   // taken into account as weight
+		                                   // and the dpz contribution is done above
+      }
+
+      // K-
+      //
+      for ( size_t i=0; i<fHistoSecKMinus.size(); ++i )
+      {
+	 std::string hname = fHistoSecKMinus[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoSecKMinus[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecKMinus[i]->GetTitle() );
+	 for ( int ix=1; ix<fHistoSecKMinus[i]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecKMinus[i]->GetBinCenter(ix),
+	                             fHistoSecKMinus[i]->GetBinWidth(ix),
+				     i );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecKMinus[i]->GetBinContent(ix); 
+	    double ey = fHistoSecKMinus[i]->GetBinError(ix); 
+	    h->SetBinContent( ix, y/dpz );
+	    h->SetBinError( ix, ey/dpz );
+         }
+	 h->Scale( scale ); // Note: NO scaling with "width" here 
+	                                           // because it had to be E/dP3 - part of it is already 
+						   // taken into account as weight
+		                                   // and the dpz contribution is done above
+      }
+
+      // proton
+      //
+      for ( size_t i=0; i<fHistoSecProton.size(); ++i )
+      {
+	 std::string hname = fHistoSecProton[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoSecProton[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecProton[i]->GetTitle() );
+	 for ( int ix=1; ix<fHistoSecProton[i]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecProton[i]->GetBinCenter(ix),
+	                             fHistoSecProton[i]->GetBinWidth(ix),
+				     i );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecProton[i]->GetBinContent(ix); 
+	    double ey = fHistoSecProton[i]->GetBinError(ix); 
+	    h->SetBinContent( ix, y/dpz );
+	    h->SetBinError( ix, ey/dpz );
+         }
+	 h->Scale( scale ); // Note: NO scaling with "width" here 
+	                                           // because it had to be E/dP3 - part of it is already 
+						   // taken into account as weight
+		                                   // and the dpz contribution is done above
+      }
+
+      // antiproton
+      //
+      for ( size_t i=0; i<fHistoSecAntiProton.size(); ++i )
+      {
+	 std::string hname = fHistoSecAntiProton[i]->GetName();
+	 size_t pos = hname.find("tmp_");
+	 hname.erase( pos, std::string("tmp_").length() );
+	 TH1D* h = tfs->make<TH1D>( *(fHistoSecAntiProton[i]) );
+	 h->Reset();
+	 h->SetName( hname.c_str() );
+	 h->SetTitle( fHistoSecAntiProton[i]->GetTitle() );
+	 for ( int ix=1; ix<fHistoSecAntiProton[i]->GetNbinsX(); ++ix )
+         {
+	    double dpz = computeDPZ( fHistoSecAntiProton[i]->GetBinCenter(ix),
+	                             fHistoSecAntiProton[i]->GetBinWidth(ix),
+				     i );
+	    if ( dpz <= 0. ) continue;
+	    double y = fHistoSecAntiProton[i]->GetBinContent(ix); 
+	    double ey = fHistoSecAntiProton[i]->GetBinError(ix); 
+	    h->SetBinContent( ix, y/dpz );
+	    h->SetBinError( ix, ey/dpz );
+         }
+	 h->Scale( scale ); // Note: NO scaling with "width" here 
+	                                           // because it had to be E/dP3 - part of it is already 
+						   // taken into account as weight
+		                                   // and the dpz contribution is done above
+      }
+
    }
 
    return;
@@ -236,6 +671,7 @@ void artg4tk::AnalyzerSASM6E::analyze( const art::Event& e )
 	
 	 int id = -1;
 	
+/*
 	 if ( fabs( pt - 0.18 ) < fDeltaPt/2. )
 	 {
 	    id = 0;
@@ -248,13 +684,27 @@ void artg4tk::AnalyzerSASM6E::analyze( const art::Event& e )
 	 {
 	    id = 2;
 	 }
+*/
+	 for ( int i=0; i<fNBinsPt; ++i )
+	 {
+	    if ( fabs(pt-fBinsPt[i]) < fDeltaPt/2. )
+	    {
+	       id = i;
+	       break;
+	    } 
+	 }
+	 
 	 if ( id == -1 ) continue;
-
+	 
          double plab  = mom.mag();
 	 
+/*
 	 if ( plab < fBins[0] ) continue;
 	 if ( plab > fBins[fNBins] ) continue;
+*/	 
+	 if ( plab > 100. ) continue; // can't be less than 0., of course
 	 
+/*
 	 int ib = -1;
 	 for ( int j=0; j<fNBins; ++j )
 	 {
@@ -265,21 +715,30 @@ void artg4tk::AnalyzerSASM6E::analyze( const art::Event& e )
 	    }
 	 }
 	 if ( ib == -1 ) continue; // nothing found
-
+*/
          double etot = mom4.e();
 
 	 // calculate the dp3 
 	 //
-	 double ptmin = pt - fDeltaPt/2.;
-	 double ptmax = pt + fDeltaPt/2.;
+	 // double ptmin = pt - fDeltaPt/2.;
+	 // double ptmax = pt + fDeltaPt/2.;
+	 double ptmin = fBinsPt[id] - fDeltaPt/2.;
+	 double ptmax = fBinsPt[id] + fDeltaPt/2.;
 	 double dpt2 = ptmax*ptmax - ptmin*ptmin;
+	 
+	 // dpz will be calculated at the time of rebinning, in endJob() !!!
+	 //
+/*
 	 double pzmin = std::sqrt( fBins[ib]*fBins[ib] - ptmax*ptmax );
 	 double pzmax = std::sqrt( fBins[ib+1]*fBins[ib+1] - ptmin*ptmin );
 	 double dpz = std::fabs( pzmax - pzmin );
 	 double dp3 = CLHEP::pi * dpz * dpt2 ;
 	 
 	 double wt = etot / dp3; 
+*/
 
+	 double wt = etot / ( CLHEP::pi * dpt2 );
+	 
 	 if ( pname == "pi+" )
 	 {
 	   if ( id >= 0 && id < 3 ) fHistoSecPiPlus[id]->Fill( plab, wt );
@@ -505,6 +964,25 @@ std::string artg4tk::AnalyzerSASM6E::extractPTBinFromTitle( const std::string& t
    return ret;
 
 }
+
+double artg4tk::AnalyzerSASM6E::computeDPZ( double bc, double bw, int id )
+{
+   
+   double pmin = bc - bw/2.;
+   double pmax = bc + bw/2.;
+   double ptmin = fBinsPt[id] - fDeltaPt/2.;
+   double ptmax = fBinsPt[id] + fDeltaPt/2.;
+   double pzmin = std::sqrt( pmin*pmin - ptmax*ptmax );
+   double pzmax = std::sqrt( pmax*pmax - ptmin*ptmin );
+   
+   if ( ptmax > pmin || ptmin > pmax ) return 0.;
+   
+   double dpz = std::fabs( pzmax - pzmin );
+
+   return dpz;
+
+}
+
 
 using artg4tk::AnalyzerSASM6E;
 DEFINE_ART_MODULE(AnalyzerSASM6E)

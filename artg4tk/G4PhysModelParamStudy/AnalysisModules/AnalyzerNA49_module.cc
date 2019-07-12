@@ -446,7 +446,7 @@ void artg4tk::AnalyzerNA49::endJob()
 
    std::cout << " TFileService called" << std::endl;
 
-   double stat = fHistoNSec->Integral();   
+   double stat = fHistoNSec->Integral();   // Integral or GetEntries() ???
    fHistoNSec->Scale( (1./stat), "width" );
    
    if ( fIncludeExpData )
