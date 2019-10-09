@@ -337,8 +337,6 @@ export experiment=HARP
 #
 target_list=( C Cu Pb )
 momz_list=( 3.0 5.0 8.0 12.0 )
-# target_list=( C Cu )
-# momz_list=( 5.0 8.0 )
 
 #if [ ${#beam_list[@]} -ge ${coresPerNode} ]; then
 #  echo "number of beam particles is ${#beam_list[@]}, and exceeds number of cores which is ${coresPerNode} on ${nodeName}" 

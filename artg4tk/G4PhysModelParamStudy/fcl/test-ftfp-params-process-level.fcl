@@ -6,7 +6,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:   100000
+  maxEvents:   10000
 }
 
 services: 
@@ -74,7 +74,8 @@ physics: {
      {
         module_type: EventGenerator
 	nparticles : 1
-	pdgcode:  2212
+//	pdgcode:  2212
+	pdgcode:  211
 	momentum: [ 0., 0., 5. ] // in GeV 
      }
 
@@ -92,9 +93,14 @@ physics: {
 	ProductLabel: "G4FTFPDefault"
 	IncludeExpData: 
 	{
-# new record ids for 5GeVc/ proton on Pb
-	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
-	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+	   UseASCIIRecords: true
+	   Path2Records : "/lfstev/g4p/yarba_j/g4studies/dossier-json"
+# record ids for 5GeVc/ proton on Pb
+#	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
+#	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+# record ids for 5GeVc/ pi+ on Pb
+	   DBRecords: [ 10109, 10110, 10111, 10112, 10113, 10114, 10115, 10116, 10117, 10118, 10119, 10120, 10121, 
+                        10161, 10162, 10163, 10164, 10165, 10166, 10167, 10168, 10169, 10170, 10171, 10172, 10173 ]
 	}
      }
 
@@ -104,9 +110,14 @@ physics: {
 	ProductLabel: "G4FTFPVar1"
 	IncludeExpData: 
 	{
-# new record ids for 5GeVc/ proton on Pb
-	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
-	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+	   UseASCIIRecords: true
+	   Path2Records : "/lfstev/g4p/yarba_j/g4studies/dossier-json"
+# record ids for 5GeVc/ proton on Pb
+#	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
+#	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+# record ids for 5GeVc/ pi+ on Pb
+	   DBRecords: [ 10109, 10110, 10111, 10112, 10113, 10114, 10115, 10116, 10117, 10118, 10119, 10120, 10121, 
+                        10161, 10162, 10163, 10164, 10165, 10166, 10167, 10168, 10169, 10170, 10171, 10172, 10173 ]
 	}
      }
      
@@ -116,9 +127,13 @@ physics: {
 	ProductLabel: "G4FTFPDefault"
 	IncludeExpData: 
 	{
-# new record ids for 5GeVc/ proton on Pb
-	   DBRecords: [ 2515, 2516, 2517, 2518, 
-	                2573 ]
+	   UseASCIIRecords: true
+	   Path2Records : "/lfstev/g4p/yarba_j/g4studies/dossier-json"
+# record ids for 5GeVc/ proton on Pb
+#	   DBRecords: [ 2515, 2516, 2517, 2518, 
+#	                2573 ]
+# record ids for 5GeVc/ pi+ on Pb
+	   DBRecords: [ 2192, 2193, 2194, 2195, 2201 ]
 	}
      }
 
@@ -128,9 +143,13 @@ physics: {
 	ProductLabel: "G4FTFPVar1"
 	IncludeExpData: 
 	{
-# new record ids for 5GeVc/ proton on Pb
-	   DBRecords: [ 2515, 2516, 2517, 2518, 
-	                2573 ]
+	   UseASCIIRecords: true
+	   Path2Records : "/lfstev/g4p/yarba_j/g4studies/dossier-json"
+# record ids for 5GeVc/ proton on Pb
+#	   DBRecords: [ 2515, 2516, 2517, 2518, 
+#	                2573 ]
+# record ids for 5GeVc/ pi+ on Pb
+	   DBRecords: [ 2192, 2193, 2194, 2195, 2201 ]
 	}
      }
 

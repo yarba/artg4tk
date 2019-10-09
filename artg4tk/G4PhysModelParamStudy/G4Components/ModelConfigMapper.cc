@@ -962,88 +962,116 @@ RELEASE LATER !!! */
    cmd.str( "" );
    cmd.clear();
 
+   // pion projectile
+   //
+   
+   HDP.GetDefault( "FTF_PION_DELTA_PROB_QEXCHG", dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("pion_delta_prob_qexchg",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_PION_DIFF_M_PROJ", dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("pion_diff_m_proj",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_PION_NONDIFF_M_PROJ", dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("pion_nondiff_m_proj",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_PION_DIFF_M_TGT", dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("pion_diff_m_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_PION_NONDIFF_M_TGT", dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("pion_nondiff_m_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_PION_AVRG_PT2", dpar ); // units of (CLHEP::GeV)**2 will apply in Set<...> method of G4FTFParameters
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("pion_avrg_pt2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
    // PARAMETERS OF NUCLEAR DESTRUCTION
    //
    
-   // "common" parameters, i.e. used for all types of projectile
+   // --> not anymore --> "common" parameters, i.e. used for all types of projectile
+   // NOTE (JVY) July 2019: we've decided to keep parameters separate,
+   //                       even if the actual settings are the same
    //
    
-   HDP.GetDefault(  "FTF_NUCDESTR_P1_PROJ", dpar );
+   HDP.GetDefault(  "FTF_BARYON_NUCDESTR_P1_PROJ", dpar );
    cmd << dpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P1_PROJ",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("nucdestr_p1_proj",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_p1_proj",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    
    bpar = false;
-   HDP.GetDefault( "FTF_NUCDESTR_P1_NBRN_PROJ", bpar );
+   HDP.GetDefault( "FTF_BARYON_NUCDESTR_P1_NBRN_PROJ", bpar );
    cmd << bpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P1_NBRN_PROJ",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("use_nucdestr_p1_nbrn_proj",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("use_baryon_nucdestr_p1_nbrn_proj",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   HDP.GetDefault( "FTF_NUCDESTR_P1_TGT", dpar );
+   HDP.GetDefault( "FTF_BARYON_NUCDESTR_P1_TGT", dpar );
    cmd << dpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P1_TGT",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("nucdestr_p1_tgt",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_p1_tgt",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    
-   HDP.GetDefault( "FTF_NUCDESTR_P1_ADEP_TGT", bpar );
+   HDP.GetDefault( "FTF_BARYON_NUCDESTR_P1_ADEP_TGT", bpar );
    cmd << bpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P1_ADEP_TGT",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("use_nucdestr_p1_adep_tgt",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("use_baryon_nucdestr_p1_adep_tgt",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
    // NOTE: P2 & P3 for PROJ nuc.destr. are FIXED for now
    
-   HDP.GetDefault( "FTF_NUCDESTR_P2_TGT", dpar );
+   HDP.GetDefault( "FTF_BARYON_NUCDESTR_P2_TGT", dpar );
    cmd << dpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P2",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("nucdestr_p2_tgt",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_p2_tgt",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   HDP.GetDefault( "FTF_NUCDESTR_P3_TGT", dpar );
+   HDP.GetDefault( "FTF_BARYON_NUCDESTR_P3_TGT", dpar );
    cmd << dpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("NUCDESTR_P3",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("nucdestr_p3_tgt",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_p3_tgt",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   HDP.GetDefault( "FTF_PT2_NUCDESTR_P1", dpar ); 
+   HDP.GetDefault( "FTF_BARYON_PT2_NUCDESTR_P1", dpar ); 
    cmd << dpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("PT2_NUCDESTR_P1",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p1",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_pt2_nucdestr_p1",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   HDP.GetDefault( "FTF_PT2_NUCDESTR_P2", dpar ); 
+   HDP.GetDefault( "FTF_BARYON_PT2_NUCDESTR_P2", dpar ); 
    cmd << dpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("PT2_NUCDESTR_P2",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p2",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_pt2_nucdestr_p2",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   HDP.GetDefault( "FTF_PT2_NUCDESTR_P3", dpar ); 
+   HDP.GetDefault( "FTF_BARYON_PT2_NUCDESTR_P3", dpar ); 
    cmd << dpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("PT2_NUCDESTR_P3",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p3",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_pt2_nucdestr_p3",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
 
-   HDP.GetDefault( "FTF_PT2_NUCDESTR_P4", dpar ); 
+   HDP.GetDefault( "FTF_BARYON_PT2_NUCDESTR_P4", dpar ); 
    cmd << dpar;
-   // (itr2->second).insert( std::pair<std::string,std::string>("PT2_NUCDESTR_P4",cmd.str()) );
-   (itr2->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p4",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_pt2_nucdestr_p4",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    
-   // parameters specific to baryon projectile
-   //
-
    HDP.GetDefault( "FTF_BARYON_NUCDESTR_R2", dpar  ); // in the units of (CLHEP::fermi)**2
    cmd << dpar;
    (itr2->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_r2",cmd.str()) );
@@ -1056,12 +1084,77 @@ RELEASE LATER !!! */
    cmd.str( "" );
    cmd.clear();
 
-   HDP.GetDefault( "FTF_BARYON_NUCDESTR_DOF", dpar ); // arbitrary units
+   HDP.GetDefault( "FTF_BARYON_NUCDESTR_DISP", dpar ); // arbitrary units
    cmd << dpar;
-   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_dof",cmd.str()) );
+   (itr2->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_disp",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
    
+   // parameters specific to meson projectile (i.e. pion, kaon, etc.)
+   //
+   
+// -->  PROJECTILE DESTRUCTION does NOT apply to the case of mesons !!!
+
+   HDP.GetDefault( "FTF_MESON_NUCDESTR_P1_ADEP_TGT", bpar );
+   cmd << bpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("use_meson_nucdestr_p1_adep_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+   
+   HDP.GetDefault( "FTF_MESON_NUCDESTR_P2_TGT", dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("meson_nucdestr_p2_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_MESON_NUCDESTR_P3_TGT", dpar );
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("meson_nucdestr_p3_tgt",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_MESON_PT2_NUCDESTR_P1", dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("meson_pt2_nucdestr_p1",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_MESON_PT2_NUCDESTR_P2", dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("meson_pt2_nucdestr_p2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_MESON_PT2_NUCDESTR_P3", dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("meson_pt2_nucdestr_p3",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_MESON_PT2_NUCDESTR_P4", dpar ); 
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("meson_pt2_nucdestr_p4",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_MESON_NUCDESTR_R2", dpar  ); // in the units of (CLHEP::fermi)**2
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("meson_nucdestr_r2",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_MESON_EXCI_E_PER_WNDNUCLN", dpar ); // in the units of CLHEP::MeV
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("meson_exci_e_per_wndnucln",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
+   HDP.GetDefault( "FTF_MESON_NUCDESTR_DISP", dpar ); // arbitrary units
+   cmd << dpar;
+   (itr2->second).insert( std::pair<std::string,std::string>("meson_nucdestr_disp",cmd.str()) );
+   cmd.str( "" );
+   cmd.clear();
+
    return;
 
 }
@@ -1285,26 +1378,48 @@ RELEASE LATER !!! */
    (itr->second).insert( std::pair<std::string,std::string>("baryon_nondiff_m_tgt",    "BARYON_NONDIFF_M_TGT") );
    (itr->second).insert( std::pair<std::string,std::string>("baryon_avrg_pt2",         "BARYON_AVRG_PT2") );
 
+   // pion projectile
+   //
+   (itr->second).insert( std::pair<std::string,std::string>("pion_delta_prob_qexchg","PION_DELTA_PROB_QEXCHG") );
+   (itr->second).insert( std::pair<std::string,std::string>("pion_diff_m_proj",      "PION_DIFF_M_PROJ") );
+   (itr->second).insert( std::pair<std::string,std::string>("pion_nondiff_m_proj",   "PION_NONDIFF_M_PROJ") );
+   (itr->second).insert( std::pair<std::string,std::string>("pion_diff_m_tgt",       "PION_DIFF_M_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("pion_nondiff_m_tgt",    "PION_NONDIFF_M_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("pion_avrg_pt2",         "PION_AVRG_PT2") );
+   
    // NUCLEAR DESTRUCTION
    
-   // Common parameters (all projectiles)
+   // baryon projectile
    
-   (itr->second).insert( std::pair<std::string,std::string>("nucdestr_p1_proj",         "NUCDESTR_P1_PROJ") );
-   (itr->second).insert( std::pair<std::string,std::string>("use_nucdestr_p1_nbrn_proj","NUCDESTR_P1_NBRN_PROJ") );
-   (itr->second).insert( std::pair<std::string,std::string>("nucdestr_p1_tgt",          "NUCDESTR_P1_TGT") );
-   (itr->second).insert( std::pair<std::string,std::string>("use_nucdestr_p1_adep_tgt", "NUCDESTR_P1_ADEP_TGT") );
-   (itr->second).insert( std::pair<std::string,std::string>("nucdestr_p2_tgt",          "NUCDESTR_P2_TGT") );
-   (itr->second).insert( std::pair<std::string,std::string>("nucdestr_p3_tgt",          "NUCDESTR_P3_TGT") );
-   (itr->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p1",          "PT2_NUCDESTR_P1") );
-   (itr->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p2",          "PT2_NUCDESTR_P2") );
-   (itr->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p3",          "PT2_NUCDESTR_P3") );
-   (itr->second).insert( std::pair<std::string,std::string>("pt2_nucdestr_p4",          "PT2_NUCDESTR_P4") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_p1_proj",         "BARYON_NUCDESTR_P1_PROJ") );
+   (itr->second).insert( std::pair<std::string,std::string>("use_baryon_nucdestr_p1_nbrn_proj","BARYON_NUCDESTR_P1_NBRN_PROJ") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_p1_tgt",          "BARYON_NUCDESTR_P1_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("use_baryon_nucdestr_p1_adep_tgt", "BARYON_NUCDESTR_P1_ADEP_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_p2_tgt",          "BARYON_NUCDESTR_P2_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_p3_tgt",          "BARYON_NUCDESTR_P3_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_pt2_nucdestr_p1",          "BARYON_PT2_NUCDESTR_P1") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_pt2_nucdestr_p2",          "BARYON_PT2_NUCDESTR_P2") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_pt2_nucdestr_p3",          "BARYON_PT2_NUCDESTR_P3") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_pt2_nucdestr_p4",          "BARYON_PT2_NUCDESTR_P4") );
 
-   // Baryon projectile
-   
    (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_r2",        "BARYON_NUCDESTR_R2") );
    (itr->second).insert( std::pair<std::string,std::string>("baryon_exci_e_per_wndnucln","BARYON_EXCI_E_PER_WNDNUCLN") );
-   (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_dof",       "BARYON_NUCDESTR_DOF") );
+   (itr->second).insert( std::pair<std::string,std::string>("baryon_nucdestr_disp",      "BARYON_NUCDESTR_DISP") );
+
+   // meson (i.e. pion, kaon, etc.) projectile
+
+   (itr->second).insert( std::pair<std::string,std::string>("meson_nucdestr_p1_tgt",          "MESON_NUCDESTR_P1_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("use_meson_nucdestr_p1_adep_tgt", "MESON_NUCDESTR_P1_ADEP_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("meson_nucdestr_p2_tgt",          "MESON_NUCDESTR_P2_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("meson_nucdestr_p3_tgt",          "MESON_NUCDESTR_P3_TGT") );
+   (itr->second).insert( std::pair<std::string,std::string>("meson_pt2_nucdestr_p1",          "MESON_PT2_NUCDESTR_P1") );
+   (itr->second).insert( std::pair<std::string,std::string>("meson_pt2_nucdestr_p2",          "MESON_PT2_NUCDESTR_P2") );
+   (itr->second).insert( std::pair<std::string,std::string>("meson_pt2_nucdestr_p3",          "MESON_PT2_NUCDESTR_P3") );
+   (itr->second).insert( std::pair<std::string,std::string>("meson_pt2_nucdestr_p4",          "MESON_PT2_NUCDESTR_P4") );
+
+   (itr->second).insert( std::pair<std::string,std::string>("meson_nucdestr_r2",        "MESON_NUCDESTR_R2") );
+   (itr->second).insert( std::pair<std::string,std::string>("meson_exci_e_per_wndnucln","MESON_EXCI_E_PER_WNDNUCLN") );
+   (itr->second).insert( std::pair<std::string,std::string>("meson_nucdestr_disp",      "MESON_NUCDESTR_DISP") );
 
    return;
 

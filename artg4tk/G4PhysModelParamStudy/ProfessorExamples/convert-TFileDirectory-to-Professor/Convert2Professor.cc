@@ -17,12 +17,169 @@ int main()
 {
 
    std::vector<std::string> analysis_files;
-   analysis_files.push_back("../../analysis/results-root/FTFP_proton3.824GeV-C-ProcL_IAEA.root");
-   analysis_files.push_back("../../analysis/results-root/FTFP_proton3.824GeV-Pb-ProcL_IAEA.root");
-   analysis_files.push_back("../../analysis/results-root/FTFP_proton5.0GeV-C-ProcL_HARP_ITEP.root");
-   analysis_files.push_back("../../analysis/results-root/FTFP_proton5.0GeV-Pb-ProcL_HARP_ITEP.root");
-   analysis_files.push_back("../../analysis/results-root/FTFP_proton158.0GeV-C-ProcL_NA49.root");
    
+// --> group-2
+   std::string analysis_files_dir = "/lfstev/g4p/yarba_j/g4studies/08-19-19-ana-combined";
+// --> group-1   std::string analysis_files_dir = "/lfstev/g4p/yarba_j/g4studies/09-11-19-ana-combined";
+   
+   std::string analysis_file = "";
+
+/*
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_IAEA/FTFP_proton3.824GeV_C-ProcL_IAEA.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_IAEA/FTFP_proton3.824GeV_Fe-ProcL_IAEA.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_IAEA/FTFP_proton3.824GeV_Pb-ProcL_IAEA.root";
+   analysis_files.push_back( analysis_file.c_str() );
+*/   
+/*
+// pi- HARP
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus3.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus3.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus3.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus5.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus5.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus5.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus8.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus8.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus8.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus12.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus12.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus12.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+*/
+
+// pi- ITEP
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_ITEP/FTFP_piminus5.0GeV_C-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_ITEP/FTFP_piminus5.0GeV_Cu-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_ITEP/FTFP_piminus5.0GeV_Pb-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+
+/*
+// pi+ HARP
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus3.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus3.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus3.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus5.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus5.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus5.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus8.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus8.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus8.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus12.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus12.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus12.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+*/
+
+// pi+ ITEP
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_ITEP/FTFP_piplus5.0GeV_C-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_ITEP/FTFP_piplus5.0GeV_Cu-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_ITEP/FTFP_piplus5.0GeV_Pb-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+
+
+/*
+// proton HARP
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton3.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton3.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton3.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton5.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton5.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton5.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton8.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton8.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton8.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton12.0GeV_C-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton12.0GeV_Cu-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton12.0GeV_Pb-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+*/
+/*
+// proton ITEP
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_ITEP/FTFP_proton5.0GeV_C-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_ITEP/FTFP_proton5.0GeV_Cu-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_ITEP/FTFP_proton5.0GeV_Pb-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_ITEP/FTFP_proton7.5GeV_C-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_ITEP/FTFP_proton7.5GeV_Cu-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_ITEP/FTFP_proton7.5GeV_Pb-ProcL_ITEP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+
+// proton NA61
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_NA61/FTFP_proton31.0GeV_C-ProcL_NA61.root";
+   analysis_files.push_back( analysis_file.c_str() );
+*/
+
+/*
+// pi+ SAS M6E
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_SASM6E/FTFP_piplus100.0GeV_C-ProcL_SASM6E.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_SASM6E/FTFP_piplus100.0GeV_Cu-ProcL_SASM6E.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_SASM6E/FTFP_piplus100.0GeV_Pb-ProcL_SASM6E.root";
+   analysis_files.push_back( analysis_file.c_str() );
+*/
+
+/*
+// proton SAS M6E
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_SASM6E/FTFP_proton100.0GeV_C-ProcL_SASM6E.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_SASM6E/FTFP_proton100.0GeV_Cu-ProcL_SASM6E.root";
+   analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_SASM6E/FTFP_proton100.0GeV_Pb-ProcL_SASM6E.root";
+   analysis_files.push_back( analysis_file.c_str() );
+
+// proton NA49
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_NA49/FTFP_proton158.0GeV_C-ProcL_NA49.root";
+   analysis_files.push_back( analysis_file.c_str() );
+*/   
+   std::vector<std::string> skip_histo;
+   skip_histo.push_back("HARP_beam2212_momentum3GeV_target82_piplus_FW_3");
+   // etc. as needed, until I figure out what's wrong with specific histos
+   
+
    TFile* data_file = 0;
    std::vector<TFile*> mc_files; // should correspond to the # of universes
    int iuniv = -1;
@@ -32,7 +189,7 @@ int main()
    
    // populate default parameters here !!!
    default_params.push_back( std::pair<std::string,double>("NUCDESTR_P1_TGT", 0.00481) );
-   // default_params.push_back( std::pair<std::string,double>("NUCDESTR_P2_TGT", 4.0) );
+   default_params.push_back( std::pair<std::string,double>("NUCDESTR_P2_TGT", 4.0) );
    default_params.push_back( std::pair<std::string,double>("NUCDESTR_P3_TGT", 2.1) );
    
    bool same_univ = false;  
@@ -95,6 +252,20 @@ int main()
 		  continue;
 	       }
 	       TH1D* h = (TH1D*)key->ReadObj();
+	       bool skip = false;
+	       for ( size_t ihskip=0; ihskip<skip_histo.size(); ++ihskip )
+	       {
+	          if ( h->GetName() == skip_histo[ihskip] )
+		  {
+		     skip = true;
+		     break;
+		  }
+	       }
+	       if ( skip )
+	       {	          
+	          key = (TKey*)next();
+		  continue;
+	       }
 	       TH1D* hdata = new TH1D( *h );
 	       // hdata->SetDirectory(0);
 	       data_file->cd();
@@ -194,6 +365,20 @@ int main()
 		  continue;
 	    }
 	    TH1D* h = (TH1D*)key->ReadObj();
+	    bool skip = false;
+	    for ( size_t ihskip=0; ihskip<skip_histo.size(); ++ihskip )
+	    {
+	          if ( h->GetName() == skip_histo[ihskip] )
+		  {
+		     skip = true;
+		     break;
+		  }
+	    }
+	    if ( skip )
+	    {	          
+	          key = (TKey*)next();
+		  continue;
+	    }
 	    TH1D* hmc = new TH1D( *h );
 	    // hmc->SetDirectory(0);
 	    mc_files[iuniv]->cd();

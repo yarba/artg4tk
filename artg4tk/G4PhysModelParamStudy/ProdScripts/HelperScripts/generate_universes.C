@@ -160,10 +160,27 @@ ModelParam      bertiniXSecScale("XSecScale",     "Bertini", 0.1, 3.0 );
 ModelParam     bertiniFermiScale("FermiScale",    "Bertini", 0.5, 1.0 );
 ModelParam bertiniTrailingRadius("TrailingRadius","Bertini", 0.0, 5.0 );
 
-ModelParam  ftfNucDestrP1Tgt( "NUCDESTR_P1_TGT", "FTFP", 0., 0.01 );
-ModelParam  ftfNucDestrP1TgtADEP( "USE_NUCDESTR_P1_ADEP_TGT", "FTFP", 1, 1 );
-ModelParam  ftfNucDestrP2Tgt( "NUCDESTR_P2_TGT", "FTFP", 2., 16. );
-ModelParam  ftfNucDestrP3Tgt( "NUCDESTR_P3_TGT", "FTFP", 0., 4. );
+ModelParam  ftfMesonNucDestrP1Tgt( "MESON_NUCDESTR_P1_TGT", "FTFP", 0., 0.01 );
+ModelParam  ftfMesonNucDestrP1TgtADEP( "USE_MESON_NUCDESTR_P1_ADEP_TGT", "FTFP", 1, 1 );
+//
+ModelParam  ftfMesonNucDestrP2Tgt( "MESON_NUCDESTR_P2_TGT", "FTFP", 2., 16. );
+ModelParam  ftfMesonNucDestrP3Tgt( "MESON_NUCDESTR_P3_TGT", "FTFP", 0., 4. );
+//
+// ModelParam  ftfMesonPtNucDestrP1( "MESON_PT2_NUCDESTR_P1", "FTFP", 0., 0.25 );
+// ModelParam  ftfMesonPtNucDestrP2( "MESON_PT2_NUCDESTR_P2", "FTFP", 0., 0.25 );
+// skip P3 and P4
+//
+// R2 is a bit tricky since it's in the units of (CLHEP::fermi)**2
+// where fermi = 1.e-15*meter, meter=1000.*millimeter, and millimiter=1
+// so it should be on the order of 1.e-30 * 1.e6 = 1.e-24 (mm)
+// Default is 1.5*(CLHEP::fermi)**2 = 1.5e-24
+//
+// --> remove this one for now --> ModelParam  ftfMesonNucDestrR2( "MESON_NUCDESTR_R2", "FTFP", 0.5e-24, 2.0e-24 ); 
+//
+// EXCI_E is in the units of CLHEP::MeV which is set to 1. in the CLHEP/Units
+//
+ModelParam  ftfMesonExciEWndNucln( "MESON_EXCI_E_PER_WNDNUCLN", "FTFP", 0., 100. );
+
 
 ModelParam blah("xyz","no-such-hadron-model", 0.0, 999.9 );
 
@@ -390,14 +407,22 @@ void generate_universes(std::string basename = "paramstep",  // output file base
   }
   else if ( hadronModel == "FTFP" )
   {
-     ftfNucDestrP1Tgt.SetEnabled(true); // ( "NUCDESTR_P1_TGT", "FTFP", 0., 1. );
-     multiUniv.Add( &ftfNucDestrP1Tgt );
-     ftfNucDestrP1TgtADEP.SetEnabled(true);  // ( "USE_NUCDESTR_P1_ADEP_TGT", "FTFP", 1, 1 );
-     multiUniv.Add( &ftfNucDestrP1TgtADEP ); 
-     ftfNucDestrP2Tgt.SetEnabled(true); // ( "NUCDESTR_P2_TGT", "FTFP", 2., 16. );
-     multiUniv.Add( &ftfNucDestrP2Tgt );
-     ftfNucDestrP3Tgt.SetEnabled(true); // ( "NUCDESTR_P3_TGT", "FTFP", 0., 4. );
-     multiUniv.Add( &ftfNucDestrP3Tgt );
+     ftfMesonNucDestrP1Tgt.SetEnabled(true); 
+     multiUniv.Add( &ftfMesonNucDestrP1Tgt );
+     ftfMesonNucDestrP1TgtADEP.SetEnabled(true);  
+     multiUniv.Add( &ftfMesonNucDestrP1TgtADEP ); 
+     ftfMesonNucDestrP2Tgt.SetEnabled(true);
+     multiUniv.Add( &ftfMesonNucDestrP2Tgt ); // ( "MESON_NUCDESTR_P2_TGT", "FTFP", 2., 16. );
+     ftfMesonNucDestrP3Tgt.SetEnabled(true);     
+     multiUniv.Add( &ftfMesonNucDestrP3Tgt ); // ( "MESON_NUCDESTR_P3_TGT", "FTFP", 0., 4. );
+//     ftfMesonPtNucDestrP1.SetEnabled(true); 
+//     multiUniv.Add( &ftfMesonPtNucDestrP1 );
+//     ftfMesonPtNucDestrP2.SetEnabled(true); 
+//     multiUniv.Add( &ftfMesonPtNucDestrP2 );
+// --> remove for now -->     ftfMesonNucDestrR2.SetEnabled(true); // ( "MESON_NUCDESTR_R2", "FTFP", 0.5e-24, 2.0e-24 );
+// --> remove for now -->     multiUniv.Add( &ftfMesonNucDestrR2 ); 
+     ftfMesonExciEWndNucln.SetEnabled(true); // ( "MESON_EXCI_E_PER_WNDNUCLN", "FTFP", 0., 100. );
+     multiUniv.Add( &ftfMesonExciEWndNucln );
   }
 
   // test user silliness ... cross check
