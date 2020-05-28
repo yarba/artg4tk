@@ -166,8 +166,8 @@ ModelParam  ftfMesonNucDestrP1TgtADEP( "USE_MESON_NUCDESTR_P1_ADEP_TGT", "FTFP",
 ModelParam  ftfMesonNucDestrP2Tgt( "MESON_NUCDESTR_P2_TGT", "FTFP", 2., 16. );
 ModelParam  ftfMesonNucDestrP3Tgt( "MESON_NUCDESTR_P3_TGT", "FTFP", 0., 4. );
 //
-// ModelParam  ftfMesonPtNucDestrP1( "MESON_PT2_NUCDESTR_P1", "FTFP", 0., 0.25 );
-// ModelParam  ftfMesonPtNucDestrP2( "MESON_PT2_NUCDESTR_P2", "FTFP", 0., 0.25 );
+ModelParam  ftfMesonPtNucDestrP1( "MESON_PT2_NUCDESTR_P1", "FTFP", 0., 0.25 );
+ModelParam  ftfMesonPtNucDestrP2( "MESON_PT2_NUCDESTR_P2", "FTFP", 0., 0.25 );
 // skip P3 and P4
 //
 // R2 is a bit tricky since it's in the units of (CLHEP::fermi)**2
@@ -415,10 +415,10 @@ void generate_universes(std::string basename = "paramstep",  // output file base
      multiUniv.Add( &ftfMesonNucDestrP2Tgt ); // ( "MESON_NUCDESTR_P2_TGT", "FTFP", 2., 16. );
      ftfMesonNucDestrP3Tgt.SetEnabled(true);     
      multiUniv.Add( &ftfMesonNucDestrP3Tgt ); // ( "MESON_NUCDESTR_P3_TGT", "FTFP", 0., 4. );
-//     ftfMesonPtNucDestrP1.SetEnabled(true); 
-//     multiUniv.Add( &ftfMesonPtNucDestrP1 );
-//     ftfMesonPtNucDestrP2.SetEnabled(true); 
-//     multiUniv.Add( &ftfMesonPtNucDestrP2 );
+     ftfMesonPtNucDestrP1.SetEnabled(true); 
+     multiUniv.Add( &ftfMesonPtNucDestrP1 );
+     ftfMesonPtNucDestrP2.SetEnabled(true); 
+     multiUniv.Add( &ftfMesonPtNucDestrP2 );
 // --> remove for now -->     ftfMesonNucDestrR2.SetEnabled(true); // ( "MESON_NUCDESTR_R2", "FTFP", 0.5e-24, 2.0e-24 );
 // --> remove for now -->     multiUniv.Add( &ftfMesonNucDestrR2 ); 
      ftfMesonExciEWndNucln.SetEnabled(true); // ( "MESON_EXCI_E_PER_WNDNUCLN", "FTFP", 0., 100. );

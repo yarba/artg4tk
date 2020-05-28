@@ -1,14 +1,15 @@
 BEGIN_PROLOG
 
+
 # example configuration for FTF parameters
 
 # DEFAULT configuration 
 
-     G4FTFPDefault:
-     {
+FTFPDefault:
+{
         module_type: ProcLevelMPVaryProducer
 	//
-	Verbosity: 1
+	Verbosity: 0
 	errorOnFailureToPut: false
 	HadronicModel:
 	{
@@ -18,35 +19,24 @@ BEGIN_PROLOG
 	      // none
 	   }
 	}
-     }
+}
 
-# vary parameters for modeling diffraction  (and/or nuclear destruction of the target)
-     
-     G4FTFPVar1:
-     {
-        module_type: ProcLevelMPVaryProducer
-	Verbosity: 1
-	errorOnFailureToPut: false
-	HadronicModel:
-	{
-	   DefaultPhysics: false
-	   ModelParameters:
-           {
-            MESON_NUCDESTR_P1_TGT : 0.008445
+FTFPRandomUniv0001 : { 
+    module_type:  ProcLevelMPVaryProducer 
+    errorOnFailureToPut: false 
+    Verbosity: 0
+    HadronicModel: {
+        DefaultPhysics: false
+        ModelParameters: {
+            MESON_NUCDESTR_P1_TGT : 0.00672275
             USE_MESON_NUCDESTR_P1_ADEP_TGT : 1
-            MESON_PT2_NUCDESTR_P1 : 0.0956415
-            MESON_PT2_NUCDESTR_P2 : 0.224319
-            MESON_NUCDESTR_R2    : 8.72375e-25
-            MESON_EXCI_E_PER_WNDNUCLN : 48.396
-	      // --> BARYON_NUCDESTR_P1_TGT: 0.2
-	      // --> USE_BARYON_NUCDESTR_P1_ADEP_TGT: 0
-	      // BARYON_AVRG_PT2: 0.995 // tested stand-alone 0.15 & 1.5 (now max=1.)
-	      // BARYON_DIFF_M_PROJ: 3.
-	      // BARYON_NONDIFF_M_PROJ: 3.
-	      // BARYON_DIFF_M_TGT: 3.
-	      // BARYON_NONDIFF_M_TGT: 3.
-	   }
-	}
-     }
+            MESON_EXCI_E_PER_WNDNUCLN : 18.6976
+            BARYON_NUCDESTR_P1_TGT : 0.00674377
+            USE_BARYON_NUCDESTR_P1_ADEP_TGT : 1
+            BARYON_EXCI_E_PER_WNDNUCLN : 65.2853
+        } # end-of-ModelParameters
+    } # end-of-HadronicModel
+} # end-of-FTFPRandomUniv0001
+
 
 END_PROLOG

@@ -39,6 +39,7 @@ namespace artg4tk {
       // this group of analysis modules
       //
       std::string fProdLabel;
+      bool        fKeepProcessing;
       TObjArray*  fModelConfig;
             
       // NOTE: Will also need XSec on TARGET !!!!!

@@ -838,6 +838,8 @@ void artg4tk::AnalyzerNA49::endJob()
 void artg4tk::AnalyzerNA49::analyze( const art::Event& e )
 {
 
+   if ( !fKeepProcessing ) return;
+   
    art::Handle<ArtG4tkVtx> firstint;
    e.getByLabel( fProdLabel, firstint );
    if ( !firstint.isValid() )

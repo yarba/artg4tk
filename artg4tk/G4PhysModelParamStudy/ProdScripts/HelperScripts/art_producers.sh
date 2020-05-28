@@ -9,6 +9,9 @@ cfg_generator () {
 /usr/bin/printf "         nparticles : 1 \n"
 /usr/bin/printf "         pdgcode: ${pdgcode} \n"
 /usr/bin/printf "         momentum: [ 0., 0., ${momz} ] // in GeV \n" 
+if [[ "$GEN_RNDM" =~ ^[0-9]+$ ]]; then
+/usr/bin/printf "         RNDMSeed: ${GEN_RNDM} \n"
+fi
 /usr/bin/printf "      } \n"
 
 }

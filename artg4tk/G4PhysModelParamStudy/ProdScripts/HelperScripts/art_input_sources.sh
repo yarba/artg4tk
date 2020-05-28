@@ -12,6 +12,9 @@ cfg_empty_source () {
 /usr/bin/printf "source: { \n" 
 /usr/bin/printf "   module_type: EmptyEvent \n" 
 /usr/bin/printf "   maxEvents: ${maxevents} \n" 
+if [[ "$RUN_NUMBER" =~ ^[0-9]+$ ]]; then
+/usr/bin/printf "         firstRun: ${RUN_NUMBER} \n"
+fi
 /usr/bin/printf "} \n" 
 
 }

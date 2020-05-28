@@ -1,0 +1,108 @@
+
+#include "ftf-params-process-level-include.fcl"
+
+process_name:processA
+
+source: 
+{
+  module_type: EmptyEvent
+  maxEvents:   5000
+}
+
+services: 
+{
+
+  message : 
+  {
+     # debugModules : ["*"]
+     # suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           ArtReport: { 
+	      reportEvery: 100
+	      limit: 50
+	   }
+	   # using limit=0 will suppress lots of info,
+	   # including Time & Memory reports, event success rate, etc.
+	   # default : { limit : 0 }
+	   default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  RandomNumberGenerator: {}
+         
+  PhysModelConfig: 
+  {
+        Verbosity: false
+  }
+     
+  ProcLevelSimSetup:
+  {
+	HadronicModelName: "FTFP"
+	TargetNucleus: "Pb"
+	RNDMSeed: 12345
+  }
+
+} #end of services
+
+outputs: 
+{
+   out1: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-proton5GeV-Pb-FTFP-Default_%#.root"
+      fileProperties: { # Switch to new output file if 
+                        # /* NOT now --> a new input file has been reached OR */
+                        # 1000 events have been written to the output file.
+         maxEvents: 1000
+         # --> maxInputFiles: 1
+      }      
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     PrimaryGenerator:
+     {
+        module_type: EventGenerator
+	nparticles : 1
+	pdgcode:  2212
+//	pdgcode:  211
+	momentum: [ 0., 0., 5. ] // in GeV 
+     }
+
+     FTFPDefault           : @local::FTFPDefault
+    
+  }
+  
+  analyzers:
+  {
+  
+  }
+  
+  path1:   [ PrimaryGenerator, 
+             FTFPDefault 
+	   ]
+
+  stream1: [ out1 ]
+
+  trigger_paths: [ path1 ]
+  #
+  # NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  #       Otherwise, they will NOT be included in the exec.
+  #       If you don't have an end_path, things will magically work though... 
+  #        
+  end_paths:     [ stream1 ]
+
+}

@@ -6,7 +6,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:   10000
+  maxEvents:   50000
 }
 
 services: 
@@ -28,7 +28,10 @@ services:
 	      reportEvery: 100
 	      limit: 50
 	   }
-	   default : { limit : 0 }
+	   # using limit=0 will suppress lots of info,
+	   # including Time & Memory reports, event success rate, etc.
+	   # default : { limit : 0 }
+	   default : { limit : 50 }
          }
        }
      }
@@ -36,7 +39,7 @@ services:
 
   TFileService :
   {
-    fileName: "proton5GeV-Pb-FTFPDefault-NucDestr0.2Fixed_HARP_ITEP.root"
+    fileName: "proton5GeV-Pb-FTFP-Default-Univ0001_HARP.root"
   }
 
   RandomNumberGenerator: {}
@@ -60,7 +63,7 @@ outputs:
    out1: 
    {
       module_type: RootOutput   
-      fileName: "Evt-proton5GeV-Pb-FTFPDefault-NucDestr0.2Fixed-ProcL.root"
+      fileName: "Evt-proton5GeV-Pb-FTFP-Default-Univ0001.root"
    }
 }
 
@@ -74,11 +77,12 @@ physics: {
         module_type: EventGenerator
 	nparticles : 1
 	pdgcode:  2212
+//	pdgcode:  211
 	momentum: [ 0., 0., 5. ] // in GeV 
      }
 
-     G4FTFPDefault : @local::G4FTFPDefault
-     G4FTFPVar1    : @local::G4FTFPVar1
+     FTFPDefault           : @local::FTFPDefault
+     FTFPRandomUniv0001    : @local::FTFPRandomUniv0001
     
   }
   
@@ -88,56 +92,56 @@ physics: {
      FTFPDefaultHARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4FTFPDefault"
+	ProductLabel: "FTFPDefault"
 	IncludeExpData: 
 	{
-# new record ids for 5GeVc/ proton on Pb
-	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
-	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
+	   UseASCIIRecords: true
+	   //
+	   // this is for running on Wilson:
+	   // Path2Records : "/lfstev/g4p/yarba_j/g4studies/dossier-json"
+	   //
+	   // this is for running on LQ1:
+	   Path2Records : "/home/yarba_j/dossier-json"
+# new record ids for 5GeVc/ proton on Pb, including both *proton* (FW) and pion (FW+LA) production
+	   DBRecords: [ 
+			10759,  10760,  10761,  10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771
+	              , 10811,  10812,  10813,  10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823
+		     , 200100, 200101, 200102, 200103
+		      ]
 	}
      }
 
-     FTFPVar1HARP:
+     FTFPUniv0001HARP:
      {
         module_type: AnalyzerHARP
-	ProductLabel: "G4FTFPVar1"
+	ProductLabel: "FTFPRandomUniv0001"
 	IncludeExpData: 
 	{
+	   UseASCIIRecords: true
+	   //
+	   // this is for running on Wilson:
+	   // Path2Records : "/lfstev/g4p/yarba_j/g4studies/dossier-json"
+	   //
+	   // this is for running on LQ1:
+	   Path2Records : "/home/yarba_j/dossier-json"
 # new record ids for 5GeVc/ proton on Pb
-	   DBRecords: [ 10759, 10760, 10761, 10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771,
-	                10811, 10812, 10813, 10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 ]
-	}
-     }
-     
-     FTFPDefaultITEP:
-     {
-        module_type: AnalyzerITEP
-	ProductLabel: "G4FTFPDefault"
-	IncludeExpData: 
-	{
-# new record ids for 5GeVc/ proton on Pb
-	   DBRecords: [ 2515, 2516, 2517, 2518, 
-	                2573 ]
-	}
-     }
-
-     FTFPVar1ITEP:
-     {
-        module_type: AnalyzerITEP
-	ProductLabel: "G4FTFPVar1"
-	IncludeExpData: 
-	{
-# new record ids for 5GeVc/ proton on Pb
-	   DBRecords: [ 2515, 2516, 2517, 2518, 
-	                2573 ]
+	   DBRecords: [ 
+	                10759,  10760,  10761,  10762, 10763, 10764, 10765, 10766, 10767, 10768, 10769, 10770, 10771
+	              , 10811,  10812,  10813,  10814, 10815, 10816, 10817, 10818, 10819, 10820, 10821, 10822, 10823 
+		     , 200100, 200101, 200102, 200103
+		      ]
 	}
      }
 
   }
   
   path1:   [ PrimaryGenerator, 
-	     G4FTFPDefault, G4FTFPVar1 ]
-  path2:   [ FTFPDefaultHARP, FTFPVar1HARP, FTFPDefaultITEP, FTFPVar1ITEP ]
+             FTFPDefault // ,
+//	     FTFPRandomUniv0001 
+	   ]
+  path2:   [ FTFPDefaultHARP, 
+             FTFPUniv0001HARP
+	   ] 
   stream1: [ out1 ]
 
   trigger_paths: [ path1 ]
@@ -146,6 +150,7 @@ physics: {
   #       Otherwise, they will NOT be included in the exec.
   #       If you don't have an end_path, things will magically work though... 
   #        
-  end_paths:     [ path2, stream1 ]
+//   end_paths:     [ path2, stream1 ]
+  end_paths:     [ stream1 ]
 
 }

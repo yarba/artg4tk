@@ -220,9 +220,20 @@ export G4LIB_BUILD_SHARED=1
 #export G4ABLADATA=/g4/yarba_j/geant4-local-builds/geant4-10-03-beta-01/share/Geant4-10.3.0/data/G4ABLA3.0
 #export G4ENSDFSTATEDATA=/g4/yarba_j/geant4-local-builds/geant4-10-03-beta-01/share/Geant4-10.3.0/data/G4ENSDFSTATE1.3.1
 
-#source /g4/g4p/pbs/g4-had-validation/env-setup/g4-datasets-setup-geant4-10-03-beta-01.sh
-source /g4/g4p/pbs/g4-had-validation/env-setup/g4-datasets-setup-${G4RELEASE}.sh
-
+# older explicit env_setup from earlier work on Wilson cluster
+#
+# --> source /g4/g4p/pbs/g4-had-validation/env-setup/g4-datasets-setup-${G4RELEASE}.sh
+#
+# more flexible approach that will (hopefullY) allow to work transparently
+# on either LQ1.fnal.gov or Wilson cluster
+#
+node_name=`uname -n`
+env_setup=/g4/g4p/pbs/g4-had-validation/env-setup/g4-datasets-setup-${G4RELEASE}.sh
+# --> if [ "$node_name" == "lq.fnal.gov" ]; then
+if [[ $node_name =~ "lq" ]]; then
+env_setup=/lustre1/g4/yarba_j/local-products/g4data/g4-datasets-setup-${G4RELEASE}.sh
+fi
+source ${env_setup}
 
 # - Fonts for Freetype
 # FREETYPE SUPPORT NOT AVAILABLE

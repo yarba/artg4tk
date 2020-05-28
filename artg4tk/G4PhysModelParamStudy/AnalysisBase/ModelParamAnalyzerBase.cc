@@ -30,6 +30,7 @@
 
 artg4tk::ModelParamAnalyzerBase::ModelParamAnalyzerBase( const fhicl::ParameterSet& p )
   : artg4tk::AnalyzerWithExpDataBase(p), // art::EDAnalyzer(p),
+    fKeepProcessing(true),
     fXSecInit(false) 
 {
 
@@ -61,9 +62,12 @@ void artg4tk::ModelParamAnalyzerBase::beginRun( const art::Run& r )
    r.getByLabel( fProdLabel, physcfg );
    if ( !physcfg.isValid() )
    {
-      fLogInfo << " handle to run product (model/physics config) is NOT valid"; // << std::endl;
+      fLogInfo << " handle to run product " << fProdLabel << " (model/physics config) is NOT valid \n"; // << std::endl;
+      fKeepProcessing = false;
       return;
-   }    
+   }
+   
+   fKeepProcessing = true;    
 
    art::ServiceHandle<art::TFileService> tfs;
 

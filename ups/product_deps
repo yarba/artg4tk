@@ -32,9 +32,9 @@ fcldir  product_dir     fcl
 # Add the dependent product and version
 
 product          version
-art             v2_11_02
+art             v2_11_03 # switch to _03 from _02
 # --> if useing public g4 release --> geant4          v4_10_4_p02b
-hep_concurrency v1_00_02
+hep_concurrency v1_00_03 # because of changing art version, switch to _03 from _02
 cetbuildtools   v7_03_03       -       only_for_build
 end_product_list
 

@@ -382,7 +382,12 @@ void artg4tk::AnalyzerHARP::endJob()
 	    h1->Scale( 1., "width" );
 	 }
       }
-      ih = 0;     
+      ih = 0; 
+      for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+      {
+         std::cout << itr->first << " --> " << itr->second->GetName() << std::endl;
+      }
+         
       for ( ; ih<fHistoSecProtonFW.size(); ++ih )
       {
          for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
@@ -401,7 +406,7 @@ void artg4tk::AnalyzerHARP::endJob()
       {
          for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
 	 {
-	    if ( fHistoSecProtonFW[ih] == itr->second ) break;
+	    if ( fHistoSecProtonLA[ih] == itr->second ) break;
 	 }
 	 if ( itr == fVDBRecID2MC.end() ) 
 	 {
@@ -483,6 +488,8 @@ void artg4tk::AnalyzerHARP::endJob()
 void artg4tk::AnalyzerHARP::analyze( const art::Event& e )
 {
 
+   if ( !fKeepProcessing ) return;
+   
    art::Handle<ArtG4tkVtx> firstint;
    e.getByLabel( fProdLabel, firstint );
    if ( !firstint.isValid() )

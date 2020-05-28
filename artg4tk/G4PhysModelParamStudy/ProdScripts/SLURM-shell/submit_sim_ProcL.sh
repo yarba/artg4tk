@@ -68,9 +68,9 @@ fi
 
 # 5GeV/c p on C, Cu, or Pb 
 #
-# sbatch -p amd32 -N1 -t 24:00:00 \
+# sbatch -p lq1csl -N1 \
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=C,momz=5.0,NUniv=${nuni},nevtotal=1000000" \
-#	-A g4p sim_multiU.sh
+#	sim_multiU_lq.sh
 # sbatch -p amd32_g4perf --qos=g4perf -N1 -t 24:00:00  \
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=C,momz=5.0,NUniv=${nuni},nevtotal=500000" \
 #	-A g4p sim_multiU.sh
@@ -78,9 +78,9 @@ fi
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=C,momz=5.0,NUniv=${nuni},nevtotal=500000" \
 #	-A g4p sim_multiU.sh
 
-# sbatch -p amd32 -N1 -t 24:00:00 \
+# sbatch -p lq1csl -N1 \
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Cu,momz=5.0,NUniv=${nuni},nevtotal=1000000" \
-#	-A g4p sim_multiU.sh
+#	sim_multiU_lq.sh
 # sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=Cu,momz=5.0,NUniv=${nuni},nevtotal=500000" \
 #	-A g4p sim_multiU.sh
@@ -88,9 +88,44 @@ fi
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Cu,momz=5.0,NUniv=${nuni},nevtotal=500000" \
 #	-A g4p sim_multiU.sh
 
-# sbatch -p amd32 -N1 -t 24:00:00 \
-# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=5.0,NUniv=${nuni},nevtotal=1000000" \
-#	-A g4p sim_multiU.sh
+# TRY NEW APPROACH (per Amitoj S.)
+#
+# NOTE: direct use or mpirun and/or parallel does NOT help 
+#       as all jobs still land on one core (maybe two at best)
+#
+# sbatch --ntasks-per-node=40 --oversubscribe --exclusive -N 1 -p gpu --qos=normal -t 23:00:00 \
+# 	--export="WORKDIR_TOP=${MRB_TOP},App=sim_multiU_lq.sh,proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=5.0,NUniv=${nuni},maxevents=12500" \
+#	slurm_multiU_master_mpi.sh
+#
+# ... AND NOW SLIGHTLY DIFFERENT (per Krzysztof G.)
+#
+# Carbon (C) target nucleus
+#
+# sbatch --ntasks-per-node=40 --time=23:00:00 --gres=gpu:0 -p gpu --qos=normal --account=g4 --exclusive \
+# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=C,momz=5.0,NUniv=${nuni},maxevents=12500" \
+#	slurm_multiU_master.sh sim_multiU_lq.sh
+#
+# Lead (Pb) target nucleus
+#
+# proton
+# sbatch --ntasks-per-node=40 --time=23:00:00 --gres=gpu:0 -p gpu --qos=normal --account=g4 --exclusive \
+# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=5.0,NUniv=${nuni},maxevents=25000" \
+#	slurm_multiU_master.sh sim_multiU_lq_update.sh
+# pi+
+# sbatch --ntasks-per-node=40 --time=23:00:00 --gres=gpu:0 -p gpu --qos=normal --account=g4 --exclusive \
+sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
+ 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Cu,momz=5.0,NUniv=${nuni},maxevents=25000" \
+	slurm_multiU_master.sh sim_multiU_lq_update_1.sh
+# pi+
+# sbatch --ntasks-per-node=40 -p lq1csl --account=g4 --exclusive \
+#	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=Pb,momz=5.0,NUniv=${nuni},maxevents=25000" \
+#	slurm_multiU_master.sh sim_multiU_lq_update_1.sh
+
+#
+#
+# sbatch -p gpu --gres=gpu:2 --qos=normal -N1 -t 23:00:00 \
+# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=5.0,NUniv=${nuni},nevtotal=500000" \
+#	sim_multiU_lq.sh
 # sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=Pb,momz=5.0,NUniv=${nuni},nevtotal=500000" \
 #	-A g4p sim_multiU.sh
@@ -147,31 +182,31 @@ fi
 # sbatch -p amd32 -N1 -t 24:00:00 \
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=C,momz=12.0,NUniv=${nuni},nevtotal=1000000" \
 # 	-A g4p sim_multiU.sh
-sbatch -p amd32_g4perf --qos=g4perf -N1 -t 24:00:00  \
-	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=C,momz=12.0,NUniv=${nuni},nevtotal=500000" \
-	-A g4p sim_multiU.sh
-sbatch -p amd32_g4perf --qos=g4perf -N1 -t 24:00:00  \
-	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=C,momz=12.0,NUniv=${nuni},nevtotal=500000" \
-	-A g4p sim_multiU.sh
+# sbatch -p amd32_g4perf --qos=g4perf -N1 -t 24:00:00  \
+#	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=C,momz=12.0,NUniv=${nuni},nevtotal=500000" \
+#	-A g4p sim_multiU.sh
+# sbatch -p amd32_g4perf --qos=g4perf -N1 -t 24:00:00  \
+#	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=C,momz=12.0,NUniv=${nuni},nevtotal=500000" \
+#	-A g4p sim_multiU.sh
 
 # sbatch -p amd32 -N1 -t 24:00:00 \
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Cu,momz=12.0,NUniv=${nuni},nevtotal=1000000" \
 #	-A g4p sim_multiU.sh
-sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
-	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=Cu,momz=12.0,NUniv=${nuni},nevtotal=500000" \
-	-A g4p sim_multiU.sh
-sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
- 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Cu,momz=12.0,NUniv=${nuni},nevtotal=500000" \
-	-A g4p sim_multiU.sh
+# sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
+#	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=Cu,momz=12.0,NUniv=${nuni},nevtotal=500000" \
+#	-A g4p sim_multiU.sh
+# sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
+# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Cu,momz=12.0,NUniv=${nuni},nevtotal=500000" \
+#	-A g4p sim_multiU.sh
 # sbatch -p amd32 -N1 -t 24:00:00 \
 #	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=12.0,NUniv=${nuni},nevtotal=1000000" \
 #	-A g4p sim_multiU.sh
-sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
-	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=Pb,momz=12.0,NUniv=${nuni},nevtotal=500000" \
-	-A g4p sim_multiU.sh
-sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
-	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Pb,momz=12.0,NUniv=${nuni},nevtotal=500000" \
-	-A g4p sim_multiU.sh
+# sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
+#	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piminus,pdgcode=-211,target=Pb,momz=12.0,NUniv=${nuni},nevtotal=500000" \
+#	-A g4p sim_multiU.sh
+# sbatch -p amd32_g4perf --qos=g4perf -N1 -t 47:00:00  \
+#	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Pb,momz=12.0,NUniv=${nuni},nevtotal=500000" \
+#	-A g4p sim_multiU.sh
 
 # NA61
 # sbatch -p amd32 -N1 -t 24:00:00 \

@@ -18,10 +18,11 @@ int main()
 
    std::vector<std::string> analysis_files;
    
-// --> group-2
-   std::string analysis_files_dir = "/lfstev/g4p/yarba_j/g4studies/08-19-19-ana-combined";
+// --> group-2   std::string analysis_files_dir = "/lfstev/g4p/yarba_j/g4studies/08-19-19-ana-combined";
 // --> group-1   std::string analysis_files_dir = "/lfstev/g4p/yarba_j/g4studies/09-11-19-ana-combined";
    
+   std::string analysis_files_dir = "/lustre1/g4/yarba_j/g4vmp-study/04-29-20-ana-combined";
+
    std::string analysis_file = "";
 
 /*
@@ -32,34 +33,41 @@ int main()
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_IAEA/FTFP_proton3.824GeV_Pb-ProcL_IAEA.root";
    analysis_files.push_back( analysis_file.c_str() );
 */   
-/*
+/* */
 // pi- HARP
+/*
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus3.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus3.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus3.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
+*/
+/*
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus5.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus5.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus5.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
+*/
+/*
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus8.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus8.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus8.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
+*/
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus12.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus12.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus12.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
-*/
+/* */
 
+/* 
 // pi- ITEP
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_ITEP/FTFP_piminus5.0GeV_C-ProcL_ITEP.root";
    analysis_files.push_back( analysis_file.c_str() );
@@ -67,35 +75,41 @@ int main()
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_ITEP/FTFP_piminus5.0GeV_Pb-ProcL_ITEP.root";
    analysis_files.push_back( analysis_file.c_str() );
-
-/*
+*/
+/* */
 // pi+ HARP
+/*
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus3.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus3.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus3.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
+*/
+/*
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus5.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus5.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus5.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
+*/
+/*
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus8.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus8.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus8.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
+*/
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus12.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus12.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus12.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
-*/
-
+/* */
+/* 
 // pi+ ITEP
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_ITEP/FTFP_piplus5.0GeV_C-ProcL_ITEP.root";
    analysis_files.push_back( analysis_file.c_str() );
@@ -103,7 +117,7 @@ int main()
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_ITEP/FTFP_piplus5.0GeV_Pb-ProcL_ITEP.root";
    analysis_files.push_back( analysis_file.c_str() );
-
+*/
 
 /*
 // proton HARP
@@ -175,6 +189,7 @@ int main()
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_NA49/FTFP_proton158.0GeV_C-ProcL_NA49.root";
    analysis_files.push_back( analysis_file.c_str() );
 */   
+
    std::vector<std::string> skip_histo;
    skip_histo.push_back("HARP_beam2212_momentum3GeV_target82_piplus_FW_3");
    // etc. as needed, until I figure out what's wrong with specific histos
@@ -188,9 +203,12 @@ int main()
    std::vector< std::pair<std::string,double> > default_params;
    
    // populate default parameters here !!!
-   default_params.push_back( std::pair<std::string,double>("NUCDESTR_P1_TGT", 0.00481) );
-   default_params.push_back( std::pair<std::string,double>("NUCDESTR_P2_TGT", 4.0) );
-   default_params.push_back( std::pair<std::string,double>("NUCDESTR_P3_TGT", 2.1) );
+   default_params.push_back( std::pair<std::string,double>("MESON_NUCDESTR_P1_TGT", 0.00481) );
+   default_params.push_back( std::pair<std::string,double>("MESON_NUCDESTR_P2_TGT", 4.0) );
+   default_params.push_back( std::pair<std::string,double>("MESON_NUCDESTR_P3_TGT", 2.1) );
+   default_params.push_back( std::pair<std::string,double>("MESON_PT2_NUCDESTR_P1", 0.035) );
+   default_params.push_back( std::pair<std::string,double>("MESON_PT2_NUCDESTR_P2", 0.04) );
+   default_params.push_back( std::pair<std::string,double>("MESON_EXCI_E_PER_WNDNUCLN", 40.) );
    
    bool same_univ = false;  
    std::vector<std::string> processed_univ; 
@@ -266,6 +284,18 @@ int main()
 	          key = (TKey*)next();
 		  continue;
 	       }
+
+// --->	       
+	       // skip histots if not secondary proton or neutron
+	       std::string hname = h->GetName();
+	       if ( hname.find( "_proton_"  ) == std::string::npos &&
+	            hname.find( "_neutron_" ) == std::string::npos )
+	       {
+	          key = (TKey*)next();
+		  continue;
+	       }
+// --->	       
+	       
 	       TH1D* hdata = new TH1D( *h );
 	       // hdata->SetDirectory(0);
 	       data_file->cd();
@@ -379,6 +409,18 @@ int main()
 	          key = (TKey*)next();
 		  continue;
 	    }
+
+// --->	       
+	       // skip histots if not secondary proton or neutron
+	       std::string hname = h->GetName();
+	       if ( hname.find( "_proton_"  ) == std::string::npos &&
+	            hname.find( "_neutron_" ) == std::string::npos )
+	       {
+	          key = (TKey*)next();
+		  continue;
+	       }
+// --->	       
+
 	    TH1D* hmc = new TH1D( *h );
 	    // hmc->SetDirectory(0);
 	    mc_files[iuniv]->cd();
