@@ -30,6 +30,10 @@
 #include "Geant4/G4PionMinus.hh"
 #include "Geant4/G4PionPlus.hh"
 //
+// essential since 10.6.r03 due to some "cleanups"
+//
+#include "Geant4/G4ShortLivedConstructor.hh"
+//
 #include "Geant4/G4Material.hh"
 #include "Geant4/G4IsotopeVector.hh"
 #include "Geant4/G4ElementVector.hh"
@@ -446,6 +450,9 @@ void artg4tk::ProcLevelMPVaryProducer::initParticles()
   
    G4BosonConstructor pBosonConstructor;
    pBosonConstructor.ConstructParticle();
+
+   G4ShortLivedConstructor pShortLivedConstructor;
+   pShortLivedConstructor.ConstructParticle();  
 
    G4ParticleTable* partTable = G4ParticleTable::GetParticleTable();
    partTable->SetReadiness();

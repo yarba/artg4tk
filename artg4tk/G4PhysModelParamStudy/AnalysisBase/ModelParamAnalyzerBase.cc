@@ -252,6 +252,11 @@ bool artg4tk::ModelParamAnalyzerBase::ensureBeamTgtConfig( const art::Event& e )
 #include "Geant4/G4IonConstructor.hh"
 #include "Geant4/G4LeptonConstructor.hh"
 #include "Geant4/G4BosonConstructor.hh"
+//
+// essential since 10.6.r03 due to some "cleanups"
+//
+#include "Geant4/G4ShortLivedConstructor.hh"
+//
 #include "Geant4/G4GenericIon.hh"
 #include "Geant4/G4IonTable.hh"
 #include "Geant4/G4ProcessManager.hh"
@@ -282,6 +287,9 @@ void artg4tk::ModelParamAnalyzerBase::prepareG4PTable()
   
    G4BosonConstructor pBosonConstructor;
    pBosonConstructor.ConstructParticle();
+
+   G4ShortLivedConstructor pShortLivedConstructor;
+   pShortLivedConstructor.ConstructParticle();  
 
    G4ParticleTable* partTable = G4ParticleTable::GetParticleTable();
 

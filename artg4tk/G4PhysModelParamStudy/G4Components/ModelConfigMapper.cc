@@ -1182,11 +1182,12 @@ void ModelConfigMapper::FillEmMscDefaults()
    cmd.str( "" );
    cmd.clear();
    
+/* obsolete since at least 10.6.r05
    cmd << emparams->LatDisplacementBeyondSafety(); 
    (itr2->second).insert( std::pair<std::string,std::string>("usedisplacementbeyondsafety",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-
+*/
    cmd << emparams->UseMottCorrection(); 
    (itr2->second).insert( std::pair<std::string,std::string>("usemottcorrection",cmd.str()) );
    cmd.str( "" );
@@ -1434,7 +1435,9 @@ void ModelConfigMapper::FillConfigParamMapEmMsc()
 
    (itr->second).insert( std::pair<std::string,std::string>("uselateraldisplacement","UseLateralDisplacement") );
    (itr->second).insert( std::pair<std::string,std::string>("usemuhadlateraldisplacement","UseMuHadLateralDisplacement") );
+/* obsolete since at least 10.6.r05
    (itr->second).insert( std::pair<std::string,std::string>("usedisplacementbeyondsafety","UseDisplacementBeyondSafety") );
+*/
    (itr->second).insert( std::pair<std::string,std::string>("usemottcorrection","UseMottCorrection") );
    (itr->second).insert( std::pair<std::string,std::string>("usebirkssaturation","UseBirksSaturation") );
    (itr->second).insert( std::pair<std::string,std::string>("factorforanglelimit","FactorForAngleLimit") );
@@ -1826,10 +1829,12 @@ void ModelConfigMapper::ChangeParameterEmMsc( const std::string& param, const do
    {
       emparams->SetMuHadLateralDisplacement( value_asbool );
    }
+/* obsolete since at least 10.6.r05
    else if ( par == "usedisplacementbeyondsafety" )
    {
       emparams->SetLatDisplacementBeyondSafety( value_asbool );
    }
+*/
    else if ( par == "usemottcorrection" )
    {
     emparams->SetUseMottCorrection( value_asbool );

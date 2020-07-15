@@ -6,7 +6,7 @@ process_name:processA
 source: 
 {
   module_type: EmptyEvent
-  maxEvents:   50000
+  maxEvents:   10000
 }
 
 services: 
@@ -139,8 +139,9 @@ physics: {
              FTFPDefault // ,
 //	     FTFPRandomUniv0001 
 	   ]
-  path2:   [ FTFPDefaultHARP, 
-             FTFPUniv0001HARP
+  path2:   [ FTFPDefaultHARP 
+  // , 
+  //           FTFPUniv0001HARP
 	   ] 
   stream1: [ out1 ]
 
@@ -150,7 +151,7 @@ physics: {
   #       Otherwise, they will NOT be included in the exec.
   #       If you don't have an end_path, things will magically work though... 
   #        
-//   end_paths:     [ path2, stream1 ]
-  end_paths:     [ stream1 ]
+   end_paths:     [ path2, stream1 ]
+//  end_paths:     [ stream1 ]
 
 }
