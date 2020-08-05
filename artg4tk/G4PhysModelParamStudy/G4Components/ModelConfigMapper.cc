@@ -756,7 +756,7 @@ void ModelConfigMapper::FillFTFPDefaults()
    // baryon projectile
    //
 	 
-/* RELEASE LATER !!!
+/* RELEASE LATER !!! */
    // Process=0 --> Qexchg w/o excitation
    //
    HDP.GetDefault( "FTF_BARYON_PROC0_A1",  dpar );
@@ -764,7 +764,7 @@ void ModelConfigMapper::FillFTFPDefaults()
    (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_a1",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-   
+     
    HDP.GetDefault( "FTF_BARYON_PROC0_B1",  dpar );
    cmd << dpar;
    (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_b1",cmd.str()) );
@@ -800,7 +800,7 @@ void ModelConfigMapper::FillFTFPDefaults()
    (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc0_ymin",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-
+ 
    // Process=1 --> Qexchg w/excitation
    //
    HDP.GetDefault( "FTF_BARYON_PROC1_A1",  dpar );
@@ -854,7 +854,7 @@ void ModelConfigMapper::FillFTFPDefaults()
          //
    // Proc=2 & Proc=3 for the case ( AbsProjectileBaryonNumber > 1 ||  NumberOfTargetNucleons > 1 )
    // (diffraction dissociation)
-RELEASE LATER !!!     */
+/* RELEASE LATER !!!     */
 
    bool bpar = false;
    HDP.GetDefault( "FTF_BARYON_DIFF_DISSO_PROJ", bpar );
@@ -1320,7 +1320,7 @@ void ModelConfigMapper::FillConfigParamMapFTFP()
    // baryon projectile
    //
 	 
-/* RELEASE LATER !!!
+/* RELEASE LATER !!! */
    // Process=0 --> Qexchg w/o excitation
    //
    (itr->second).insert( std::pair<std::string,std::string>("baryon_proc0_a1",  "BARYON_PROC0_A1") );
@@ -1348,7 +1348,7 @@ void ModelConfigMapper::FillConfigParamMapFTFP()
          // SetParams( 2, 6.0/Xinel, 0.0 ,-6.0/Xinel*16.28, 3.0 , 0.0, 0.0  ,     0.93);// Projectile diffraction
          // SetParams( 3, 6.0/Xinel, 0.0 ,-6.0/Xinel*16.28, 3.0 , 0.0, 0.0  ,     0.93);// Target diffraction
          //
-RELEASE LATER !!! */
+/* RELEASE LATER !!! */
 
    (itr->second).insert( std::pair<std::string,std::string>("use_baryon_diff_disso_proj","BARYON_DIFF_DISSO_PROJ") );
    (itr->second).insert( std::pair<std::string,std::string>("use_baryon_diff_disso_tgt","BARYON_DIFF_DISSO_TGT") );

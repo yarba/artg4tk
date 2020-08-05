@@ -28,13 +28,14 @@ FTFPRandomUniv0001 : {
     HadronicModel: {
         DefaultPhysics: false
         ModelParameters: {
-            MESON_NUCDESTR_P1_TGT : 0.00672275
-            USE_MESON_NUCDESTR_P1_ADEP_TGT : 1
-            MESON_EXCI_E_PER_WNDNUCLN : 18.6976
-            BARYON_NUCDESTR_P1_TGT : 0.00674377
-            USE_BARYON_NUCDESTR_P1_ADEP_TGT : 1
-            BARYON_EXCI_E_PER_WNDNUCLN : 65.2853
-        } # end-of-ModelParameters
+#            MESON_NUCDESTR_P1_TGT : 0.00672275
+#            USE_MESON_NUCDESTR_P1_ADEP_TGT : 1
+#            MESON_EXCI_E_PER_WNDNUCLN : 18.6976
+#            BARYON_NUCDESTR_P1_TGT : 0.00674377
+#            USE_BARYON_NUCDESTR_P1_ADEP_TGT : 1
+#            BARYON_EXCI_E_PER_WNDNUCLN : 65.2853
+           BARYON_PROC0_B1 : 0.85
+	} # end-of-ModelParameters
     } # end-of-HadronicModel
 } # end-of-FTFPRandomUniv0001
 

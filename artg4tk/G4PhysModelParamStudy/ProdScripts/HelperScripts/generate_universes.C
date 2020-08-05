@@ -160,6 +160,10 @@ ModelParam      bertiniXSecScale("XSecScale",     "Bertini", 0.1, 3.0 );
 ModelParam     bertiniFermiScale("FermiScale",    "Bertini", 0.5, 1.0 );
 ModelParam bertiniTrailingRadius("TrailingRadius","Bertini", 0.0, 5.0 );
 
+// ** FTF parameters **
+//
+// ** selected FTF parameters of nuclear destruction for pion/meson **
+//
 ModelParam  ftfMesonNucDestrP1Tgt( "MESON_NUCDESTR_P1_TGT", "FTFP", 0., 0.01 );
 ModelParam  ftfMesonNucDestrP1TgtADEP( "USE_MESON_NUCDESTR_P1_ADEP_TGT", "FTFP", 1, 1 );
 //
@@ -168,7 +172,8 @@ ModelParam  ftfMesonNucDestrP3Tgt( "MESON_NUCDESTR_P3_TGT", "FTFP", 0., 4. );
 //
 ModelParam  ftfMesonPtNucDestrP1( "MESON_PT2_NUCDESTR_P1", "FTFP", 0., 0.25 );
 ModelParam  ftfMesonPtNucDestrP2( "MESON_PT2_NUCDESTR_P2", "FTFP", 0., 0.25 );
-// skip P3 and P4
+//
+// skip PT2's P3 and P4
 //
 // R2 is a bit tricky since it's in the units of (CLHEP::fermi)**2
 // where fermi = 1.e-15*meter, meter=1000.*millimeter, and millimiter=1
@@ -181,6 +186,33 @@ ModelParam  ftfMesonPtNucDestrP2( "MESON_PT2_NUCDESTR_P2", "FTFP", 0., 0.25 );
 //
 ModelParam  ftfMesonExciEWndNucln( "MESON_EXCI_E_PER_WNDNUCLN", "FTFP", 0., 100. );
 
+// ** selected FTF parameters of nuclear destruction for baryon/proton **
+//
+ModelParam  ftfBaryonNucDestrP1Tgt( "BARYON_NUCDESTR_P1_TGT", "FTFP", 0., 0.01 );
+ModelParam  ftfBaryonNucDestrP1TgtADEP( "USE_BARYON_NUCDESTR_P1_ADEP_TGT", "FTFP", 1, 1 );
+//
+ModelParam  ftfBaryonNucDestrP2Tgt( "BARYON_NUCDESTR_P2_TGT", "FTFP", 2., 16. );
+ModelParam  ftfBaryonNucDestrP3Tgt( "BARYON_NUCDESTR_P3_TGT", "FTFP", 0., 4. );
+//
+ModelParam  ftfBaryonPtNucDestrP1( "BARYON_PT2_NUCDESTR_P1", "FTFP", 0., 0.25 );
+ModelParam  ftfBaryonPtNucDestrP2( "BARYON_PT2_NUCDESTR_P2", "FTFP", 0., 0.25 );
+//
+// skip PT2's P3 and P4
+//
+// EXCI_E is in the units of CLHEP::MeV which is set to 1. in the CLHEP/Units
+//
+ModelParam  ftfBaryonExciEWndNucln( "BARYON_EXCI_E_PER_WNDNUCLN", "FTFP", 0., 100. );
+
+// ** selected FTF parameters of quarck exchange w/o or with exitation, for baryon/proton **
+//
+ModelParam  ftfBaryonProc0A1( "BARYON_PROC0_A1", "FTFP", -20., 20. );
+ModelParam  ftfBaryonProc0B1( "BARYON_PROC0_B1", "FTFP",   0., 5. );
+ModelParam  ftfBaryonProc0A2( "BARYON_PROC0_A2", "FTFP", -50., 50. );
+ModelParam  ftfBaryonProc0B2( "BARYON_PROC0_B1", "FTFP",   0.,  5. );
+ModelParam  ftfBaryonProc1A1( "BARYON_PROC1_A1", "FTFP", -40., 40. );
+ModelParam  ftfBaryonProc1B1( "BARYON_PROC1_B1", "FTFP",   0.,  5. );
+ModelParam  ftfBaryonProc1A2( "BARYON_PROC1_A2", "FTFP",-100.,100. );
+ModelParam  ftfBaryonProc1B2( "BARYON_PROC1_B1", "FTFP",   0.,  5. );
 
 ModelParam blah("xyz","no-such-hadron-model", 0.0, 999.9 );
 
@@ -407,6 +439,7 @@ void generate_universes(std::string basename = "paramstep",  // output file base
   }
   else if ( hadronModel == "FTFP" )
   {
+/*
      ftfMesonNucDestrP1Tgt.SetEnabled(true); 
      multiUniv.Add( &ftfMesonNucDestrP1Tgt );
      ftfMesonNucDestrP1TgtADEP.SetEnabled(true);  
@@ -423,6 +456,39 @@ void generate_universes(std::string basename = "paramstep",  // output file base
 // --> remove for now -->     multiUniv.Add( &ftfMesonNucDestrR2 ); 
      ftfMesonExciEWndNucln.SetEnabled(true); // ( "MESON_EXCI_E_PER_WNDNUCLN", "FTFP", 0., 100. );
      multiUniv.Add( &ftfMesonExciEWndNucln );
+*/
+/*
+     ftfBaryonNucDestrP1Tgt.SetEnabled(true); 
+     multiUniv.Add( &ftfBaryonNucDestrP1Tgt );
+     ftfBaryonNucDestrP1TgtADEP.SetEnabled(true);  
+     multiUniv.Add( &ftfBaryonNucDestrP1TgtADEP ); 
+     ftfBaryonNucDestrP2Tgt.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonNucDestrP2Tgt );
+     ftfBaryonNucDestrP3Tgt.SetEnabled(true);     
+     multiUniv.Add( &ftfBaryonNucDestrP3Tgt ); 
+     ftfBaryonPtNucDestrP1.SetEnabled(true); 
+     multiUniv.Add( &ftfBaryonPtNucDestrP1 );
+     ftfBaryonPtNucDestrP2.SetEnabled(true); 
+     multiUniv.Add( &ftfBaryonPtNucDestrP2 );
+     ftfBaryonExciEWndNucln.SetEnabled(true); // ( "BARYON_EXCI_E_PER_WNDNUCLN", "FTFP", 0., 100. );
+     multiUniv.Add( &ftfBaryonExciEWndNucln );
+*/
+     ftfBaryonProc0A1.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc0A1 );
+     ftfBaryonProc0B1.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc0B1 );
+     ftfBaryonProc0A2.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc0A2 );
+     ftfBaryonProc0B2.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc0B2 );
+     ftfBaryonProc1A1.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc1A1 );
+     ftfBaryonProc1B1.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc1B1 );
+     ftfBaryonProc1A2.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc1A2 );
+     ftfBaryonProc1B2.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc1B2 );
   }
 
   // test user silliness ... cross check

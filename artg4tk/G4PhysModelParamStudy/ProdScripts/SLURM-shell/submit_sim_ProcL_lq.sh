@@ -77,9 +77,9 @@ fi
 #sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
 # 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Cu,momz=5.0,NUniv=${nuni},maxevents=25000" \
 #	slurm_multiU_master.sh sim_multiU_lq_update.sh
-#sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
-# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=5.0,NUniv=${nuni},maxevents=18750" \
-#	slurm_multiU_master.sh sim_multiU_lq_update.sh
+sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
+ 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=5.0,NUniv=${nuni},maxevents=18750" \
+	slurm_multiU_master.sh sim_multiU_lq_update.sh
 #
 # 5GeV/c pi+ on C, Cu, or Pb
 #
@@ -225,15 +225,15 @@ fi
 #
 # 100GeV/c pi+ on C, Cu, Pb
 #
-sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
- 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=C,momz=100.0,NUniv=${nuni},maxevents=25000" \
-	slurm_multiU_master.sh sim_multiU_lq_update.sh
-sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
- 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Cu,momz=100.0,NUniv=${nuni},maxevents=25000" \
-	slurm_multiU_master.sh sim_multiU_lq_update.sh
-sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
- 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Pb,momz=100.0,NUniv=${nuni},maxevents=18750" \
-	slurm_multiU_master.sh sim_multiU_lq_update.sh
+#sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
+# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=C,momz=100.0,NUniv=${nuni},maxevents=25000" \
+#	slurm_multiU_master.sh sim_multiU_lq_update.sh
+#sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
+# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Cu,momz=100.0,NUniv=${nuni},maxevents=25000" \
+#	slurm_multiU_master.sh sim_multiU_lq_update.sh
+#sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
+# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=piplus,pdgcode=211,target=Pb,momz=100.0,NUniv=${nuni},maxevents=18750" \
+#	slurm_multiU_master.sh sim_multiU_lq_update.sh
 
 # NA49
 #

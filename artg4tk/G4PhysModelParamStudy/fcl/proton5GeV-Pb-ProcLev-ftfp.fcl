@@ -136,12 +136,11 @@ physics: {
   }
   
   path1:   [ PrimaryGenerator, 
-             FTFPDefault // ,
-//	     FTFPRandomUniv0001 
+             FTFPDefault,
+	     FTFPRandomUniv0001 
 	   ]
-  path2:   [ FTFPDefaultHARP 
-  // , 
-  //           FTFPUniv0001HARP
+  path2:   [ FTFPDefaultHARP, 
+             FTFPUniv0001HARP
 	   ] 
   stream1: [ out1 ]
 
