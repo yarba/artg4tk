@@ -35,6 +35,9 @@ FTFPRandomUniv0001 : {
 #            USE_BARYON_NUCDESTR_P1_ADEP_TGT : 1
 #            BARYON_EXCI_E_PER_WNDNUCLN : 65.2853
            BARYON_PROC0_B1 : 0.85
+	   BARYON_PROC4_A1 : 0.5
+	   BARYON_PROC4_A2 : -2.0
+	   BARYON_PROC4_B2 : 3.0
 	} # end-of-ModelParameters
     } # end-of-HadronicModel
 } # end-of-FTFPRandomUniv0001

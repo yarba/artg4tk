@@ -45,24 +45,33 @@ namespace artg4tk {
       // FIXME !!! 
       // This will be replaced by the use of parnames/parvalues !!!
       //
-      std::vector<std::string> extractThetaBinFromTitle( const std::string& );
+//      std::vector<std::string> extractThetaBinFromTitle( const std::string& );
+//      std::vector<std::string> extractMomentumBinFromTitle( const std::string& );
+      std::vector<std::string> extractBinFromTitle( const std::string&, const std::string& );
       
       void calculateChi2();
          
-      TH1D*              fNSec;
-      std::vector<TH1D*> fHistoSecPiMinusFW; 
-      std::vector<TH1D*> fHistoSecPiPlusFW; 
-      std::vector<TH1D*> fHistoSecPiMinusLA; 
-      std::vector<TH1D*> fHistoSecPiPlusLA; 
-      std::vector<TH1D*> fHistoSecProtonFW;
-      std::vector<TH1D*> fHistoSecProtonLA;
+      TH1D*                fNSec;
+      std::vector<TH1D*>   fHistoSecPiMinusFW; 
+      std::vector<TH1D*>   fHistoSecPiPlusFW; 
+      std::vector<TH1D*>   fHistoSecPiMinusLA; 
+      std::vector<TH1D*>   fHistoSecPiPlusLA; 
+      std::vector<TH1D*>   fHistoSecProtonFW;
+      std::vector<TH1D*>   fHistoSecProtonLA;
+      //
+      // so called "Mu2e case"
+      //
+      std::vector<TH1D*>   fHistoSecPiMinusP;
+      std::vector<TH1D*>   fHistoSecPiPlusP;
       
-      int                fNThetaBinsFW;
-      double             fThetaMinFW;
-      double             fDeltaThetaFW;   
-      int                fNThetaBinsLA;
-      double             fThetaMinLA;
-      double             fDeltaThetaLA; 
+      int                  fNThetaBinsFW;
+      double               fThetaMinFW;
+      double               fDeltaThetaFW;   
+      int                  fNThetaBinsLA;
+      double               fThetaMinLA;
+      double               fDeltaThetaLA; 
+      int                  fNPBins;
+      const static double  fPBins[]; 
       
       Chi2Calc*          fChi2Calc; 
                   
@@ -74,6 +83,8 @@ namespace artg4tk {
 
 }
 
+const double artg4tk::AnalyzerHARP::fPBins[] = { 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.7, 0.8 };
+
 artg4tk::AnalyzerHARP::AnalyzerHARP( const fhicl::ParameterSet& p )
   : artg4tk::ModelParamAnalyzerBase(p), 
     fNThetaBinsFW(4), fThetaMinFW(0.05), fDeltaThetaFW(0.05),
@@ -81,6 +92,8 @@ artg4tk::AnalyzerHARP::AnalyzerHARP( const fhicl::ParameterSet& p )
     fChi2Calc(0)
     // fLogInfo("AnalyzerHARP") // well, maybe each module does need its's own logger ???
 {
+      
+   fNPBins = sizeof(fPBins) / sizeof(double) - 1;
 
    if ( fIncludeExpData ) 
    {
@@ -126,6 +139,19 @@ artg4tk::AnalyzerHARP::~AnalyzerHARP()
       delete fHistoSecProtonLA[i];
    }
    fHistoSecProtonLA.clear();
+   
+   // "Mu2e case"
+   //
+   for (size_t i=0; i<fHistoSecPiMinusP.size(); ++i )
+   {
+      delete fHistoSecPiMinusP[i];
+   }
+   fHistoSecPiMinusP.clear();
+   for (size_t i=0; i<fHistoSecPiPlusP.size(); ++i )
+   {
+      delete fHistoSecPiPlusP[i];
+   }
+   fHistoSecPiPlusP.clear();
       
    if ( fChi2Calc ) delete fChi2Calc;
       
@@ -218,6 +244,37 @@ void artg4tk::AnalyzerHARP::beginJob()
       fHistoSecProtonLA.push_back( new TH1D( hname.c_str(), theta_bin_la.c_str(), 100, 0., 1. ) );
 
    }
+   
+   // so caleed "Mu2e case", i.e. the HARP data matrix is viewed as a group of theta-spectra 
+   // in different bins of secondary's momentum (LA production only, fine p-binning)
+   //  
+   
+   std::string p_bin;
+
+   for ( int i=0; i<fNPBins; ++i )
+   {
+
+      std::ostringstream osTitle1;
+      std::ostringstream osTitle2;
+
+      osTitle1.clear();
+      osTitle1 << fPBins[i];
+      p_bin = osTitle1.str() + "<P(pi-)<";
+      osTitle2.clear();
+      osTitle2 << fPBins[i+1];
+      p_bin += osTitle2.str();
+      p_bin += " [GeV/c]";
+      
+      hname = "tmp_piminus_momentum_" + std::to_string(i);         
+      fHistoSecPiMinusP.push_back( new TH1D( hname.c_str(), p_bin.c_str(), 250, 0., 2.5 ) );
+   
+      p_bin.clear();
+      p_bin = osTitle1.str() + "<P(pi+)<" + osTitle2.str() + " [GeV/c]";
+   
+      hname = "tmp_piplus_momentum_" + std::to_string(i);         
+      fHistoSecPiPlusP.push_back( new TH1D( hname.c_str(), p_bin.c_str(), 250, 0., 2.5 ) );
+
+   }
 
 //    _directory = gDirectory;
 //    std::cout << "******************************We are in the directory named: " << gDirectory->GetName() << std::endl;
@@ -230,7 +287,7 @@ void artg4tk::AnalyzerHARP::beginJob()
 
 void artg4tk::AnalyzerHARP::endJob()
 {
-      
+
    ModelParamAnalyzerBase::endJob();
    
    if ( !fXSecInit ) return;
@@ -253,7 +310,10 @@ void artg4tk::AnalyzerHARP::endJob()
    if ( fIncludeExpData )
    {
       
+      // secondary pi-
+      //
       // scale with theta-bin, XSec, and # of events but NOT YET with momentum bin width
+      //
       for ( size_t i=0; i<fHistoSecPiMinusFW.size(); ++i )
       {
          scale = fXSecOnTarget / (norm*fDeltaThetaFW);
@@ -264,7 +324,16 @@ void artg4tk::AnalyzerHARP::endJob()
          scale = fXSecOnTarget / (norm*fDeltaThetaLA);
          fHistoSecPiMinusLA[i]->Scale(scale);
       }
+      // scale with momentum bin, XSec, and # of events but NOT YET with theta bin width
+      //
+      for ( size_t i=0; i<fHistoSecPiMinusP.size(); ++i )
+      {
+         scale = fXSecOnTarget / (norm*(fPBins[i+1]-fPBins[i]));
+	 fHistoSecPiMinusP[i]->Scale(scale);
+      }
       // secondary pi+
+      //
+      // scale with theta-bin, XSec, and # of events but NOT YET with momentum bin width
       //
       for ( size_t i=0; i<fHistoSecPiPlusFW.size(); ++i )
       {
@@ -276,7 +345,16 @@ void artg4tk::AnalyzerHARP::endJob()
          scale = fXSecOnTarget / (norm*fDeltaThetaLA);
          fHistoSecPiPlusLA[i]->Scale(scale);
       }
+      // scale with momentum bin, XSec, and # of events but NOT YET with theta bin width
+      //
+      for ( size_t i=0; i<fHistoSecPiPlusP.size(); ++i )
+      {
+         scale = fXSecOnTarget / (norm*(fPBins[i+1]-fPBins[i]));
+	 fHistoSecPiPlusP[i]->Scale(scale);
+      }
       // secondary proton
+      //
+      // scale with theta-bin, XSec, and # of events but NOT YET with momentum bin width
       //
       for ( size_t i=0; i<fHistoSecProtonFW.size(); ++i )
       {
@@ -322,7 +400,7 @@ void artg4tk::AnalyzerHARP::endJob()
 */      
 
       std::vector< std::pair<int,TH1*> >::iterator itr; 
-
+      
       // find and mark up unmatched MC histos (if any); 
       // create copies to be written to the Root output file
       // 
@@ -354,6 +432,20 @@ void artg4tk::AnalyzerHARP::endJob()
 	    h1->Scale( 1., "width" );
 	 }
       }
+      ih = 0;
+      for ( ; ih<fHistoSecPiMinusP.size(); ++ih )
+      {
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiMinusP[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() )
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fHistoSecPiMinusP[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }
+      }
       ih = 0;     
       for ( ; ih<fHistoSecPiPlusFW.size(); ++ih )
       {
@@ -382,12 +474,21 @@ void artg4tk::AnalyzerHARP::endJob()
 	    h1->Scale( 1., "width" );
 	 }
       }
-      ih = 0; 
-      for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+      ih = 0;
+      for ( ; ih<fHistoSecPiPlusP.size(); ++ih )
       {
-         std::cout << itr->first << " --> " << itr->second->GetName() << std::endl;
+         for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
+	 {
+	    if ( fHistoSecPiPlusP[ih] == itr->second ) break;
+	 }
+	 if ( itr == fVDBRecID2MC.end() )
+	 {
+	    // unmatched histo
+	    TH1D* h1 = copyHisto2TFS( fHistoSecPiPlusP[ih], "tmp_" );
+	    h1->Scale( 1., "width" );
+	 }
       }
-         
+      ih = 0;          
       for ( ; ih<fHistoSecProtonFW.size(); ++ih )
       {
          for ( itr=fVDBRecID2MC.begin(); itr!=fVDBRecID2MC.end(); ++itr )
@@ -429,14 +530,19 @@ void artg4tk::AnalyzerHARP::endJob()
       }
       
       calculateChi2();
+      
       overlayDataMC();
+      
       Store4Professor( "HARP" );
+      
    }
    else
    {
       // no matching vs data
       // 
       
+      // secondary pi-
+      //
       for ( size_t i=0; i<fHistoSecPiMinusFW.size(); ++i )
       {
 	 TH1D* h = copyHisto2TFS( fHistoSecPiMinusFW[i], "tmp_" );
@@ -448,6 +554,12 @@ void artg4tk::AnalyzerHARP::endJob()
          TH1D* h = copyHisto2TFS( fHistoSecPiMinusLA[i], "tmp_" );
 	 scale = fXSecOnTarget / (norm*fDeltaThetaLA);
          h->Scale(scale,"width");
+      }
+      for ( size_t i=0; i<fHistoSecPiMinusP.size(); ++i )
+      {
+         TH1D* h = copyHisto2TFS( fHistoSecPiMinusP[i], "tmp_" );
+	 scale = fXSecOnTarget / (norm*(fPBins[i+1]-fPBins[i]));
+	 h->Scale(scale,"width");
       }
 
       // secondary pi+
@@ -463,6 +575,12 @@ void artg4tk::AnalyzerHARP::endJob()
          TH1D* h = copyHisto2TFS( fHistoSecPiPlusLA[i], "tmp_" );
 	 scale = fXSecOnTarget / (norm*fDeltaThetaLA);
          h->Scale(scale,"width");
+      }
+      for ( size_t i=0; i<fHistoSecPiPlusP.size(); ++i )
+      {
+         TH1D* h = copyHisto2TFS( fHistoSecPiPlusP[i], "tmp_" );
+	 scale = fXSecOnTarget / (norm*(fPBins[i+1]-fPBins[i]));
+	 h->Scale(scale,"width");
       }
 
       // secondary proton
@@ -539,16 +657,33 @@ void artg4tk::AnalyzerHARP::analyze( const art::Event& e )
       
       if ( theta < fThetaMinLA ) continue;
       if ( theta > fThetaMinLA+fDeltaThetaLA*fNThetaBinsLA ) continue;
-      int    itheta = ( theta - fThetaMinLA ) / fDeltaThetaLA;
+      int itheta = ( theta - fThetaMinLA ) / fDeltaThetaLA;
       if ( itheta < 0 || itheta >= fNThetaBinsLA ) continue;
+      int imom = -1;
+      for ( int imm=0; imm<fNPBins; ++imm )
+      {
+         if ( pmom >= fPBins[imm] && pmom < fPBins[imm+1] )
+	 {
+	    imom = imm;
+	    break;
+	 }
+      }
       
       if ( pname == "pi-" )
       {
          fHistoSecPiMinusLA[itheta]->Fill( pmom );
+	 if ( imom >= 0 && imom < fNPBins )
+	 {
+	    fHistoSecPiMinusP[imom]->Fill( theta );
+	 }
       }
       else if ( pname == "pi+" )
       {
          fHistoSecPiPlusLA[itheta]->Fill( pmom );
+	 if ( imom >= 0 && imom < fNPBins )
+	 {
+	    fHistoSecPiPlusP[imom]->Fill( theta );
+	 }
       }
       else if ( pname == "proton" )
       {
@@ -567,7 +702,9 @@ TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::ve
    // FIXME !!!
    // This will be redone once parnames/parvalues are finished !
    //
-   std::vector<std::string> cond = extractThetaBinFromTitle( input[0] );
+//   std::vector<std::string> cond = extractThetaBinFromTitle( input[0] );
+   std::vector<std::string> cond = extractBinFromTitle( input[0], "<theta<" );
+   std::vector<std::string> cond_mom; 
    
    if ( secid == 211 )
    {
@@ -575,12 +712,19 @@ TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::ve
       {
 	 std::string htitle = fHistoSecPiPlusFW[i]->GetTitle();
 	 bool match = true;
-	 for ( size_t j=0; j<cond.size(); ++j )
+	 if ( cond.empty() )
 	 {
-	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    match = false;
+	 }
+	 else
+	 {
+	    for ( size_t j=0; j<cond.size(); ++j )
 	    {
-	       match = false;
-	       break;
+	       if ( htitle.find( cond[j] ) == std::string::npos )
+	       {
+	          match = false;
+	          break;
+	       }
 	    }
 	 }
 	 if ( match )
@@ -592,17 +736,50 @@ TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::ve
       {
 	 std::string htitle = fHistoSecPiPlusLA[i]->GetTitle();
 	 bool match = true;
-	 for ( size_t j=0; j<cond.size(); ++j )
+	 if ( cond.empty() )
 	 {
-	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    match = false;
+	 }
+	 else
+	 {
+	    for ( size_t j=0; j<cond.size(); ++j )
 	    {
-	       match = false;
-	       break;
+	       if ( htitle.find( cond[j] ) == std::string::npos )
+	       {
+	          match = false;
+	          break;
+	       }
 	    }
 	 }
 	 if ( match )
 	 {
 	    return fHistoSecPiPlusLA[i];
+	 }	 
+      }
+      cond_mom.clear();
+      cond_mom = extractBinFromTitle( input[0], "<P(pi+)<" );
+      for ( size_t i=0; i<fHistoSecPiPlusP.size(); ++i )
+      {
+         std::string htitle = fHistoSecPiPlusP[i]->GetTitle();
+	 bool match = true;
+	 if ( cond_mom.empty() )
+	 {
+	    match = false;
+	 }
+	 else
+	 {
+	    for ( size_t j=0; j<cond_mom.size(); ++j )
+	    {
+	       if ( htitle.find( cond_mom[j] ) == std::string::npos )
+	       {
+	          match = false;
+	          break;
+	       }
+	    }
+	 }
+	 if ( match )
+	 {
+	    return fHistoSecPiPlusP[i];
 	 }	 
       }
    }
@@ -612,12 +789,19 @@ TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::ve
       {
 	 std::string htitle = fHistoSecPiMinusFW[i]->GetTitle();
 	 bool match = true;
-	 for ( size_t j=0; j<cond.size(); ++j )
+	 if ( cond.empty() ) 
 	 {
-	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    match = false;
+	 }
+	 else 
+	 {
+	    for ( size_t j=0; j<cond.size(); ++j )
 	    {
-	       match = false;
-	       break;
+	       if ( htitle.find( cond[j] ) == std::string::npos )
+	       {
+	          match = false;
+	          break;
+	       }
 	    }
 	 }
 	 if ( match )
@@ -629,17 +813,50 @@ TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::ve
       {
 	 std::string htitle = fHistoSecPiMinusLA[i]->GetTitle();
 	 bool match = true;
-	 for ( size_t j=0; j<cond.size(); ++j )
+	 if ( cond.empty() ) 
 	 {
-	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    match = false;
+	 }
+	 else
+	 {
+	    for ( size_t j=0; j<cond.size(); ++j )
 	    {
-	       match = false;
-	       break;
+	       if ( htitle.find( cond[j] ) == std::string::npos )
+	       {
+	          match = false;
+	          break;
+	       }
 	    }
 	 }
 	 if ( match )
 	 {
 	    return fHistoSecPiMinusLA[i];
+	 }	 
+      }
+      cond_mom.clear();
+      cond_mom = extractBinFromTitle( input[0], "<P(pi-)<" );
+      for ( size_t i=0; i<fHistoSecPiMinusP.size(); ++i )
+      {
+         std::string htitle = fHistoSecPiMinusP[i]->GetTitle();
+	 bool match = true;
+	 if ( cond_mom.empty() )
+	 {
+	    match = false;
+	 }
+	 else
+	 {
+	    for ( size_t j=0; j<cond_mom.size(); ++j )
+	    {
+	       if ( htitle.find( cond_mom[j] ) == std::string::npos )
+	       {
+	          match = false;
+	          break;
+	       }
+	    }
+	 }
+	 if ( match )
+	 {
+	    return fHistoSecPiMinusP[i];
 	 }	 
       }
    }
@@ -649,29 +866,43 @@ TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::ve
       {
 	 std::string htitle = fHistoSecProtonFW[i]->GetTitle();
 	 bool match = true;
-	 for ( size_t j=0; j<cond.size(); ++j )
+	 if ( cond.empty() )
 	 {
-	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    match = false;
+	 }
+	 else
+	 {
+	    for ( size_t j=0; j<cond.size(); ++j )
 	    {
-	       match = false;
-	       break;
+	       if ( htitle.find( cond[j] ) == std::string::npos )
+	       {
+	          match = false;
+	          break;
+	       }
 	    }
 	 }
 	 if ( match )
 	 {
 	    return fHistoSecProtonFW[i];
-	 }	 
+	 }
       }
       for ( size_t i=0; i<fHistoSecProtonLA.size(); ++i )
       {
 	 std::string htitle = fHistoSecProtonLA[i]->GetTitle();
 	 bool match = true;
-	 for ( size_t j=0; j<cond.size(); ++j )
+	 if ( cond.empty() )
 	 {
-	    if ( htitle.find( cond[j] ) == std::string::npos )
+	    match = false;
+	 }
+	 else
+	 {
+	    for ( size_t j=0; j<cond.size(); ++j )
 	    {
-	       match = false;
-	       break;
+	       if ( htitle.find( cond[j] ) == std::string::npos )
+	       {
+	          match = false;
+	          break;
+	       }
 	    }
 	 }
 	 if ( match )
@@ -685,10 +916,22 @@ TH1* artg4tk::AnalyzerHARP::matchExpSpectrum2MC( const int& secid, const std::ve
 
 }
 
-std::vector<std::string> artg4tk::AnalyzerHARP::extractThetaBinFromTitle( const std::string& title )
+// std::vector<std::string> artg4tk::AnalyzerHARP::extractThetaBinFromTitle( const std::string& title )
+std::vector<std::string> artg4tk::AnalyzerHARP::extractBinFromTitle( const std::string& title, const std::string& oname )
 {
 
-   size_t pos1 = title.find("<theta<");
+   std::vector<std::string> ret;
+
+//   size_t pos1 = title.find("<theta<");
+   size_t pos1 = title.find(oname);
+      
+   if ( pos1 == std::string::npos ) 
+   {
+//-->      std::cout << " Symbol " << oname << " NOT found " << std::endl;
+      ret.clear();
+      return ret;
+   }
+   
    size_t pos2 = title.find_last_of( " ", pos1 );
    std::string th1 = title.substr( pos2+1, pos1-pos2-1 );
 
@@ -696,8 +939,8 @@ std::vector<std::string> artg4tk::AnalyzerHARP::extractThetaBinFromTitle( const 
    std::string tmp = title.substr( pos1, pos2-pos1 );
    pos2 = tmp.find_last_of("<");
    std::string th2 = tmp.substr(pos2+1);
-   
-   std::vector<std::string> ret;
+      
+   ret.push_back( oname );
    ret.push_back( th1 );
    ret.push_back( th2 );
    

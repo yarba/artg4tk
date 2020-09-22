@@ -1,0 +1,156 @@
+
+#include "ftf-params-process-level-include.fcl"
+
+process_name:processA
+
+source: 
+{
+  module_type: EmptyEvent
+  maxEvents:   10000
+}
+
+services: 
+{
+
+  message : 
+  {
+     # debugModules : ["*"]
+     # suppressInfo : []    
+     destinations : 
+     {
+       LogToConsole : 
+       {
+         type : "cout"
+         threshold : "DEBUG"
+         categories : 
+	 {
+           ArtReport: { 
+	      reportEvery: 100
+	      limit: 50
+	   }
+	   # using limit=0 will suppress lots of info,
+	   # including Time & Memory reports, event success rate, etc.
+	   # default : { limit : 0 }
+	   default : { limit : 50 }
+         }
+       }
+     }
+  }
+
+  TFileService :
+  {
+    fileName: "proton8GeV-Ta-FTFP-Default-Univ0001_HARP.root"
+  }
+
+  RandomNumberGenerator: {}
+         
+  PhysModelConfig: 
+  {
+        Verbosity: false
+  }
+     
+  ProcLevelSimSetup:
+  {
+	HadronicModelName: "FTFP"
+	TargetNucleus: "Ta"
+	RNDMSeed: 12345
+  }
+
+} #end of services
+
+outputs: 
+{
+   out1: 
+   {
+      module_type: RootOutput   
+      fileName: "Evt-proton8GeV-Ta-FTFP-Default-Univ0001.root"
+   }
+}
+
+physics: {
+
+  producers: 
+  {
+
+     PrimaryGenerator:
+     {
+        module_type: EventGenerator
+	nparticles : 1
+	pdgcode:  2212
+//	pdgcode:  211
+	momentum: [ 0., 0., 8. ] // in GeV 
+     }
+
+     FTFPDefault           : @local::FTFPDefault
+     FTFPRandomUniv0001    : @local::FTFPRandomUniv0001
+    
+  }
+ 
+  analyzers:
+  {
+  
+     FTFPDefaultHARP:
+     {
+        module_type: AnalyzerHARP
+	ProductLabel: "FTFPDefault"
+	IncludeExpData: 
+	{
+	   UseASCIIRecords: true
+	   //
+	   // this is for running on Wilson:
+	   // Path2Records : "/lfstev/g4p/yarba_j/g4studies/dossier-json"
+	   //
+	   // this is for running on LQ1:
+	   Path2Records : "/home/yarba_j/dossier-json"
+# new record ids for 8GeVc/ proton on Ta, pion (FW+LA) production
+	   DBRecords: [ 
+			10876,  10877,  10878,  10879, 10880, 10881, 10882, 10883, 10884, 10885, 10886, 10887, 10888
+	              , 10928,  10929,  10930,  10931, 10932, 10933, 10934, 10935, 10936, 10937, 10938, 10939, 10940
+		      , 200200, 200201, 200202, 200203, 200204, 200205, 200206, 200207, 200208, 200209
+		      , 200210, 200211, 200212, 200213, 200214, 200215, 200216, 200217, 200218, 200219  
+		      ]
+	}
+     }
+
+//     FTFPUniv0001HARP:
+//     {
+//        module_type: AnalyzerHARP
+//	ProductLabel: "FTFPRandomUniv0001"
+//	IncludeExpData: 
+//	{
+//	   UseASCIIRecords: true
+//	   //
+//	   // this is for running on Wilson:
+//	   // Path2Records : "/lfstev/g4p/yarba_j/g4studies/dossier-json"
+//	   //
+//	   // this is for running on LQ1:
+//	   Path2Records : "/home/yarba_j/dossier-json"
+//# new record ids for 8GeVc/ proton on Ta
+//	   DBRecords: [ 
+//			10876,  10877,  10878,  10879, 10880, 10881, 10882, 10883, 10884, 10885, 10886, 10887, 10888
+//	              , 10928,  10929,  10930,  10931, 10932, 10933, 10934, 10935, 10936, 10937, 10938, 10939, 10940
+//		      ]
+//	}
+//     }
+
+  }
+  
+  path1:   [ PrimaryGenerator, 
+             FTFPDefault,
+	     FTFPRandomUniv0001 
+	   ]
+  path2:   [ FTFPDefaultHARP //, 
+//             FTFPUniv0001HARP
+	   ] 
+  stream1: [ out1 ]
+
+  trigger_paths: [ path1 ]
+  #
+  # NOTE: Remember, if you have an end_path, you should put your analyzer(s) there !
+  #       Otherwise, they will NOT be included in the exec.
+  #       If you don't have an end_path, things will magically work though... 
+  #        
+   end_paths:     [ path2, stream1 ]
+//  end_paths:     [ stream1 ]
+
+}

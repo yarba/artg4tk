@@ -77,9 +77,9 @@ fi
 #sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
 # 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Cu,momz=5.0,NUniv=${nuni},maxevents=25000" \
 #	slurm_multiU_master.sh sim_multiU_lq_update.sh
-sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
- 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=5.0,NUniv=${nuni},maxevents=18750" \
-	slurm_multiU_master.sh sim_multiU_lq_update.sh
+#sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
+# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=5.0,NUniv=${nuni},maxevents=18750" \
+#	slurm_multiU_master.sh sim_multiU_lq_update.sh
 #
 # 5GeV/c pi+ on C, Cu, or Pb
 #
@@ -120,16 +120,19 @@ sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
 #	slurm_multiU_master.sh sim_multiU_lq_update.sh
 
 #
-# 8GeV/c p, pi-, or pi+ on C, Cu, or Pb 
+# 8GeV/c p, pi-, or pi+ on C, Cu, Ta, or Pb 
 #
-# 8GeV/c proton on C, Cu, Pb
+# 8GeV/c proton on C, Cu, Ta, Pb
 #
-#sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
-# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=C,momz=8.0,NUniv=${nuni},maxevents=25000" \
-#	slurm_multiU_master.sh sim_multiU_lq_update.sh
+sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
+ 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=C,momz=8.0,NUniv=${nuni},maxevents=25000" \
+	slurm_multiU_master.sh sim_multiU_lq_update.sh
 #sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
 # 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Cu,momz=8.0,NUniv=${nuni},maxevents=25000" \
 #	slurm_multiU_master.sh sim_multiU_lq_update.sh
+sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
+ 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Ta,momz=8.0,NUniv=${nuni},maxevents=20000" \
+	slurm_multiU_master.sh sim_multiU_lq_update.sh
 #sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
 # 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=Pb,momz=8.0,NUniv=${nuni},maxevents=18750" \
 #	slurm_multiU_master.sh sim_multiU_lq_update.sh
@@ -203,9 +206,9 @@ sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
 #
 # 31GeV/c proton on C
 #
-#sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
-# 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=C,momz=31.0,NUniv=${nuni},maxevents=25000" \
-#	slurm_multiU_master.sh sim_multiU_lq_update.sh
+sbatch --ntasks-per-node=40  -p lq1csl --account=g4 --exclusive \
+ 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,target=C,momz=31.0,NUniv=${nuni},maxevents=25000" \
+	slurm_multiU_master.sh sim_multiU_lq_update.sh
 
 # SAS M6E 
 #

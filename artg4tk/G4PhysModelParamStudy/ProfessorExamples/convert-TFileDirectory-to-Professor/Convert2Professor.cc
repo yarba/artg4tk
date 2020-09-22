@@ -21,7 +21,7 @@ int main()
 // --> group-2   std::string analysis_files_dir = "/lfstev/g4p/yarba_j/g4studies/08-19-19-ana-combined";
 // --> group-1   std::string analysis_files_dir = "/lfstev/g4p/yarba_j/g4studies/09-11-19-ana-combined";
    
-   std::string analysis_files_dir = "/lustre1/g4/yarba_j/g4vmp-study/04-29-20-ana-combined";
+   std::string analysis_files_dir = "/lustre1/g4/yarba_j/g4vmp-study/09-04-20-ana-quark-exch-7-pars-nuc-destr-2-pars";
 
    std::string analysis_file = "";
 
@@ -59,13 +59,14 @@ int main()
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus8.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
 */
+/*
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus12.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus12.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piminus_HARP/FTFP_piminus12.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
-/* */
+*/
 
 /* 
 // pi- ITEP
@@ -102,13 +103,14 @@ int main()
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus8.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
 */
+/*
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus12.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus12.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_HARP/FTFP_piplus12.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
-/* */
+*/
 /* 
 // pi+ ITEP
    analysis_file = analysis_files_dir + "/analysis_FTFP_piplus_ITEP/FTFP_piplus5.0GeV_C-ProcL_ITEP.root";
@@ -127,6 +129,7 @@ int main()
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton3.0GeV_Pb-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
+*/
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton5.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton5.0GeV_Cu-ProcL_HARP.root";
@@ -135,6 +138,9 @@ int main()
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton8.0GeV_C-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
+   analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton8.0GeV_Ta-ProcL_HARP.root";
+   analysis_files.push_back( analysis_file.c_str() );
+/*
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton8.0GeV_Cu-ProcL_HARP.root";
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_HARP/FTFP_proton8.0GeV_Pb-ProcL_HARP.root";
@@ -160,11 +166,11 @@ int main()
    analysis_files.push_back( analysis_file.c_str() );
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_ITEP/FTFP_proton7.5GeV_Pb-ProcL_ITEP.root";
    analysis_files.push_back( analysis_file.c_str() );
-
+*/
 // proton NA61
    analysis_file = analysis_files_dir + "/analysis_FTFP_proton_NA61/FTFP_proton31.0GeV_C-ProcL_NA61.root";
    analysis_files.push_back( analysis_file.c_str() );
-*/
+
 
 /*
 // pi+ SAS M6E
@@ -203,13 +209,23 @@ int main()
    std::vector< std::pair<std::string,double> > default_params;
    
    // populate default parameters here !!!
+/*
    default_params.push_back( std::pair<std::string,double>("MESON_NUCDESTR_P1_TGT", 0.00481) );
    default_params.push_back( std::pair<std::string,double>("MESON_NUCDESTR_P2_TGT", 4.0) );
    default_params.push_back( std::pair<std::string,double>("MESON_NUCDESTR_P3_TGT", 2.1) );
    default_params.push_back( std::pair<std::string,double>("MESON_PT2_NUCDESTR_P1", 0.035) );
    default_params.push_back( std::pair<std::string,double>("MESON_PT2_NUCDESTR_P2", 0.04) );
    default_params.push_back( std::pair<std::string,double>("MESON_EXCI_E_PER_WNDNUCLN", 40.) );
-   
+*/   
+   default_params.push_back( std::pair<std::string,double>("BARYON_NUCDESTR_P1_TGT", 1.) );
+   default_params.push_back( std::pair<std::string,double>("BARYON_PROC1_A1", 25.0 ) );
+   default_params.push_back( std::pair<std::string,double>("BARYON_PROC1_B1",  1.0 ) );
+   default_params.push_back( std::pair<std::string,double>("BARYON_PROC1_A2",-50.34) );
+   default_params.push_back( std::pair<std::string,double>("BARYON_PROC1_B2",  1.5 ) );
+   default_params.push_back( std::pair<std::string,double>("BARYON_PROC4_A1",  0.6 ) );
+   default_params.push_back( std::pair<std::string,double>("BARYON_PROC4_A2", -1.2) );
+   default_params.push_back( std::pair<std::string,double>("BARYON_PROC4_B2",  0.5 ) );
+
    bool same_univ = false;  
    std::vector<std::string> processed_univ; 
       
@@ -285,17 +301,33 @@ int main()
 		  continue;
 	       }
 
-// --->	       
-	       // skip histots if not secondary proton or neutron
+// --->	
+// List of particles/names: k0s, kplus, kminus,  lambda,
+//                          piplus, piminus, proton      
+
+	       // skip histots if or of not certain secondary 
 	       std::string hname = h->GetName();
+/*
 	       if ( hname.find( "_proton_"  ) == std::string::npos &&
 	            hname.find( "_neutron_" ) == std::string::npos )
 	       {
 	          key = (TKey*)next();
 		  continue;
 	       }
-// --->	       
+*/
+// --->	    
+	       if ( hname.find( "_k0s_" )    != std::string::npos ||
+	            hname.find( "_kplus_" )  != std::string::npos ||
+		    hname.find( "_kminus_" ) != std::string::npos ||
+		    hname.find( "_lambda_" ) != std::string::npos ||
+		    hname.find( "_proton_" ) != std::string::npos )
+	       {
+// -->	          std::cout << " ... skipping " << hname << std::endl;
+		  key = (TKey*)next();
+		  continue;
+	       }
 	       
+// -->	       std::cout << " ---> writing out " << hname << std::endl;
 	       TH1D* hdata = new TH1D( *h );
 	       // hdata->SetDirectory(0);
 	       data_file->cd();
@@ -413,13 +445,26 @@ int main()
 // --->	       
 	       // skip histots if not secondary proton or neutron
 	       std::string hname = h->GetName();
+/*
 	       if ( hname.find( "_proton_"  ) == std::string::npos &&
 	            hname.find( "_neutron_" ) == std::string::npos )
 	       {
 	          key = (TKey*)next();
 		  continue;
 	       }
+*/
 // --->	       
+
+	       if ( hname.find( "_k0s_" )    != std::string::npos ||
+	            hname.find( "_kplus_" )  != std::string::npos ||
+		    hname.find( "_kminus_" ) != std::string::npos ||
+		    hname.find( "_lambda_" ) != std::string::npos ||
+		    hname.find( "_proton_" ) != std::string::npos )
+	       {
+// -->	          std::cout << " ... skipping " << hname << std::endl;
+		  key = (TKey*)next();
+		  continue;
+	       }
 
 	    TH1D* hmc = new TH1D( *h );
 	    // hmc->SetDirectory(0);

@@ -868,7 +868,7 @@ void ModelConfigMapper::FillFTFPDefaults()
    cmd.str( "" );
    cmd.clear();
 	 
-/* RELEASE LATER !!!
+/* RELEASE LATER !!! */
    // Process=4 --> Qexchg w/additional multiplier in excitation 
    //
    HDP.GetDefault( "FTF_BARYON_PROC4_A1",  dpar ); 
@@ -912,7 +912,7 @@ void ModelConfigMapper::FillFTFPDefaults()
    (itr2->second).insert( std::pair<std::string,std::string>("baryon_proc4_ymin",cmd.str()) );
    cmd.str( "" );
    cmd.clear();
-RELEASE LATER !!! */
+/* RELEASE LATER !!! */
 
    // PARAMETERS of PARTICIPATING HADRON EXCITATION
    //
@@ -1353,7 +1353,7 @@ void ModelConfigMapper::FillConfigParamMapFTFP()
    (itr->second).insert( std::pair<std::string,std::string>("use_baryon_diff_disso_proj","BARYON_DIFF_DISSO_PROJ") );
    (itr->second).insert( std::pair<std::string,std::string>("use_baryon_diff_disso_tgt","BARYON_DIFF_DISSO_TGT") );
 
-/* RELEASE LATER !!!
+/* RELEASE LATER !!! */
    // Process=4 --> Qexchg w/additional multiplier in excitation 
    //
    (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_a1",  "BARYON_PROC4_A1") );
@@ -1363,7 +1363,7 @@ void ModelConfigMapper::FillConfigParamMapFTFP()
    (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_a3",  "BARYON_PROC4_A3") );
    (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_atop","BARYON_PROC4_ATOP") );
    (itr->second).insert( std::pair<std::string,std::string>("baryon_proc4_ymin","BARYON_PROC4_YMIN") );
-RELEASE LATER !!! */
+/* RELEASE LATER !!! */
 
    // PARAMETERS of PARTICIPATING HADRON EXCITATION
    //

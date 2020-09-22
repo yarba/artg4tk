@@ -102,6 +102,15 @@ exp_data_proton8.0GeV_Cu_HARP() {
 
 }
 
+exp_data_proton8.0GeV_Ta_HARP() {
+
+/usr/bin/printf "            DBRecords: [ 10876,  10877,  10878,  10879, 10880, 10881, 10882, 10883, 10884, 10885, 10886, 10887, 10888, \n"
+/usr/bin/printf "                         10928,  10929,  10930,  10931, 10932, 10933, 10934, 10935, 10936, 10937, 10938, 10939, 10940, \n"
+/usr/bin/printf "                         200200, 200201, 200202, 200203, 200204, 200205, 200206, 200207, 200208, 200209, \n"
+/usr/bin/printf "                         200210, 200211, 200212, 200213, 200214, 200215, 200216, 200217, 200218, 200219 ]"
+
+}
+
 exp_data_proton8.0GeV_Pb_HARP() {
 
 /usr/bin/printf "            DBRecords: [ 10772, 10773, 10774, 10775, 10776, 10777, 10778, 10779, 10780, 10781, 10782, 10783, 10784, \n"
@@ -206,7 +215,7 @@ exp_data_proton31.0GeV_C_NA61() {
 /usr/bin/printf "                         // secondary Lambda (pid=3122); NOTE: do NOT use record for theta=300-420mrad \n"
 /usr/bin/printf "                         14595, 14596, 14597, 14598, 14599, 14600, 14601, \n"
 /usr/bin/printf "                         // secondary pi- \n"
-/usr/bin/printf "                         14603, 14604, 14605, 14606, 14607, 14608, 14609, // release when prd/dev synch'd 14610, 14611, \n"
+/usr/bin/printf "                         14603, 14604, 14605, 14606, 14607, 14608, 14609, 14610, 14611, \n"
 /usr/bin/printf "                         14612, 14613, \n"
 /usr/bin/printf "                         // secondary pi+ \n"
 /usr/bin/printf "                         14614, 14615, 14616, 14617, 14618, 14619, 14620, 14621, 14622, 14623, 14624, \n"

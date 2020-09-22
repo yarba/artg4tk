@@ -17,8 +17,8 @@ fi
 # Note (03-12-2020): already running for 100 variants... 
 #
 # proton
-sbatch --ntasks-per-node=12 --time=23:00:00 --gres=gpu:0 -p gpu --qos=normal --account=g4 --exclusive \
- 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,PATH2EVT=/lustre1/g4/yarba_j/g4vmp-study/07-18-20,NUniv=${nuni}" \
+sbatch --ntasks-per-node=2 --time=23:00:00 --gres=gpu:0 -p gpu --qos=normal --account=g4 --exclusive \
+ 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,PATH2EVT=/lustre1/g4/yarba_j/g4vmp-study/09-10-20,NUniv=${nuni}" \
 	slurm_multiU_master.sh ana_HARP_multiU_lq.sh
 # pi+
 # ---> sbatch --ntasks-per-node=1 --time=23:00:00 --gres=gpu:0 -p gpu --qos=normal --account=g4 \
@@ -97,7 +97,7 @@ sbatch --ntasks-per-node=12 --time=23:00:00 --gres=gpu:0 -p gpu --qos=normal --a
 # LQ1
 #
 sbatch --ntasks-per-node=1 --time=23:00:00 --gres=gpu:0 -p gpu --qos=normal --account=g4 --exclusive \
- 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,PATH2EVT=/lustre1/g4/yarba_j/g4vmp-study/07-16-20,NUniv=${nuni}" \
+ 	--export="WORKDIR_TOP=${MRB_TOP},proc_level=FTFP,beam=proton,pdgcode=2212,PATH2EVT=/lustre1/g4/yarba_j/g4vmp-study/09-10-20,NUniv=${nuni}" \
 	slurm_multiU_master.sh ana_NA61_multiU_lq.sh
 #
 # Wislon/SLURM

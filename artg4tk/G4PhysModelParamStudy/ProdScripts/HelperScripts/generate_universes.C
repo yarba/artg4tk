@@ -208,11 +208,16 @@ ModelParam  ftfBaryonExciEWndNucln( "BARYON_EXCI_E_PER_WNDNUCLN", "FTFP", 0., 10
 ModelParam  ftfBaryonProc0A1( "BARYON_PROC0_A1", "FTFP", -20., 20. );
 ModelParam  ftfBaryonProc0B1( "BARYON_PROC0_B1", "FTFP",   0., 5. );
 ModelParam  ftfBaryonProc0A2( "BARYON_PROC0_A2", "FTFP", -50., 50. );
-ModelParam  ftfBaryonProc0B2( "BARYON_PROC0_B1", "FTFP",   0.,  5. );
-ModelParam  ftfBaryonProc1A1( "BARYON_PROC1_A1", "FTFP", -40., 40. );
+ModelParam  ftfBaryonProc0B2( "BARYON_PROC0_B2", "FTFP",   0.,  5. );
+ModelParam  ftfBaryonProc1A1( "BARYON_PROC1_A1", "FTFP",   0., 50. ); //-40., 40. );
 ModelParam  ftfBaryonProc1B1( "BARYON_PROC1_B1", "FTFP",   0.,  5. );
-ModelParam  ftfBaryonProc1A2( "BARYON_PROC1_A2", "FTFP",-100.,100. );
-ModelParam  ftfBaryonProc1B2( "BARYON_PROC1_B1", "FTFP",   0.,  5. );
+ModelParam  ftfBaryonProc1A2( "BARYON_PROC1_A2", "FTFP",-100.,  0. ); // -100.,100. );
+ModelParam  ftfBaryonProc1B2( "BARYON_PROC1_B2", "FTFP",   0.,  5. );
+// Basically, P4 = A1 + A2 * exp(-B2*y)   since B1=0 (D) & A3=0 (D)
+ModelParam  ftfBaryonProc4A1( "BARYON_PROC4_A1", "FTFP",   0.,  1. );
+// ModelParam  ftfBaryonProc4B1( "BARYON_PROC4_B1", "FTFP",   0.,  1. ); // D=0.
+ModelParam  ftfBaryonProc4A2( "BARYON_PROC4_A2", "FTFP",  -5.,  0. );
+ModelParam  ftfBaryonProc4B2( "BARYON_PROC4_B2", "FTFP",   0.,  5. );
 
 ModelParam blah("xyz","no-such-hadron-model", 0.0, 999.9 );
 
@@ -462,6 +467,8 @@ void generate_universes(std::string basename = "paramstep",  // output file base
      multiUniv.Add( &ftfBaryonNucDestrP1Tgt );
      ftfBaryonNucDestrP1TgtADEP.SetEnabled(true);  
      multiUniv.Add( &ftfBaryonNucDestrP1TgtADEP ); 
+*/
+/*
      ftfBaryonNucDestrP2Tgt.SetEnabled(true);
      multiUniv.Add( &ftfBaryonNucDestrP2Tgt );
      ftfBaryonNucDestrP3Tgt.SetEnabled(true);     
@@ -473,6 +480,7 @@ void generate_universes(std::string basename = "paramstep",  // output file base
      ftfBaryonExciEWndNucln.SetEnabled(true); // ( "BARYON_EXCI_E_PER_WNDNUCLN", "FTFP", 0., 100. );
      multiUniv.Add( &ftfBaryonExciEWndNucln );
 */
+/*
      ftfBaryonProc0A1.SetEnabled(true);
      multiUniv.Add( &ftfBaryonProc0A1 );
      ftfBaryonProc0B1.SetEnabled(true);
@@ -481,6 +489,7 @@ void generate_universes(std::string basename = "paramstep",  // output file base
      multiUniv.Add( &ftfBaryonProc0A2 );
      ftfBaryonProc0B2.SetEnabled(true);
      multiUniv.Add( &ftfBaryonProc0B2 );
+*/
      ftfBaryonProc1A1.SetEnabled(true);
      multiUniv.Add( &ftfBaryonProc1A1 );
      ftfBaryonProc1B1.SetEnabled(true);
@@ -489,6 +498,17 @@ void generate_universes(std::string basename = "paramstep",  // output file base
      multiUniv.Add( &ftfBaryonProc1A2 );
      ftfBaryonProc1B2.SetEnabled(true);
      multiUniv.Add( &ftfBaryonProc1B2 );
+
+/*
+     ftfBaryonProc4A1.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc4A1 );
+//     ftfBaryonProc4B1.SetEnabled(true);
+//     multiUniv.Add( &ftfBaryonProc4B1 );
+     ftfBaryonProc4A2.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc4A2 );
+     ftfBaryonProc4B2.SetEnabled(true);
+     multiUniv.Add( &ftfBaryonProc4B2 );
+*/
   }
 
   // test user silliness ... cross check
