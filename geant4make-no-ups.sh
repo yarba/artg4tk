@@ -225,13 +225,14 @@ export G4LIB_BUILD_SHARED=1
 # --> source /g4/g4p/pbs/g4-had-validation/env-setup/g4-datasets-setup-${G4RELEASE}.sh
 #
 # more flexible approach that will (hopefullY) allow to work transparently
-# on either LQ1.fnal.gov or Wilson cluster
+# on either LQ1 (lq.fnal.gov) or Wilson cluster
 #
 node_name=`uname -n`
 env_setup=/g4/g4p/pbs/g4-had-validation/env-setup/g4-datasets-setup-${G4RELEASE}.sh
 # --> if [ "$node_name" == "lq.fnal.gov" ]; then
 if [[ $node_name =~ "lq" ]]; then
-env_setup=/lustre1/g4/yarba_j/local-products/g4data/g4-datasets-setup-${G4RELEASE}.sh
+# ---> migrate ---> env_setup=/lustre1/g4/yarba_j/local-products/g4data/g4-datasets-setup-${G4RELEASE}.sh
+env_setup=/project/Geant4/yarba_j/g4data/g4-datasets-setup-${G4RELEASE}.sh
 fi
 source ${env_setup}
 
